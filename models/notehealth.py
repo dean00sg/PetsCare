@@ -13,7 +13,7 @@ class PetType(str, Enum):
 class HealthRecord(BaseModel):
     id : int
     pet_type: Optional[PetType] = None
-    age_in_months: Optional[int] = None
+    age: Optional[int] = None
     weight: Optional[float] = None
     notes: Optional[str] = None
 
