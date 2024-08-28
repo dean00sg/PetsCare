@@ -3,7 +3,7 @@ from models.pet import PetProfile, HealthRecord, CareSuggestion, CreatePetProfil
 from datetime import datetime
 from typing import List 
 
-router = APIRouter()
+router = APIRouter(prefix="/pets", tags=["pets"])
 
 # In-memory storage for demonstration
 pets_db: List[PetProfile] = []

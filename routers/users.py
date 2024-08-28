@@ -3,7 +3,7 @@ from models.user import UserProfile, UserCreate, UserUpdate, UserWithPets
 from models.pet import PetProfile
 from typing import List
 
-router = APIRouter()
+router = APIRouter(prefix="/users", tags=["users"])
 
 users_db: List[UserProfile] = []
 # [UserProfile(
