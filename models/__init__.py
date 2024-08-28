@@ -1,4 +1,4 @@
 from .pet import PetProfile, HealthRecord, PetType
-from .care_suggestion import CareSuggestion
+from .notehealth import HealthRecord, CreateHealthRecord
 from .user import UserProfile, UserCreate, UserUpdate
 from .pet_vac import PetVacProfile, CreatePetVacProfile
