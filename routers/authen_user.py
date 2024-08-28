@@ -4,7 +4,7 @@ from security import AuthHandler
 from models.user import UserProfile, UserCreate
 from typing import List
 
-router = APIRouter(prefix="/Authentication", tags=["Authentication"])
+router = APIRouter(prefix="/auth", tags=["auth"])
 
 auth_handler = AuthHandler()
 users_db: List[dict] = []  # List to store user data with hashed password
