@@ -10,9 +10,17 @@ class PetType(str, Enum):
     fish = "fish"
 
 class HealthRecord(BaseModel):
+    id : int
     date: datetime
     weight: Optional[float] = None
     notes: Optional[str] = None
+
+class CreateHealthRecord(BaseModel):
+    date: datetime
+    weight: Optional[float] = None
+    notes: Optional[str] = None
+
+
 
 class PetProfile(BaseModel):
     id: int
