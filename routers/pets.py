@@ -1,12 +1,19 @@
+from datetime import date
 from typing import List
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import JSONResponse
 from sqlmodel import Session, select
-from models.pet import Pet, PetCreate, PetUpdate
+from models.pet import Pet, PetCreate, PetResponse, PetUpdate
 from models.user import UserProfile
 from deps import get_session
+from dateutil.relativedelta import relativedelta
 
 router = APIRouter(tags=["Pet"])
+
+def calculate_age(birth_date: date) -> str:
+    today = date.today()
+    delta = relativedelta(today, birth_date)
+    return f"{delta.years}y {delta.months}m {delta.days}d"
 
 @router.post("/", response_model=Pet)
 def create_pet(pet: PetCreate, session: Session = Depends(get_session)):
@@ -34,7 +41,7 @@ def create_pet(pet: PetCreate, session: Session = Depends(get_session)):
         session.rollback()
         raise HTTPException(status_code=500, detail=f"An internal error occurred: {str(e)}")
 
-@router.get("/{pet_id}", response_model=Pet)
+@router.get("/{pet_id}", response_model=PetResponse)
 def get_pet(pet_id: int, user_id: int, session: Session = Depends(get_session)):
     try:
         # Retrieve the pet
@@ -45,12 +52,24 @@ def get_pet(pet_id: int, user_id: int, session: Session = Depends(get_session)):
         # Verify that the pet belongs to the user
         if pet.user_id != user_id:
             raise HTTPException(status_code=403, detail="Not authorized to access this pet")
-
-        return pet
+        
+        pet_age = calculate_age(pet.birth_date.date())
+        
+        return PetResponse(
+            id=pet.id,
+            name=pet.name,
+            type_pets=pet.type_pets,
+            sex=pet.sex,
+            breed=pet.breed,
+            birth_date=pet.birth_date,
+            age=pet_age,
+            weight=pet.weight,
+            user_id=pet.user_id
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An internal error occurred: {str(e)}")
 
-@router.get("/user/{user_id}", response_model=List[Pet])
+@router.get("/user/{user_id}", response_model=List[PetResponse])
 def get_pets_by_user(user_id: int, session: Session = Depends(get_session)):
     try:
         # Lookup user by ID
@@ -62,7 +81,23 @@ def get_pets_by_user(user_id: int, session: Session = Depends(get_session)):
         pets = session.exec(select(Pet).where(Pet.user_id == user_id)).all()
         if not pets:
             raise HTTPException(status_code=404, detail="No pets found for this user")
-        return pets
+        
+        pet_responses = [
+            PetResponse(
+                id=pet.id,
+                name=pet.name,
+                type_pets=pet.type_pets,
+                sex=pet.sex,
+                breed=pet.breed,
+                birth_date=pet.birth_date,
+                age=calculate_age(pet.birth_date.date()),  # Ensure birth_date is a date object
+                weight=pet.weight,
+                user_id=pet.user_id
+            )
+            for pet in pets
+        ]
+
+        return pet_responses
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An internal error occurred: {str(e)}")
 
