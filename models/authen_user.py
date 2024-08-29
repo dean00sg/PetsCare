@@ -1,14 +1,20 @@
-# from sqlmodel import Field, SQLModel
-# from typing import Optional
-# from sqlalchemy import Enum
-# from enum import Enum as PyEnum
+from pydantic import BaseModel
+from typing import Optional
 
-# class Role(str, PyEnum):
-#     admin = "admin"
-#     userpets = "userpets"
+class UserBase(BaseModel):
+    username: str
+    email: str
 
-# class User(SQLModel, table=True):
-#     id: Optional[int] = Field(default=None, primary_key=True)
-#     username: str = Field(unique=True)
-#     hashed_password: str
-#     role: Role
+class UserCreate(UserBase):
+    password: str
+
+class UserUpdate(BaseModel):
+    username: Optional[str] = None
+    email: Optional[str] = None
+    password: Optional[str] = None
+
+class User(UserBase):
+    id: int
+
+    class Config:
+        orm_mode = True
