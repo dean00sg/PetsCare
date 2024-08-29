@@ -9,6 +9,7 @@ class UserProfile(SQLModel, table=True):
     last_name: str
     email: EmailStr
     contact_number: str
+    password: str
 
 
     # Relationship to Pet model
