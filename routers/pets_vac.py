@@ -3,7 +3,7 @@ from models.pet_vac import PetVacProfile,CreatePetVacProfile,Petdrugallergy
 from datetime import datetime
 from typing import List
 
-router = APIRouter(prefix="/petsVacsine", tags=["petsVacsine"])
+router = APIRouter(tags=["petsVacsine"])
 pets_vac_db: List[PetVacProfile] = []
 
 

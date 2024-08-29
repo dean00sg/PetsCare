@@ -4,7 +4,7 @@ from models.notehealth import HealthRecord, CreateHealthRecord
 from typing import List
 from dateutil.relativedelta import relativedelta
 
-router = APIRouter(prefix="/notehealth", tags=["notehealth"])
+router = APIRouter(tags=["notehealth"])
 
 notehealth_db: List[HealthRecord] = []
 

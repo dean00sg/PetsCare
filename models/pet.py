@@ -1,48 +1,48 @@
+from datetime import date, datetime
 from pydantic import BaseModel
-from datetime import datetime
-from enum import Enum
-from typing import List, Optional
+from sqlmodel import SQLModel, Field, Relationship
+from typing import Optional, List
 
-class PetType(str, Enum):
-    cat = "cat"
-    dog = "dog"
-    rabbit = "rabbit"
-    fish = "fish"
-
-class HealthRecord(BaseModel):
-    id : int
-    date: datetime
-    weight: Optional[float] = None
-    notes: Optional[str] = None
-
-class CreateHealthRecord(BaseModel):
-    date: datetime
-    weight: Optional[float] = None
-    notes: Optional[str] = None
-
-
-
-class PetProfile(BaseModel):
-    id: int
+class PetBase(SQLModel):
     name: str
-    pet_type: PetType
-    sex : str
+    type_pets: str
+
+class PetProfile(SQLModel):
+    profile_description: Optional[str] = None
+    type_pets: str
+
+class Pet(SQLModel, table=True):
+    id: int = Field(default=None, primary_key=True)
+    name: str
+    type_pets: str
+    sex: str
     breed: str
     birth_date: datetime
     weight: float
-    health_records: List[HealthRecord] = []
-    user_id: int  # อ้างถึงผู้ใช้เจ้าของสัตว์เลี้ยง
-    
-class CreatePetProfile(BaseModel):
+    user_id: int = Field(default=None, foreign_key="userprofile.user_id")
+    health_records: List["HealthRecord"] = Relationship(back_populates="pet")
+    owner: Optional["UserProfile"] = Relationship(back_populates="pets")
+
+class PetCreate(PetBase):
     name: str
-    pet_type: PetType
-    sex : str
+    type_pets: str
+    sex: str
     breed: str
     birth_date: datetime
     weight: float
-    health_records: List[HealthRecord] = []
-    user_id: int  # อ้างถึงผู้ใช้เจ้าของสัตว์เลี้ยง
+    user_id: int
 
-class CareSuggestion(BaseModel):
-    age_in_months: int
-    suggestion: str
+class PetUpdate(BaseModel):
+    name: Optional[str] = None
+    type_pets: Optional[str] = None
+    sex: Optional[str] = None
+    breed: Optional[str] = None
+    birth_date: Optional[date] = None
+    weight: Optional[float] = None
+
+class HealthRecord(SQLModel, table=True):
+    id: int = Field(default=None, primary_key=True)
+    pet_id: int = Field(default=None, foreign_key="pet.id")
+    record_date: datetime
+    description: str
+    pet: Optional[Pet] = Relationship(back_populates="health_records")
