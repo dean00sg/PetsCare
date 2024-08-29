@@ -14,6 +14,7 @@ class PetProfile(SQLModel):
     sex: str
     breed: str
     birth_date: datetime
+    age: str
     weight: float
 
 class Pet(SQLModel, table=True):
