@@ -8,8 +8,13 @@ class PetBase(SQLModel):
     type_pets: str
 
 class PetProfile(SQLModel):
-    profile_description: Optional[str] = None
+    id: int
+    name: str
     type_pets: str
+    sex: str
+    breed: str
+    birth_date: datetime
+    weight: float
 
 class Pet(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
