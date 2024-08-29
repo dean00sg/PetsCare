@@ -8,6 +8,14 @@ router = APIRouter(tags=["notehealth"])
 
 notehealth_db: List[HealthRecord] = []
 
+def calculate_age(date_of_birth: datetime, current_date: datetime) -> str:
+    delta = relativedelta(current_date, date_of_birth)
+    years = delta.years
+    months = delta.months
+    days = delta.days
+    
+    return f"{years}y {months}m {days}d"
+
 @router.post("/notehealth/health", response_model=HealthRecord)
 def create_health_record(health_record: CreateHealthRecord):
     new_id = len(notehealth_db) + 1  # Generate a new ID based on the current list size
@@ -18,10 +26,9 @@ def create_health_record(health_record: CreateHealthRecord):
     health_record_date = health_record.date
     if health_record_date.tzinfo is not None:
         health_record_date = health_record_date.astimezone(tz=None).replace(tzinfo=None)
-    
-    age_in_months = relativedelta(current_date, health_record_date).months + 12 * relativedelta(current_date, health_record_date).years
-    
-    add_health_record.age_in_months = age_in_months
+
+    age = calculate_age(health_record_date, current_date)
+    add_health_record.age = age
     
     # เพิ่ม HealthRecord ลงในฐานข้อมูล
     notehealth_db.append(add_health_record)
@@ -54,8 +61,8 @@ def update_health_record(id_health: int, record_update: CreateHealthRecord):
         if health_record_date.tzinfo is not None:
             health_record_date = health_record_date.astimezone(tz=None).replace(tzinfo=None)
         
-        age_in_months = relativedelta(current_date, health_record_date).months + 12 * relativedelta(current_date, health_record_date).years
-        new_health_record.age_in_months = age_in_months
+        age = calculate_age(health_record_date, current_date)
+        new_health_record.age = age
 
     return new_health_record
 
