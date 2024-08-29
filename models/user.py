@@ -9,7 +9,7 @@ class UserProfile(SQLModel, table=True):
     last_name: str
     email: EmailStr
     contact_number: str
-    password: str  # Store hashed passwords
+
 
     # Relationship to Pet model
     pets: List[Pet] = Relationship(back_populates="owner")

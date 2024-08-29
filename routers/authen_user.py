@@ -15,13 +15,12 @@ class Login(BaseModel):
 
 @router.post("/register", response_model=UserProfile)
 def register_user(user: UserCreate, session: Session = Depends(get_session)):
-    hashed_password = auth_handler.get_password_hash(user.password)
     db_user = UserProfile(
         first_name=user.first_name,
         last_name=user.last_name,
         email=user.email,
         contact_number=user.contact_number,
-        password=hashed_password
+        
     )
     session.add(db_user)
     session.commit()
