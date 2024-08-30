@@ -19,7 +19,7 @@ class TokenData(BaseModel):
 
 class AuthHandler:
     def __init__(self):
-        self.secret = settings.SECRET_KEY
+        self.secret = SECRET_KEY
         self.algorithm = ALGORITHM
         self.pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -45,3 +45,7 @@ class AuthHandler:
             return payload
         except JWTError:
             raise Exception("Invalid token")
+    
+    def get_current_user_role(self, token: str) -> str:
+        payload = self.decode_access_token(token)
+        return payload.get("role")

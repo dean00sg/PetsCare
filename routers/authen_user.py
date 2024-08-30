@@ -1,52 +1,53 @@
-from fastapi import APIRouter, HTTPException, Depends
+from typing import Optional
+from fastapi import APIRouter, HTTPException, Depends, Query, Body
 from pydantic import BaseModel
-from sqlmodel import Session, select, update, delete
+from sqlmodel import Session, select
 from security import AuthHandler
-from models.user import UserProfile, UserCreate, UserUpdate ,DeleteResponse
+from models.user import Login, UpdateUser, UpdateUserResponse, UserProfile, UserCreate, UserUpdate, UserWithPets, DeleteResponse
 from deps import get_session
 
-router = APIRouter( tags=["Authentication"])
+router = APIRouter(tags=["Authentication"])
 
 auth_handler = AuthHandler()
 
-class Login(BaseModel):
-    email: str
-    password: str
 
 @router.post("/register", response_model=UserProfile)
 def register_user(user: UserCreate, session: Session = Depends(get_session)):
+    role = user.role or "userpets"  # Default role if not provided
+    if role not in ["admin", "userpets"]:
+        raise HTTPException(status_code=400, detail="Invalid role")
+
     hashed_password = auth_handler.get_password_hash(user.password)
     db_user = UserProfile(
         first_name=user.first_name,
         last_name=user.last_name,
         email=user.email,
         contact_number=user.contact_number,
-        password=hashed_password
+        password=hashed_password,
+        role=role
     )
     session.add(db_user)
     session.commit()
     session.refresh(db_user)
-
-    # Return the user profile without the password
     return db_user
+
 
 @router.post("/login")
 def login(login: Login, session: Session = Depends(get_session)):
-    try:
-        user = session.exec(select(UserProfile).where(UserProfile.email == login.email)).first()
-        if not user or not auth_handler.verify_password(login.password, user.password):
-            raise HTTPException(status_code=401, detail="Invalid credentials")
+    user = session.exec(select(UserProfile).where(UserProfile.email == login.email)).first()
+    if not user or not auth_handler.verify_password(login.password, user.password):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
 
-        access_token = auth_handler.create_access_token(data={"sub": login.email, "role": "userpets"})
-        
-        return {
-            "access_token": access_token,
-            "token_type": "bearer",
-            "user_id": user.user_id,
-            "name": f"{user.first_name} {user.last_name}"
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    access_token = auth_handler.create_access_token(data={"username": user.email, "role": user.role})
+    
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user_id": user.user_id,
+        "name": f"{user.first_name} {user.last_name}",
+        "role": user.role
+    }
+
 
 @router.get("/users/{user_id}", response_model=UserProfile)
 def get_user(user_id: int, session: Session = Depends(get_session)):
@@ -55,40 +56,64 @@ def get_user(user_id: int, session: Session = Depends(get_session)):
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
-@router.put("/users/{user_id}", response_model=UserProfile)
-def update_user(user_id: int, user_update: UserUpdate, password: str, session: Session = Depends(get_session)):
-    db_user = session.exec(select(UserProfile).where(UserProfile.user_id == user_id)).first()
-    if not db_user:
+
+@router.put("/users/{user_id}", response_model=UpdateUserResponse)
+def update_user(user_id: int, password: str = Query(...), update_data: UpdateUser = Body(...), session: Session = Depends(get_session)):
+    user = session.exec(select(UserProfile).where(UserProfile.user_id == user_id)).first()
+    if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    if not auth_handler.verify_password(password, db_user.password):
-        raise HTTPException(status_code=403, detail="Invalid password")
+    # Verify password of the requester
+    if not auth_handler.verify_password(password, user.password):
+        raise HTTPException(status_code=401, detail="Invalid credentials. Incorrect password provided.")
 
-    db_user.first_name = user_update.first_name or db_user.first_name
-    db_user.last_name = user_update.last_name or db_user.last_name
-    db_user.email = user_update.email or db_user.email
-    db_user.contact_number = user_update.contact_number or db_user.contact_number
-    
-    session.add(db_user)
+    # Update user information
+    if update_data.new_password:
+        user.password = auth_handler.get_password_hash(update_data.new_password)
+    if update_data.first_name:
+        user.first_name = update_data.first_name
+    if update_data.last_name:
+        user.last_name = update_data.last_name
+    if update_data.email:
+        user.email = update_data.email
+    if update_data.contact_number:
+        user.contact_number = update_data.contact_number
+
+    session.add(user)
     session.commit()
-    session.refresh(db_user)
-    return db_user
+    session.refresh(user)
+
+    # Return the response model with status message and user details
+    return UpdateUserResponse(
+        status="User updated successfully",
+        user_id=user.user_id,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        email=user.email,
+        contact_number=user.contact_number,
+        role=user.role
+    )
+
 
 @router.delete("/users/{user_id}", response_model=DeleteResponse)
-def delete_user(user_id: int, password: str, session: Session = Depends(get_session)):
-    db_user = session.exec(select(UserProfile).where(UserProfile.user_id == user_id)).first()
-    if not db_user:
+def delete_user(user_id: int, password: str = Query(...), session: Session = Depends(get_session)):
+    user = session.exec(select(UserProfile).where(UserProfile.user_id == user_id)).first()
+    if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    if not auth_handler.verify_password(password, db_user.password):
-        raise HTTPException(status_code=403, detail="Invalid password")
+    # Verify password of the requester
+    if not auth_handler.verify_password(password, user.password):
+        raise HTTPException(status_code=401, detail="Invalid credentials. Incorrect password provided.")
 
-    session.exec(delete(UserProfile).where(UserProfile.user_id == user_id))
+    # Delete user and return response with deleted user data
+    session.delete(user)
     session.commit()
-    
-    return {
-        "message": "Delete Account Success",
-        "user_id": db_user.user_id,
-        "name": f"{db_user.first_name} {db_user.last_name}"
-    }
-
+    return DeleteResponse(
+        status="User deleted successfully",
+        id=user_id,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        email=user.email,
+        contact_number=user.contact_number,
+        role=user.role
+    )
