@@ -35,7 +35,7 @@ def verify_admin(firstname: str, password: str, session: Session) -> None:
     if admin_user.role != "admin":
         raise HTTPException(status_code=403, detail="Access forbidden: Admins only")
 
-@router.post("/notehealth/health", response_model=PetHealthRecord)
+@router.post("/", response_model=PetHealthRecord)
 def create_health_record(
     health_record: CreateHealthRecord,
     firstname: str = Query(..., description="First name of the admin user to authenticate"),
@@ -58,7 +58,7 @@ def create_health_record(
     
     return new_health_record
 
-@router.get("/notehealth/{health_id}/health", response_model=PetHealthRecord)
+@router.get("{health_id}/health", response_model=PetHealthRecord)
 def get_health_record(
     health_id: int,
     firstname: str = Query(..., description="First name of the admin user to authenticate"),
@@ -72,7 +72,7 @@ def get_health_record(
         raise HTTPException(status_code=404, detail="Health record not found")
     return health_record
 
-@router.put("/notehealth/{health_id}/health", response_model=PetHealthRecord)
+@router.put("{health_id}/health", response_model=PetHealthRecord)
 def update_health_record(
     health_id: int,
     record_update: CreateHealthRecord,
@@ -105,7 +105,7 @@ def update_health_record(
     
     return health_record
 
-@router.delete("/notehealth/{health_id}/health", response_model=dict)
+@router.delete("{health_id}/health", response_model=dict)
 def delete_health_record(
     health_id: int,
     firstname: str = Query(..., description="First name of the admin user to authenticate"),

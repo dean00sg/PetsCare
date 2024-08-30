@@ -14,7 +14,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 #ประวัติวัคซีนและประวัติการแพ้ยาของสัตว์เลี้ยง
 
-@router.post("/pet_vac", response_model=PetVacProfile)
+@router.post("/", response_model=PetVacProfile)
 def create_pet_vac(pet_vac: CreatePetVacProfile, pet_id: int, password: str, session: Session = Depends(get_session)):
     
     # ตรวจสอบว่ามี pet_id และ password ที่ถูกต้อง
@@ -41,7 +41,7 @@ def create_pet_vac(pet_vac: CreatePetVacProfile, pet_id: int, password: str, ses
     return new_pet_vac
 
 
-@router.get("/pets_vac/{pet_vac_id}", response_model=PetVacProfile)
+@router.get("{pet_vac_id}", response_model=PetVacProfile)
 def get_pet_vac(pet_vac_id: int, session: Session = Depends(get_session)):
     pet_vac = session.get(PetVacProfile, pet_vac_id)
     if pet_vac is None:
@@ -49,13 +49,13 @@ def get_pet_vac(pet_vac_id: int, session: Session = Depends(get_session)):
     return pet_vac
 
 
-@router.get("/pets_vac", response_model=List[PetVacProfile])
+@router.get("/", response_model=List[PetVacProfile])
 def get_all_pet_vacs(session: Session = Depends(get_session)):
     pet_vacs = session.exec(select(PetVacProfile)).all()
     return pet_vacs
 
 
-@router.put("/pets_vac/{pet_vac_id}", response_model=PetVacProfile)
+@router.put("{pet_vac_id}", response_model=PetVacProfile)
 def update_pet_vac(pet_vac_id: int, pet_vac_update: CreatePetVacProfile, password: str, pet_id: int, session: Session = Depends(get_session)):
     pet_vac = session.get(PetVacProfile, pet_vac_id)
     if pet_vac is None:
@@ -76,7 +76,7 @@ def update_pet_vac(pet_vac_id: int, pet_vac_update: CreatePetVacProfile, passwor
     session.refresh(pet_vac)
     return pet_vac
 
-@router.delete("/pets_vac/{pet_vac_id}", response_model=dict)
+@router.delete("{pet_vac_id}", response_model=dict)
 def delete_pet_vac(pet_vac_id: int, password: str, pet_id: int, session: Session = Depends(get_session)):
     pet_vac = session.get(PetVacProfile, pet_vac_id)
     if pet_vac is None:
