@@ -2,6 +2,7 @@ from datetime import date
 from fastapi import APIRouter, HTTPException, Depends, Query, Path
 from sqlalchemy.orm import Session
 from sqlmodel import select
+from models.notehealth import PetHealthRecord
 from models.pet_vac import PetVacProfile
 from models.user import PetsWithPetsVacsine, UserProfile, UserWithPets
 from models.pet import Pet, PetProfile
@@ -132,3 +133,19 @@ def get_pets_with_vacsine(user_id: int, session: Session = Depends(get_session))
     )
 
     return pets_with_vacsine
+
+@router.get("/notehealth/health", response_model=List[PetHealthRecord])
+def get_all_health_records(
+    firstname: str = Query(..., description="First name of the admin user to authenticate"),
+    password: str = Query(..., description="Password of the admin user to authenticate"),
+    session: Session = Depends(get_session)
+):
+    # Verify admin credentials
+    verify_admin(firstname, password, session)
+
+    try:
+        # Query all pet health records
+        health_records = session.exec(select(PetHealthRecord)).all()
+        return health_records
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
