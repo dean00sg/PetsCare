@@ -14,6 +14,7 @@ class PetProfile(SQLModel):
     sex: str
     breed: str
     birth_date: datetime
+    age: str
     weight: float
 
 class Pet(SQLModel, table=True):
@@ -34,6 +35,17 @@ class PetCreate(PetBase):
     sex: str
     breed: str
     birth_date: datetime
+    weight: float
+    user_id: int
+
+class PetResponse(BaseModel):
+    id: int
+    name: str
+    type_pets: str
+    sex: str
+    breed: str
+    birth_date: datetime
+    age: str
     weight: float
     user_id: int
 
