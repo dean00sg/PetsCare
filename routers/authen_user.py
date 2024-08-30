@@ -1,5 +1,5 @@
 from typing import Optional
-from fastapi import APIRouter, HTTPException, Depends, Query, Body
+from fastapi import APIRouter, HTTPException, Depends, Path, Query, Body
 from pydantic import BaseModel
 from sqlmodel import Session, select
 from security import AuthHandler
@@ -54,11 +54,21 @@ def login(
 
 
 @router.get("/users/{user_id}", response_model=UserProfile)
-def get_user(user_id: int, session: Session = Depends(get_session)):
+def get_user(
+    user_id: int = Path(..., description="User ID to retrieve user and pet information"),
+    password: str = Query(..., description="Password of the admin user to authenticate"),
+    session: Session = Depends(get_session)
+):
     user = session.exec(select(UserProfile).where(UserProfile.user_id == user_id)).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
+
+    # Verify password of the requester
+    if not auth_handler.verify_password(password, user.password):
+        raise HTTPException(status_code=401, detail="Invalid credentials. Incorrect password provided.")
+    
     return user
+
 
 
 @router.put("/users/{user_id}", response_model=UpdateUserResponse)
