@@ -2,7 +2,8 @@ from datetime import date
 from fastapi import APIRouter, HTTPException, Depends, Query, Path
 from sqlalchemy.orm import Session
 from sqlmodel import select
-from models.user import UserProfile, UserWithPets
+from models.pet_vac import PetVacProfile
+from models.user import PetsWithPetsVacsine, UserProfile, UserWithPets
 from models.pet import Pet, PetProfile
 from deps import get_session
 from security import AuthHandler
@@ -113,3 +114,21 @@ def get_user_with_pets(
         return user_with_pets
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An internal error occurred: {str(e)}")
+
+# แสดงรายการสัตว์เลี้ยงและข้อมูลวัคซีนและการแพ้ยา
+@router.get("/{user_id}/with_pets_vacsine", response_model=PetsWithPetsVacsine)
+def get_pets_with_vacsine(user_id: int, session: Session = Depends(get_session)):
+    pets = session.exec(select(Pet).where(Pet.user_id == user_id)).all()
+
+    if not pets:
+        raise HTTPException(status_code=404, detail="No pets found for this user")
+
+    # ดึงข้อมูลวัคซีนและการแพ้ยาของสัตว์เลี้ยง
+    pet_vac_profiles = session.exec(select(PetVacProfile).where(PetVacProfile.user_id == user_id)).all()
+
+    pets_with_vacsine = PetsWithPetsVacsine(
+        pets=pets,  # ข้อมูลสัตว์เลี้ยง
+        pet_vac_profiles=pet_vac_profiles  # ข้อมูลวัคซีนและการแพ้ยา
+    )
+
+    return pets_with_vacsine

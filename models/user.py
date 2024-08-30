@@ -2,6 +2,7 @@ from pydantic import BaseModel, EmailStr
 from sqlmodel import SQLModel, Field, Relationship
 from typing import List, Optional
 from models.pet import Pet, PetProfile
+from models.pet_vac import PetVacProfile
 
 class UserProfile(SQLModel, table=True):
     user_id: Optional[int] = Field(default=None, primary_key=True)
@@ -67,3 +68,7 @@ class UpdateUserResponse(BaseModel):
     email: EmailStr
     contact_number: str
     role: str
+
+class PetsWithPetsVacsine(BaseModel):
+    pets: List[PetProfile] = []  # ข้อมูลสัตว์เลี้ยง
+    pet_vac_profiles: List[PetVacProfile] #รายการข้อมูลวัคซีนและการแพ้ยาของสัตว์เลี้ยง
