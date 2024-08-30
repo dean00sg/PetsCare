@@ -53,13 +53,13 @@ def login(
     }
 
 
-@router.get("/users/{user_id}", response_model=UserProfile)
+@router.get("/", response_model=UserProfile)
 def get_user(
-    user_id: int = Path(..., description="User ID to retrieve user and pet information"),
-    password: str = Query(..., description="Password of the admin user to authenticate"),
+    firstname: str = Query(..., description="First name "),
+    password: str = Query(..., description="Password of "),
     session: Session = Depends(get_session)
 ):
-    user = session.exec(select(UserProfile).where(UserProfile.user_id == user_id)).first()
+    user = session.exec(select(UserProfile).where(UserProfile.first_name == firstname)).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
@@ -69,11 +69,14 @@ def get_user(
     
     return user
 
-
-
-@router.put("/users/{user_id}", response_model=UpdateUserResponse)
-def update_user(user_id: int, password: str = Query(...), update_data: UpdateUser = Body(...), session: Session = Depends(get_session)):
-    user = session.exec(select(UserProfile).where(UserProfile.user_id == user_id)).first()
+@router.put("/", response_model=UpdateUserResponse)
+def update_user(
+    firstname: str = Query(..., description="First name"),
+    password: str = Query(..., description="Password of "),
+    update_data: UpdateUser = Body(...),
+    session: Session = Depends(get_session)
+):
+    user = session.exec(select(UserProfile).where(UserProfile.first_name == firstname)).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
@@ -108,10 +111,13 @@ def update_user(user_id: int, password: str = Query(...), update_data: UpdateUse
         role=user.role
     )
 
-
-@router.delete("/users/{user_id}", response_model=DeleteResponse)
-def delete_user(user_id: int, password: str = Query(...), session: Session = Depends(get_session)):
-    user = session.exec(select(UserProfile).where(UserProfile.user_id == user_id)).first()
+@router.delete("/", response_model=DeleteResponse)
+def delete_user(
+    firstname: str = Query(..., description="First name of the user"),
+    password: str = Query(..., description="Password of the user"),
+    session: Session = Depends(get_session)
+):
+    user = session.exec(select(UserProfile).where(UserProfile.first_name == firstname)).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
@@ -119,15 +125,19 @@ def delete_user(user_id: int, password: str = Query(...), session: Session = Dep
     if not auth_handler.verify_password(password, user.password):
         raise HTTPException(status_code=401, detail="Invalid credentials. Incorrect password provided.")
 
-    # Delete user and return response with deleted user data
-    session.delete(user)
-    session.commit()
-    return DeleteResponse(
+    # Prepare response data
+    delete_response = DeleteResponse(
         status="User deleted successfully",
-        id=user_id,
+        id=user.user_id,
         first_name=user.first_name,
         last_name=user.last_name,
         email=user.email,
         contact_number=user.contact_number,
         role=user.role
     )
+
+    # Delete user and return response
+    session.delete(user)
+    session.commit()
+    
+    return delete_response
