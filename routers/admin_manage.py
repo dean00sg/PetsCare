@@ -21,19 +21,13 @@ def calculate_age(birth_date: date) -> str:
 
 def verify_admin(firstname: str, password: str, session: Session) -> None:
     """Function to verify if the user is an admin with valid credentials."""
-    # Fetch user by firstname
     admin_user = session.exec(select(UserProfile).where(UserProfile.first_name == firstname)).first()
     if not admin_user:
         raise HTTPException(status_code=404, detail="Admin user not found")
     
-    # Verify the provided password
     if not auth_handler.verify_password(password, admin_user.password):
-        raise HTTPException(
-            status_code=401,
-            detail="Invalid password. Access forbidden: Admins only"
-        )
+        raise HTTPException(status_code=401, detail="Invalid password. Access forbidden: Admins only")
 
-    # Check if the user has the admin role
     if admin_user.role != "admin":
         raise HTTPException(status_code=403, detail="Access forbidden: Admins only")
 
@@ -43,7 +37,6 @@ def get_users(
     password: str = Query(..., description="Password of the admin user to authenticate"),
     session: Session = Depends(get_session)
 ):
-    # Verify admin credentials
     verify_admin(firstname, password, session)
     
     try:
@@ -59,7 +52,6 @@ def get_user(
     password: str = Query(..., description="Password of the admin user to authenticate"),
     session: Session = Depends(get_session)
 ):
-    # Verify admin credentials
     verify_admin(firstname, password, session)
     
     db_user = session.get(UserProfile, user_id)
@@ -74,19 +66,15 @@ def get_user_with_pets(
     password: str = Query(..., description="Password of the admin user to authenticate"),
     session: Session = Depends(get_session)
 ):
-    # Verify admin credentials
     verify_admin(firstname, password, session)
     
     try:
-        # Lookup user by ID
         db_user = session.exec(select(UserProfile).where(UserProfile.user_id == user_id)).first()
         if db_user is None:
             raise HTTPException(status_code=404, detail="User not found")
 
-        # Retrieve pets for the user
         pets = session.exec(select(Pet).where(Pet.user_id == user_id)).all()
         
-        # Create PetProfile instances with calculated age
         pet_profiles = [
             PetProfile(
                 id=pet.id,
@@ -95,14 +83,13 @@ def get_user_with_pets(
                 sex=pet.sex,
                 breed=pet.breed,
                 birth_date=pet.birth_date,
-                age=calculate_age(pet.birth_date.date()),  # Calculate age
+                age=calculate_age(pet.birth_date.date()),
                 weight=pet.weight,
                 user_id=pet.user_id
             )
             for pet in pets
         ]
 
-        # Create UserWithPets response
         user_with_pets = UserWithPets(
             user_id=db_user.user_id,
             first_name=db_user.first_name,
@@ -117,7 +104,6 @@ def get_user_with_pets(
         raise HTTPException(status_code=500, detail=f"An internal error occurred: {str(e)}")
 
 
-# แสดงรายการสัตว์เลี้ยงและข้อมูลวัคซีนและการแพ้ยา
 @router.get("/{pet_id}/with_pets_vacsine", response_model=PetsWithPetsVacsine)
 def get_pets_with_vacsine(
     pet_id: int = Path(..., description="Pet ID to retrieve user and pet information"),
@@ -125,23 +111,19 @@ def get_pets_with_vacsine(
     password: str = Query(..., description="Password of the user to authenticate"),
     session: Session = Depends(get_session)
 ):
-    # Authenticate user
     user = session.exec(select(UserProfile).where(UserProfile.first_name == firstname)).first()
     
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
     
-    # Verify password
     if not auth_handler.verify_password(password, user.password):
         raise HTTPException(status_code=401, detail="Invalid password")
     
-    # Ensure the pet_id belongs to the authenticated user
-    pet = session.exec(select(Pet).where(Pet.pet_id == pet_id, Pet.user_id == user.user_id)).first()
+    pet = session.exec(select(Pet).where(Pet.id == pet_id, Pet.user_id == UserProfile.user_id)).first()
     
     if pet is None:
         raise HTTPException(status_code=403, detail="Unauthorized access to this pet")
 
-    # Fetch pet and vaccination records
     pet_profile = PetProfile(
         id=pet.id,
         name=pet.name,
@@ -151,18 +133,28 @@ def get_pets_with_vacsine(
         birth_date=pet.birth_date,
         weight=pet.weight,
         user_id=pet.user_id,
-        age=calculate_age(pet.birth_date)  # Calculate pet's age
+        age=calculate_age(pet.birth_date.date())
     )
+    petname = session.exec(select(Pet.name).where(Pet.id == pet_id)).first()
+    pet_vac_profiles = session.exec(select(PetVacProfile).where(PetVacProfile.pet_name == petname)).all()
 
-    pet_vac_profiles = session.exec(select(PetVacProfile).where(PetVacProfile.pet_id == pet_id)).all()
+    if not pet_vac_profiles:
+        raise HTTPException(status_code=404, detail="No vaccination records found for this pet")
 
-    # Combine pet profile with vaccination profiles
     pets_with_vacsine = PetsWithPetsVacsine(
-        pets=[pet_profile],  # Wrap pet_profile in a list
+        pets=[pet_profile],
         pet_vac_profiles=pet_vac_profiles
     )
 
     return pets_with_vacsine
+
+
+
+
+
+
+
+
 
 @router.get("/notehealth/health", response_model=List[PetHealthRecord])
 def get_all_health_records(
@@ -170,11 +162,9 @@ def get_all_health_records(
     password: str = Query(..., description="Password of the admin user to authenticate"),
     session: Session = Depends(get_session)
 ):
-    # Verify admin credentials
     verify_admin(firstname, password, session)
 
     try:
-        # Query all pet health records
         health_records = session.exec(select(PetHealthRecord)).all()
         return health_records
     except Exception as e:
