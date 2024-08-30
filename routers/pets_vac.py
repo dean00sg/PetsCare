@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlmodel import Session, select
-from models.pet import PetProfile
+from models.pet import Pet, PetProfile
 from models.pet_vac import PetVacProfile, CreatePetVacProfile
 from deps import get_session
 from typing import List
@@ -18,7 +18,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 def create_pet_vac(pet_vac: CreatePetVacProfile, pet_id: int, password: str, session: Session = Depends(get_session)):
     
     # ตรวจสอบว่ามี pet_id และ password ที่ถูกต้อง
-    pet_profile = session.exec(select(PetProfile).where(PetProfile.id == pet_id)).first()
+    pet_profile = session.exec(select(Pet).where(Pet.id == pet_id)).first()
     
     if pet_profile is None:
         raise HTTPException(status_code=404, detail="Pet not found")
@@ -27,9 +27,9 @@ def create_pet_vac(pet_vac: CreatePetVacProfile, pet_id: int, password: str, ses
     if user is None or not pwd_context.verify(password, user.password):
         raise HTTPException(status_code=401, detail="Invalid password")
 
-    # ใช้ pets_id และ user_id จาก PetProfile
+    # ใช้ pets_id และ user_id จาก Pet
     new_pet_vac = PetVacProfile(
-        pets_id=pet_profile.id,  # ใช้ id ของสัตว์เลี้ยงจาก PetProfile
+        pets_id=pet_profile.id,  # ใช้ id ของสัตว์เลี้ยงจาก Pet
         user_id=pet_profile.user_id,
         vacname=pet_vac.vacname,
         stardatevac=pet_vac.stardatevac,

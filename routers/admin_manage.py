@@ -116,19 +116,57 @@ def get_user_with_pets(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An internal error occurred: {str(e)}")
 
+
 # แสดงรายการสัตว์เลี้ยงและข้อมูลวัคซีนและการแพ้ยา
 @router.get("/{user_id}/with_pets_vacsine", response_model=PetsWithPetsVacsine)
-def get_pets_with_vacsine(user_id: int, session: Session = Depends(get_session)):
+def get_pets_with_vacsine(
+    user_id: int,
+    firstname: str = Query(..., description="First name of the user to authenticate"),
+    password: str = Query(..., description="Password of the user to authenticate"),
+    session: Session = Depends(get_session)
+):
+    # ตรวจสอบการยืนยันตัวตน
+    user = session.exec(select(UserProfile).where(UserProfile.first_name == firstname)).first()
+    
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # ตรวจสอบความถูกต้องของรหัสผ่าน
+    if not auth_handler.verify_password(password, user.password):
+        raise HTTPException(status_code=401, detail="Invalid password")
+    
+    # ตรวจสอบว่า user_id ตรงกับที่ได้รับจากการยืนยันตัวตนหรือไม่
+    if user.user_id != user_id:
+        raise HTTPException(status_code=403, detail="Unauthorized access to this user's pets")
+
     pets = session.exec(select(Pet).where(Pet.user_id == user_id)).all()
 
     if not pets:
         raise HTTPException(status_code=404, detail="No pets found for this user")
 
+    # คำนวณอายุและสร้างรายการ PetProfile
+    pet_profiles = []
+    for pet in pets:
+        age = calculate_age(pet.birth_date)
+        pet_profiles.append(
+            PetProfile(
+                id=pet.id,
+                name=pet.name,
+                type_pets=pet.type_pets,
+                sex=pet.sex,
+                breed=pet.breed,
+                birth_date=pet.birth_date,
+                weight=pet.weight,
+                user_id=pet.user_id,
+                age=age  # เพิ่มอายุที่คำนวณไว้ในโปรไฟล์สัตว์เลี้ยง
+            )
+        )
+
     # ดึงข้อมูลวัคซีนและการแพ้ยาของสัตว์เลี้ยง
     pet_vac_profiles = session.exec(select(PetVacProfile).where(PetVacProfile.user_id == user_id)).all()
 
     pets_with_vacsine = PetsWithPetsVacsine(
-        pets=pets,  # ข้อมูลสัตว์เลี้ยง
+        pets=pet_profiles,  # ข้อมูลสัตว์เลี้ยงพร้อมอายุ
         pet_vac_profiles=pet_vac_profiles  # ข้อมูลวัคซีนและการแพ้ยา
     )
 
