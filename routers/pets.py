@@ -8,7 +8,7 @@ from models.user import UserProfile
 from deps import get_session
 from dateutil.relativedelta import relativedelta
 
-router = APIRouter(tags=["Pet"])
+router = APIRouter(tags=["Pets"])
 
 def calculate_age(birth_date: date) -> str:
     today = date.today()
