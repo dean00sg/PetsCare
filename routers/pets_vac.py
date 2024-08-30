@@ -1,5 +1,6 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlmodel import Session, select
+from security import AuthHandler
 from models.pet import Pet, PetProfile
 from models.pet_vac import PetVacProfile, CreatePetVacProfile
 from deps import get_session
@@ -8,64 +9,72 @@ from passlib.context import CryptContext
 
 from models.user import UserProfile
 
-router = APIRouter(tags=["Pets Vacsine"])
-
+router = APIRouter(tags=["Pets Vaccine"])
+auth_handler = AuthHandler()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-#ประวัติวัคซีนและประวัติการแพ้ยาของสัตว์เลี้ยง
-
 @router.post("/", response_model=PetVacProfile)
-def create_pet_vac(pet_vac: CreatePetVacProfile, pet_id: int, password: str, session: Session = Depends(get_session)):
+def create_pet_vac(
+    pet_vac: CreatePetVacProfile, 
+    pet_name: str = Query(..., description="Name of the pet to vaccinate"),
+    user_name: str = Query(..., description="First name of the user to authenticate"),
+    password: str = Query(..., description="Password of the user to authenticate"),
+    session: Session = Depends(get_session)
+):
+    # Verify user credentials using user_name
+    user = session.exec(select(UserProfile).where(UserProfile.first_name == user_name)).first()
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
     
-    # ตรวจสอบว่ามี pet_id และ password ที่ถูกต้อง
-    pet_profile = session.exec(select(Pet).where(Pet.id == pet_id)).first()
-    
-    if pet_profile is None:
-        raise HTTPException(status_code=404, detail="Pet not found")
-
-    user = session.get(UserProfile, pet_profile.user_id)
-    if user is None or not pwd_context.verify(password, user.password):
+    if not auth_handler.verify_password(password, user.password):
         raise HTTPException(status_code=401, detail="Invalid password")
 
-    # ใช้ pets_id และ user_id จาก Pet
+    # Verify pet ownership
+    pet_profile = session.exec(select(Pet).where(Pet.name == pet_name, Pet.user_id == user.user_id)).first()
+    if pet_profile is None:
+        raise HTTPException(status_code=404, detail="Pet not found or does not belong to this user")
+
+    # Create new pet vaccination profile
     new_pet_vac = PetVacProfile(
-        pets_id=pet_profile.id,  # ใช้ id ของสัตว์เลี้ยงจาก Pet
-        user_id=pet_profile.user_id,
+        pet_name=pet_profile.name,
+        user_name=user.first_name,
         vacname=pet_vac.vacname,
         stardatevac=pet_vac.stardatevac,
         drugname=pet_vac.drugname
     )
+    
+    # Add to session and commit
     session.add(new_pet_vac)
     session.commit()
     session.refresh(new_pet_vac)
     return new_pet_vac
 
-
-@router.get("{pet_vac_id}", response_model=PetVacProfile)
+@router.get("/{pet_vac_id}", response_model=PetVacProfile)
 def get_pet_vac(pet_vac_id: int, session: Session = Depends(get_session)):
     pet_vac = session.get(PetVacProfile, pet_vac_id)
     if pet_vac is None:
         raise HTTPException(status_code=404, detail="Pet vaccine profile not found")
     return pet_vac
 
-
-@router.get("/", response_model=List[PetVacProfile])
-def get_all_pet_vacs(session: Session = Depends(get_session)):
-    pet_vacs = session.exec(select(PetVacProfile)).all()
-    return pet_vacs
-
-
-@router.put("{pet_vac_id}", response_model=PetVacProfile)
-def update_pet_vac(pet_vac_id: int, pet_vac_update: CreatePetVacProfile, password: str, pet_id: int, session: Session = Depends(get_session)):
+@router.put("/{pet_vac_id}", response_model=PetVacProfile)
+def update_pet_vac(
+    pet_vac_id: int, 
+    pet_vac_update: CreatePetVacProfile, 
+    password: str = Query(..., description="Password of the user to authenticate"),
+    pet_name: str = Query(..., description="Name of the pet"),
+    user_id: int = Query(..., description="ID of the user"),
+    session: Session = Depends(get_session)
+):
     pet_vac = session.get(PetVacProfile, pet_vac_id)
     if pet_vac is None:
         raise HTTPException(status_code=404, detail="Pet vaccine profile not found")
 
-    if pet_vac.pets_id != pet_id:
+    pet_profile = session.exec(select(Pet).where(Pet.name == pet_name)).first()
+    if pet_profile is None or pet_profile.id != pet_vac.pets_id:
         raise HTTPException(status_code=403, detail="Pet ID does not match")
 
-    user = session.get(UserProfile, pet_vac.user_id)
-    if user is None or not pwd_context.verify(password, user.password):
+    user = session.get(UserProfile, user_id)
+    if user is None or not auth_handler.verify_password(password, user.password):
         raise HTTPException(status_code=401, detail="Invalid password")
 
     for key, value in pet_vac_update.dict(exclude_unset=True).items():
@@ -76,19 +85,26 @@ def update_pet_vac(pet_vac_id: int, pet_vac_update: CreatePetVacProfile, passwor
     session.refresh(pet_vac)
     return pet_vac
 
-@router.delete("{pet_vac_id}", response_model=dict)
-def delete_pet_vac(pet_vac_id: int, password: str, pet_id: int, session: Session = Depends(get_session)):
+@router.delete("/{pet_vac_id}", response_model=dict)
+def delete_pet_vac(
+    pet_vac_id: int, 
+    password: str = Query(..., description="Password of the user to authenticate"),
+    pet_name: str = Query(..., description="Name of the pet"),
+    user_id: int = Query(..., description="ID of the user"),
+    session: Session = Depends(get_session)
+):
     pet_vac = session.get(PetVacProfile, pet_vac_id)
     if pet_vac is None:
         raise HTTPException(status_code=404, detail="Pet vaccine profile not found")
 
-    if pet_vac.pets_id != pet_id:
+    pet_profile = session.exec(select(Pet).where(Pet.name == pet_name)).first()
+    if pet_profile is None or pet_profile.id != pet_vac.pets_id:
         raise HTTPException(status_code=403, detail="Pet ID does not match")
 
-    user = session.get(UserProfile, pet_vac.user_id)
-    if user is None or not pwd_context.verify(password, user.password):
+    user = session.get(UserProfile, user_id)
+    if user is None or not auth_handler.verify_password(password, user.password):
         raise HTTPException(status_code=401, detail="Invalid password")
 
     session.delete(pet_vac)
     session.commit()
-    return {"message": "deleted successfully"}
+    return {"message": "Deleted successfully"}
