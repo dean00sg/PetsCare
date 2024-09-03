@@ -7,7 +7,9 @@ class FeedScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Welcome to Pet Care'),
+        backgroundColor: Colors.brown[400],
+        title: const Text('WELCOME TO PET CARE', style: TextStyle(fontSize: 16)),
+        centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.account_circle),
@@ -18,17 +20,28 @@ class FeedScreen extends StatelessWidget {
         ],
       ),
       drawer: Drawer(
-        // Add a Drawer if you need one
         child: ListView(
           children: <Widget>[
-            const DrawerHeader(
+            DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.brown,
+                color: Colors.brown[400],
               ),
-              child: Text('Menu'),
+              child: const Text(
+                'Menu',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
             ),
             ListTile(
               title: const Text('Item 1'),
+              onTap: () {
+                // Handle tap
+              },
+            ),
+            ListTile(
+              title: const Text('Item 2'),
               onTap: () {
                 // Handle tap
               },
@@ -37,18 +50,46 @@ class FeedScreen extends StatelessWidget {
         ),
       ),
       body: ListView(
+        padding: const EdgeInsets.all(16.0),
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: <Widget>[
-                Image.asset('assets/cat.png'), // Replace with actual images
-                const Text('ข่าวแมววัยใสใหม่ล่าสุด', style: TextStyle(fontSize: 18)),
-                const Text('ทาสแมวมือใหม่ต้องรู้...', style: TextStyle(fontSize: 14)),
-              ],
+          Image.asset(
+            'lib/images/cat1.png', // Replace with the correct image path
+            height: 200, // Adjust height as needed
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'อ่านบทความสุขภาพสัตว์เลี้ยงของคุณได้ที่นี่!',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
             ),
           ),
-          // More content here
+          const SizedBox(height: 8),
+          const Text(
+            'คุณสามารถค้นหาข้อมูลที่เป็นประโยชน์เกี่ยวกับสุขภาพและการดูแลสัตว์เลี้ยงของคุณได้ที่นี่ การรับข้อมูลที่ถูกต้องจะช่วยให้คุณดูแลสัตว์เลี้ยงของคุณให้มีสุขภาพดีและมีความสุข.',
+            style: TextStyle(
+              fontSize: 14,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Image.asset(
+            'lib/images/cat2.png', // Replace with the correct image path
+            height: 200, // Adjust height as needed
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'บทความอื่นๆ:',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          // Additional articles or items can be added here
         ],
       ),
     );

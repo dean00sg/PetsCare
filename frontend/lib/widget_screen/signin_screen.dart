@@ -6,36 +6,119 @@ class SignupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image.asset('assets/logo.png'), // Make sure you have this image in the assets folder
-            const TextField(
-              decoration: InputDecoration(labelText: 'FirstName'),
-            ),
-            const TextField(
-              decoration: InputDecoration(labelText: 'LastName'),
-            ),
-            const TextField(
-              decoration: InputDecoration(labelText: 'E-mail'),
-            ),
-            const TextField(
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            const TextField(
-              decoration: InputDecoration(labelText: 'Phone'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/feed');
-              },
-              child: const Text('SIGN UP'),
-            ),
-          ],
+      backgroundColor: Colors.white, // Light background
+      body: Center(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              // Centering the image horizontally
+              Image.asset(
+                'lib/images/logo.png',
+                height: 150, // Adjust height as needed
+                width: 150,  // Adjust width as needed
+                fit: BoxFit.contain,
+              ),
+
+              // Adding space between the logo and text fields
+              const SizedBox(height: 30),
+
+              // Text Field for First Name
+              TextField(
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.brown[200], // Background color of the text field
+                  hintText: 'FirstName',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Text Field for Last Name
+              TextField(
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.brown[200], // Background color of the text field
+                  hintText: 'LastName',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Text Field for Email
+              TextField(
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.brown[200], // Background color of the text field
+                  hintText: 'E-mail',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Text Field for Password
+              TextField(
+                obscureText: true,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.brown[200], // Background color of the text field
+                  hintText: 'Password',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Text Field for Phone Number
+              TextField(
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.brown[200], // Background color of the text field
+                  hintText: 'Phone',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Sign Up Button
+              SizedBox(
+                width: double.infinity, // Full-width button
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.amber, // Button color
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                  onPressed: () {
+                    // Handle sign up logic here
+                  },
+                  child: const Text('LOGIN', style: TextStyle(fontSize: 16)),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

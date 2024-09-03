@@ -6,16 +6,13 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 201, 201, 201), // Light pink background
+      backgroundColor: Colors.white, // Light background
       body: Center(
-        child: SingleChildScrollView( // Allows scrolling when keyboard is open
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              // Adding some spacing for aesthetics
-              const SizedBox(height: 30),
-
               // Centering the image horizontally
               Image.asset(
                 'lib/images/logo.png',
@@ -27,60 +24,68 @@ class LoginScreen extends StatelessWidget {
               // Adding space between the logo and text fields
               const SizedBox(height: 30),
 
-              // Email text field
-              const TextField(
+              // Text Field for User/Email
+              TextField(
                 decoration: InputDecoration(
-                  labelText: 'User/Email',
-                  border: OutlineInputBorder(), // Adding border to the text field
+                  filled: true,
+                  fillColor: Colors.brown[200], // Background color of the text field
+                  hintText: 'User/Email',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
 
-              // Adding space between text fields
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
 
-              // Password text field
-              const TextField(
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(), // Adding border to the text field
-                ),
+              // Text Field for Password
+              TextField(
                 obscureText: true,
+                decoration: InputDecoration(
+                  filled: true,
+                  fillColor: Colors.brown[200], // Background color of the text field
+                  hintText: 'Password',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
               ),
 
-              // Adding space before the login button
-              const SizedBox(height: 30),
+              const SizedBox(height: 24),
 
-              // Login button
+              // Login Button
               SizedBox(
-                width: double.infinity, // Makes button full width
+                width: double.infinity, // Full-width button
                 child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/feed');
-                  },
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 15.0),
+                    backgroundColor: Colors.amber, // Button color
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0), // Rounded button corners
+                      borderRadius: BorderRadius.circular(8.0),
                     ),
                   ),
-                  child: const Text(
-                    'LOGIN',
-                    style: TextStyle(fontSize: 18), // Larger font for button
-                  ),
+                  onPressed: () {
+                    // Handle login logic here
+                  },
+                  child: const Text('LOGIN', style: TextStyle(fontSize: 16)),
                 ),
               ),
 
-              // Adding space between buttons
-              const SizedBox(height: 20),
+              const SizedBox(height: 8),
 
-              // Sign In button
+              // Sign in Button
               TextButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/signup');
+                 Navigator.pushNamed(context, '/signup');
                 },
                 child: const Text(
-                  'SIGN IN',
-                  style: TextStyle(fontSize: 16, color: Colors.blue), // Blue text color for link
+                  'SIGNIN',
+                  style: TextStyle(
+                    color: Colors.amber, // Text color for sign in
+                    fontSize: 16,
+                  ),
                 ),
               ),
             ],
