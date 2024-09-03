@@ -6,7 +6,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.pink[50], // Light pink background
+      backgroundColor: const Color.fromARGB(255, 201, 201, 201), // Light pink background
       body: Center(
         child: SingleChildScrollView( // Allows scrolling when keyboard is open
           padding: const EdgeInsets.all(16.0),
