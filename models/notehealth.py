@@ -10,7 +10,7 @@ class PetType(str, Enum):
     rabbit = "rabbit"
     fish = "fish"
 
-# SQLModel Table for Pet Health Records
+
 class PetHealthRecord(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     pet_type: Optional[PetType] = Field(default=None)

@@ -58,7 +58,7 @@ def test_get_pet_success():
 def test_get_pet_failure():
     token = auth_handler.create_access_token({"firstname": "Pream", "role": "userpets"})
     headers = {"Authorization": f"Bearer {token}"}
-    response = client.get("/pets/99", params={"password": "000000"}, headers=headers)
+    response = client.get("/pets/99", params={"password": "111111"}, headers=headers)
     assert response.status_code == 404
     assert response.json() == {"detail": "Pet not found"}
 
