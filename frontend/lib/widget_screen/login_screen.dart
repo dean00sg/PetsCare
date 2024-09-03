@@ -6,7 +6,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255), // Set the Scaffold background color to white
+      backgroundColor: const Color.fromARGB(255, 230, 225, 225), //กำหนดสีพื้นหลัง Scaffold
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -14,41 +14,44 @@ class LoginScreen extends StatelessWidget {
             // Centering the image horizontally and vertically
             Image.asset(
               'lib/images/logo.png',
-              height: 300, // Adjust height as needed
-              width: 300,  // Adjust width as needed
+              height: 300, //ขนาดความสูง logo
+              width: 300, //ขนาดความกว้าง logo
               fit: BoxFit.contain,
             ),
-            // Removed the SizedBox to eliminate the space between the image and the container
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20.0),
-              padding: const EdgeInsets.all(16.0),
+            // Container with increased top padding
+            Container( //กล่องสำหรับ log in
+              margin: const EdgeInsets.symmetric(horizontal: 20.0), //กำหนด margin ด้านซ้ายและขวา
+              padding: const EdgeInsets.fromLTRB(16.0, 50.0, 16.0, 16.0), //กำหนด padding ของ Container ด้านซ้าย, บน, ขวา, ล่าง
+              width: 350, //กำหนดความกว้าง container
+              height: 400, //กำหนดความสูง container
               decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 122, 83, 65), // Inner container background color
-                borderRadius: BorderRadius.circular(25),
+                color: const Color.fromARGB(255, 122, 83, 65), //กำหนดสีพื้นหลังของ Container
+                borderRadius: BorderRadius.circular(25), //กำหนดมุมโค้งของ Container
               ),
-              child: SingleChildScrollView(
+              child: SingleChildScrollView( 
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     // Text Field for User/Email
+                    const SizedBox(height: 16), //เว้นระยะห่างระหว่าง container กับ กล่อง User/Email
                     TextField(
                       decoration: InputDecoration(
-                        filled: true,
-                        fillColor: const Color.fromARGB(255, 255, 255, 255), // Background color of the text field
+                        filled: true, //กำหนดให้ TextField มีสีพื้นหลัง
+                        fillColor: const Color.fromARGB(255, 255, 255, 255),
                         hintText: 'User/Email',
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(8.0), //กำหนดมุมโค้งของขอบ TextField
+                          borderSide: BorderSide.none,  //ไม่แสดงเส้นขอบของ TextField
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 30), //เว้นระยะห่างระหว่าง TextField ของ User/Email กับ Password
                     // Text Field for Password
                     TextField(
-                      obscureText: true,
+                      obscureText: true, //ซ่อนข้อความที่กรอกในช่องให้เป็น ***
                       decoration: InputDecoration(
-                        filled: true,
-                        fillColor: const Color.fromARGB(255, 255, 255, 255), // Background color of the text field
+                        filled: true, //กำหนดให้ TextField มีสีพื้นหลัง
+                        fillColor: const Color.fromARGB(255, 255, 255, 255),
                         hintText: 'Password',
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8.0),
@@ -56,37 +59,38 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 24),  //เว้นระยะห่างระหว่าง TextField ของ Password กับปุ่ม SIGN IN
                     // Login Button
-                    SizedBox(
-                      width: double.infinity, // Full-width button
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.amber, // Button color
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.amber, // Button color
+                        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 50), //กำหนดขนาดกล่องของปุ่ม
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24), //กำหนดมุมโค้งของปุ่ม
                         ),
-                        onPressed: () {
-                          // Handle login logic here
-                        },
-                        child: const Text('LOGIN', style: TextStyle(fontSize: 16)),
                       ),
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/feed'); //นำไปยังหน้าฟีดเมื่อกดปุ่ม SIGN IN
+                      },
+                      child:
+                          const Text('SIGN IN', style: TextStyle(fontSize: 16)),
                     ),
-                    const SizedBox(height: 8),
                     // Sign in Button
-                    TextButton(
+                    const SizedBox(height: 16), //เว้นระยะห่างระหว่างปุ่ม SIGN IN กับปุ่ม SIGN UP
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.amber, // Button color
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 16, horizontal: 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                      ),
                       onPressed: () {
                         Navigator.pushNamed(context, '/signup');
                       },
-                      child: const Text(
-                        'SIGN IN', // Changed to 'SIGN IN' for consistency
-                        style: TextStyle(
-                          color: Colors.amber, // Text color for sign in
-                          fontSize: 16,
-                        ),
-                      ),
+                      child:
+                          const Text('SIGN UP', style: TextStyle(fontSize: 16)),
                     ),
                   ],
                 ),
