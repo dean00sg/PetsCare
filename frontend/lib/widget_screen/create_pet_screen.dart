@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/bloc/create_pet_bloc.dart';
+import 'package:frontend/bloc/create_pet_event.dart';
+import 'package:frontend/bloc/create_pet_state.dart';
+import 'package:frontend/models/create_pat_model.dart';
+import 'package:frontend/styles/create_pet_style.dart';
 
 class CreatePetScreen extends StatefulWidget {
   const CreatePetScreen({super.key});
@@ -7,137 +13,136 @@ class CreatePetScreen extends StatefulWidget {
   // ignore: library_private_types_in_public_api
   _PetScreenState createState() => _PetScreenState();
 }
+
 class _PetScreenState extends State<CreatePetScreen> {
-  // ignore: prefer_final_fields
-  TextEditingController _dateController = TextEditingController(); // Controller สำหรับวันที่
-  // ฟังก์ชันสำหรับแสดง DatePicker
+  // TextEditingController สำหรับแต่ละฟิลด์
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _weightController = TextEditingController();
+  final TextEditingController _breedController = TextEditingController();
+  String? _selectedSex; // ค่าเพศที่เลือกเริ่มต้นเป็น null
+
+  // ฟังก์ชันแสดง DatePicker
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(), // วันที่เริ่มต้น
-      firstDate: DateTime(1900),   // วันที่แรกที่สามารถเลือกได้
-      lastDate: DateTime.now(),    // วันที่สุดท้ายที่สามารถเลือกได้
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
     );
     if (pickedDate != null) {
       setState(() {
-        _dateController.text = "${pickedDate.toLocal()}".split(' ')[0]; // แสดงวันที่ที่เลือกใน TextField
+        _dateController.text = "${pickedDate.toLocal()}".split(' ')[0];
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.brown[400],
-        title: const Text('CREATE MY PET', style: TextStyle(fontSize: 16)),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.account_circle),
-            onPressed: () {
-            },
-          ),
-        ],
-      ),
-      backgroundColor: const Color.fromARGB(255, 230, 225, 225),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              width: 500,
-              height: 600,
-              margin: const EdgeInsets.symmetric(horizontal: 20.0),
-              padding: const EdgeInsets.all(16.0),
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 122, 83, 65), 
-                borderRadius: BorderRadius.circular(25),
-              ),
-              child: Column(
-                children: <Widget>[
-                  const SizedBox(height: 10),
-                  Container(
-                    width: 140,
-                    height: 140,
-                    decoration: BoxDecoration(
-                      color: Colors.white, 
-                      shape: BoxShape.circle,
-                      border: Border.all(color: const Color.fromARGB(255, 230, 225, 225), width: 8), // ทำให้ Container มีรูปร่างเป็นวงกลม
-                    ),
-                    child: ClipOval(
-                      child: Image.asset(
-                        'lib/images/my_cat.jpg',
-                        height: 120, // ขนาดของรูปภาพ
-                        width: 120,
-                        fit: BoxFit.contain,
+    return BlocProvider(
+      create: (_) => CreatePetBloc(),
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.brown[400],
+          title: const Text('CREATE MY PET', style: TextStyle(fontSize: 16, color: Colors.white)),
+          centerTitle: true,
+          actions: [
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.account_circle),
+              onSelected: (String result) {
+                if (result == 'profile') {
+                  Navigator.pushNamed(context, '/profile');
+                } else if (result == 'signout') {
+                  Navigator.pushNamed(context, '/');
+                }
+              },
+              itemBuilder: (BuildContext context) => [
+                const PopupMenuItem<String>(
+                  value: 'profile',
+                  child: Text('PROFILE'),
+                ),
+                const PopupMenuItem<String>(
+                  value: 'signout',
+                  child: Text('SIGN OUT'),
+                ),
+              ],
+            ),
+          ],
+        ),
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                width: 500,
+                height: 750,
+                margin: const EdgeInsets.symmetric(horizontal: 20.0),
+                padding: const EdgeInsets.all(16.0),
+                decoration: containerDecoration, // ใช้ Style Container ที่แยกออกมา
+                child: Column(
+                  children: <Widget>[
+                    const SizedBox(height: 10),
+                      Container(
+                        width: 170,
+                        height: 170,
+                        decoration: BoxDecoration(
+                          color: Colors.white, 
+                          shape: BoxShape.circle,
+                          border: Border.all(color: const Color.fromARGB(255, 193, 193, 193), width: 8), // ทำให้ Container มีรูปร่างเป็นวงกลม
+                        ),
+                        child: ClipOval(
+                          child: Image.asset(
+                            'lib/images/cat_icon.png',
+                            height: 150,
+                            width: 150,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                    const SizedBox(height: 10),
+                    const Text(
+                      'PET PROFILE',
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 40),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      child: Container(
-                        padding: const EdgeInsets.all(16.0),
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 122, 83, 65), 
-                          borderRadius: BorderRadius.circular(25), // มุมโค้งของ Container
-                        ),
+                    const SizedBox(height: 20),
+                    Expanded(
+                      child: SingleChildScrollView(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: <Widget>[
                             const SizedBox(height: 10),
+                            // Name Field
                             TextField(
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors.white, 
-                                hintText: 'Name',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  borderSide: BorderSide.none,
-                                ),
-                              ),
+                              controller: _nameController,
+                              decoration: inputDecoration('Name'), // ใช้ Style TextField ที่แยกออกมา
                             ),
                             const SizedBox(height: 25),
+                            // Date of Birth Field
                             TextField(
-                              controller: _dateController, // ใช้ controller ในการแสดงวันที่ที่เลือก
-                              readOnly: true, // ป้องกันไม่ให้พิมพ์ในช่องนี้
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors.white, 
-                                hintText: 'Date of Birth',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  borderSide: BorderSide.none,
-                                ),
-                              ),
+                              controller: _dateController,
+                              readOnly: true,
+                              decoration: inputDecoration('Date of Birth'),
                               onTap: () {
                                 _selectDate(context); // แสดง date picker เมื่อกด TextField
                               },
                             ),
                             const SizedBox(height: 25),
+                            // Weight Field
                             TextField(
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors.white, 
-                                hintText: 'Weight',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  borderSide: BorderSide.none,
-                                ),
-                              ),
+                              controller: _weightController,
+                              decoration: inputDecoration('Weight'),
                             ),
                             const SizedBox(height: 25),
+                            // Sex Dropdown
                             DropdownButtonFormField<String>(
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors.white, // Background color of the text field
-                                hintText: 'Sex',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  borderSide: BorderSide.none,
-                                ),
-                              ),
+                              value: _selectedSex,
+                              decoration: inputDecoration('Sex'),
+                              hint: const Text('Sex'),
                               items: <String>['Male', 'Female'].map((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
@@ -145,44 +150,64 @@ class _PetScreenState extends State<CreatePetScreen> {
                                 );
                               }).toList(),
                               onChanged: (String? newValue) {
-                                // Handle change in selected value
+                                setState(() {
+                                  _selectedSex = newValue!;
+                                });
                               },
                             ),
                             const SizedBox(height: 25),
+                            // Breed Field
                             TextField(
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors.white, // Background color of the text field
-                                hintText: 'Breed',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  borderSide: BorderSide.none,
-                                ),
-                              ),
+                              controller: _breedController,
+                              decoration: inputDecoration('Breed'),
                             ),
                             const SizedBox(height: 30),
+                            // Save Button
                             ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.amber, // Button color
-                                padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 50),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(24),
-                                ),
-                              ),
+                              style: saveButtonStyle, // ใช้ Style ปุ่มที่แยกออกมา
                               onPressed: () {
-                                Navigator.pushNamed(context, '/');
+                                final petData = PetModel(
+                                  name: _nameController.text,
+                                  dateOfBirth: _dateController.text,
+                                  weight: _weightController.text,
+                                  sex: _selectedSex!,
+                                  breed: _breedController.text,
+                                );
+                                BlocProvider.of<CreatePetBloc>(context).add(
+                                  SavePetProfile(petData),
+                                );
                               },
                               child: const Text('SAVE', style: TextStyle(fontSize: 16)),
+                            ),
+                            BlocListener<CreatePetBloc, CreatePetState>(
+                              listener: (context, state) {
+                                if (state is CreatePetSuccess) {
+                                  Navigator.pushNamed(context, '/pet_list');
+                                } else if (state is CreatePetFailure) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(state.error)),
+                                  );
+                                }
+                              },
+                              child: BlocBuilder<CreatePetBloc, CreatePetState>(
+                                builder: (context, state) {
+                                  if (state is CreatePetLoading) {
+                                    return const Center(child: CircularProgressIndicator());
+                                  } else {
+                                    return Container();
+                                  }
+                                },
+                              ),
                             ),
                           ],
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

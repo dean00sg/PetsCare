@@ -3,13 +3,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/bloc/signup_bloc.dart';
 import 'package:frontend/bloc/signup_event.dart';
 import 'package:frontend/bloc/signup_state.dart';
-
+import 'package:frontend/models/signup_model.dart'; 
+import 'package:frontend/styles/signup_style.dart'; 
 
 class SignupScreen extends StatelessWidget {
   const SignupScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // ตัวควบคุม TextEditingController เพื่อเก็บค่าจาก TextField
+    final TextEditingController firstNameController = TextEditingController();
+    final TextEditingController lastNameController = TextEditingController();
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController passwordController = TextEditingController();
+    final TextEditingController phoneController = TextEditingController();
+
     return BlocProvider(
       create: (_) => SignupBloc(),
       child: Scaffold(
@@ -20,13 +28,10 @@ class SignupScreen extends StatelessWidget {
             children: <Widget>[
               Container(
                 width: 400,
-                height: 700,
+                height: 800,
                 margin: const EdgeInsets.symmetric(horizontal: 20.0),
                 padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 122, 83, 65),
-                  borderRadius: BorderRadius.circular(25),
-                ),
+                decoration: containerDecoration,
                 child: BlocListener<SignupBloc, SignupState>(
                   listener: (context, state) {
                     if (state is SignupSuccess) {
@@ -59,27 +64,20 @@ class SignupScreen extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 10),
-                        // เพิ่มข้อความลิงก์ Sign in
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const Text(
                               "Already member? ",
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.white,
-                              ),
+                              style: generalTextStyle,
                             ),
                             GestureDetector(
                               onTap: () {
-                                Navigator.pushNamed(context, '/'); // กลับไปยังหน้า Login
+                                Navigator.pushNamed(context, '/');
                               },
                               child: const Text(
                                 "Sign in",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.lightBlue,
-                                ),
+                                style: signInLinkStyle,
                               ),
                             ),
                           ],
@@ -87,98 +85,54 @@ class SignupScreen extends StatelessWidget {
                         const SizedBox(height: 10),
                         const Text(
                           'SIGN UP',
-                          style: TextStyle(
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
+                          style: signUpTitleStyle,
                         ),
                         
                         const SizedBox(height: 30),
-                        // Text Field for First Name
+                        // First Name
                         TextField(
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'FirstName',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
+                          controller: firstNameController,
+                          decoration: inputDecoration('FirstName'),
                         ),
                         const SizedBox(height: 25),
-                        // Text Field for Last Name
+                        // Last Name
                         TextField(
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'LastName',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
+                          controller: lastNameController,
+                          decoration: inputDecoration('LastName'),
                         ),
                         const SizedBox(height: 25),
-                        // Text Field for Email
+                        // Email
                         TextField(
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'E-mail',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
+                          controller: emailController,
+                          decoration: inputDecoration('E-mail'),
                         ),
                         const SizedBox(height: 25),
-                        // Text Field for Password
+                        // Password
                         TextField(
+                          controller: passwordController,
                           obscureText: true,
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'Password',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
+                          decoration: inputDecoration('Password'),
                         ),
                         const SizedBox(height: 25),
-                        // Text Field for Phone Number
+                        // Phone
                         TextField(
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Colors.white,
-                            hintText: 'Phone',
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
+                          controller: phoneController,
+                          decoration: inputDecoration('Phone'),
                         ),
                         const SizedBox(height: 30),
                         // Sign Up Button
                         ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.amber,
-                            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 40),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(24),
-                            ),
-                          ),
+                          style: signUpButtonStyle,
                           onPressed: () {
+                            final signupData = SignupModel(
+                              firstName: firstNameController.text,
+                              lastName: lastNameController.text,
+                              email: emailController.text,
+                              password: passwordController.text,
+                              phone: phoneController.text,
+                            );
                             BlocProvider.of<SignupBloc>(context).add(
-                              const SignupButtonPressed(
-                                firstName: 'FirstName',
-                                lastName: 'LastName',
-                                email: 'email@example.com',
-                                password: 'password',
-                                phone: '123456789',
-                              ),
+                              SignupButtonPressed(signupData),
                             );
                           },
                           child: const Text('SIGN UP', style: TextStyle(fontSize: 16)),
