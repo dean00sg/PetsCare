@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/widget_screen/create_pet_screen.dart';
 import 'package:frontend/widget_screen/feed_screen.dart';
 import 'package:frontend/widget_screen/login_screen.dart';
-import 'package:frontend/widget_screen/signin_screen.dart';
+import 'package:frontend/widget_screen/signup_screen.dart';
 
 
 void main() {
@@ -23,6 +24,7 @@ class PetCareApp extends StatelessWidget {
         '/': (context) => const LoginScreen(),
         '/signup': (context) => const SignupScreen(),
         '/feed': (context) => const FeedScreen(),
+        '/create_pet': (context) => const CreatePetScreen(),
       },
     );
   }
