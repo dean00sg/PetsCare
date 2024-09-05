@@ -1,65 +1,68 @@
-from datetime import date, datetime
+from datetime import datetime
+from typing import Optional
 from pydantic import BaseModel
-from sqlmodel import SQLModel, Field, Relationship
-from typing import Optional, List
+from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
+from deps import Base
 
-class PetBase(SQLModel):
-    name: str
-    type_pets: str
+class Pet(Base):
+    __tablename__ = 'pets'
 
-class PetProfile(SQLModel):
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, nullable=False)
+    type_pets = Column(String, nullable=False)
+    sex = Column(String, nullable=False)
+    breed = Column(String, nullable=False)
+    birth_date = Column(DateTime, nullable=False)
+    weight = Column(Float, nullable=False)
+
+    # Relationships
+    health_records = relationship("HealthRecord", back_populates="pet")
+
+class HealthRecord(Base):
+    __tablename__ = 'health_records'
+
+    id = Column(Integer, primary_key=True, index=True)
+    pet_id = Column(Integer, ForeignKey('pets.id'))
+    record_date = Column(DateTime, nullable=False)
+    description = Column(String, nullable=False)
+    pet = relationship("Pet", back_populates="health_records")
+
+
+
+class PetProfile(BaseModel):
     id: int
     name: str
     type_pets: str
     sex: str
     breed: str
     birth_date: datetime
-    age: str
     weight: float
+ 
 
-class Pet(SQLModel, table=True):
-    id: int = Field(default=None, primary_key=True)
+class PetBase(BaseModel):
     name: str
     type_pets: str
-    sex: str
-    breed: str
-    birth_date: datetime
-    weight: float
-    user_id: int = Field(default=None, foreign_key="userprofile.user_id")
-    health_records: List["HealthRecord"] = Relationship(back_populates="pet")
-    owner: Optional["UserProfile"] = Relationship(back_populates="pets")
 
 class PetCreate(PetBase):
-    name: str
-    type_pets: str
     sex: str
     breed: str
     birth_date: datetime
     weight: float
-    user_id: int
+  
 
-class PetResponse(BaseModel):
+class PetResponse(PetBase):
     id: int
-    name: str
-    type_pets: str
     sex: str
     breed: str
     birth_date: datetime
-    age: str
     weight: float
-    user_id: int
+  
 
 class PetUpdate(BaseModel):
     name: Optional[str] = None
     type_pets: Optional[str] = None
     sex: Optional[str] = None
     breed: Optional[str] = None
-    birth_date: Optional[date] = None
+    birth_date: Optional[datetime] = None
     weight: Optional[float] = None
-
-class HealthRecord(SQLModel, table=True):
-    id: int = Field(default=None, primary_key=True)
-    pet_id: int = Field(default=None, foreign_key="pet.id")
-    record_date: datetime
-    description: str
-    pet: Optional[Pet] = Relationship(back_populates="health_records")

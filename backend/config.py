@@ -1,10 +1,10 @@
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
-    DATABASE_URL: str = "sqlite:///./test.db"  # ใช้ SQLite สำหรับการพัฒนา
-    SECRET_KEY: str = "your-generated-secret-key"  # ใส่ค่า Secret Key ที่คุณคัดลอกมา
+    DATABASE_URL: str = 'postgresql://postgres:010203@localhost:5432/petscare_db'
+    SECRET_KEY: str = "your-generated-secret-key"
 
     class Config:
-        env_file = ".env"
+        env_file = ".env" 
 
 settings = Settings()
