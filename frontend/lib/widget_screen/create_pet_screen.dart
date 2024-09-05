@@ -4,6 +4,7 @@ import 'package:frontend/bloc/create_pet_bloc.dart';
 import 'package:frontend/bloc/create_pet_event.dart';
 import 'package:frontend/bloc/create_pet_state.dart';
 import 'package:frontend/models/create_pat_model.dart';
+import 'package:frontend/models/pet_models.dart';
 import 'package:frontend/styles/create_pet_style.dart';
 
 class CreatePetScreen extends StatefulWidget {
@@ -11,16 +12,16 @@ class CreatePetScreen extends StatefulWidget {
 
   @override
   // ignore: library_private_types_in_public_api
-  _PetScreenState createState() => _PetScreenState();
+  _CreatePetScreenState createState() => _CreatePetScreenState();
 }
 
-class _PetScreenState extends State<CreatePetScreen> {
+class _CreatePetScreenState extends State<CreatePetScreen> {
   // TextEditingController สำหรับแต่ละฟิลด์
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
   final TextEditingController _weightController = TextEditingController();
   final TextEditingController _breedController = TextEditingController();
-  String? _selectedSex; // ค่าเพศที่เลือกเริ่มต้นเป็น null
+  String? _selectedSex;
 
   // ฟังก์ชันแสดง DatePicker
   Future<void> _selectDate(BuildContext context) async {
@@ -39,12 +40,18 @@ class _PetScreenState extends State<CreatePetScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // รับข้อมูล Pet จาก arguments ที่ถูกส่งมา
+    final Pet pet = ModalRoute.of(context)?.settings.arguments as Pet;
+
     return BlocProvider(
       create: (_) => CreatePetBloc(),
       child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.brown[400],
-          title: const Text('CREATE MY PET', style: TextStyle(fontSize: 16, color: Colors.white)),
+          title: Text(
+            'CREATE MY ${pet.name.toUpperCase()}', // ใช้ชื่อ pet ใน title ของ AppBar
+            style: const TextStyle(fontSize: 16, color: Colors.white),
+          ),
           centerTitle: true,
           actions: [
             PopupMenuButton<String>(
@@ -79,37 +86,40 @@ class _PetScreenState extends State<CreatePetScreen> {
                 height: 750,
                 margin: const EdgeInsets.symmetric(horizontal: 20.0),
                 padding: const EdgeInsets.all(16.0),
-                decoration: containerDecoration, // ใช้ Style Container ที่แยกออกมา
+                decoration: containerDecoration, 
                 child: Column(
                   children: <Widget>[
                     const SizedBox(height: 10),
-                      Container(
-                        width: 170,
-                        height: 170,
-                        decoration: BoxDecoration(
-                          color: Colors.white, 
-                          shape: BoxShape.circle,
-                          border: Border.all(color: const Color.fromARGB(255, 193, 193, 193), width: 8), // ทำให้ Container มีรูปร่างเป็นวงกลม
-                        ),
-                        child: ClipOval(
-                          child: Image.asset(
-                            'lib/images/cat_icon.png',
-                            height: 150,
-                            width: 150,
-                            fit: BoxFit.contain,
-                          ),
+                    // แสดงรูปภาพของสัตว์ที่เลือก
+                    Container(
+                      width: 170,
+                      height: 170,
+                      decoration: BoxDecoration(
+                        color: Colors.white, 
+                        shape: BoxShape.circle,
+                        border: Border.all(color: const Color.fromARGB(255, 193, 193, 193), width: 8),
+                      ),
+                      child: ClipOval(
+                        child: Image.asset(
+                          pet.imagePath, // แสดงรูปภาพตามสัตว์ที่เลือก
+                          height: 150,
+                          width: 150,
+                          fit: BoxFit.contain,
                         ),
                       ),
+                    ),
                     const SizedBox(height: 10),
-                    const Text(
-                      'PET PROFILE',
-                      style: TextStyle(
+                    // แสดงชื่อสัตว์ที่เลือก
+                    Text(
+                      '${pet.name.toUpperCase()} PROFILE', // ชื่อสัตว์ที่เลือก
+                      style: const TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
                     const SizedBox(height: 20),
+                    // ฟิลด์สำหรับกรอกข้อมูล
                     Expanded(
                       child: SingleChildScrollView(
                         child: Column(
@@ -119,7 +129,7 @@ class _PetScreenState extends State<CreatePetScreen> {
                             // Name Field
                             TextField(
                               controller: _nameController,
-                              decoration: inputDecoration('Name'), // ใช้ Style TextField ที่แยกออกมา
+                              decoration: inputDecoration('Name'),
                             ),
                             const SizedBox(height: 25),
                             // Date of Birth Field
@@ -128,7 +138,7 @@ class _PetScreenState extends State<CreatePetScreen> {
                               readOnly: true,
                               decoration: inputDecoration('Date of Birth'),
                               onTap: () {
-                                _selectDate(context); // แสดง date picker เมื่อกด TextField
+                                _selectDate(context);
                               },
                             ),
                             const SizedBox(height: 25),
@@ -164,7 +174,7 @@ class _PetScreenState extends State<CreatePetScreen> {
                             const SizedBox(height: 30),
                             // Save Button
                             ElevatedButton(
-                              style: saveButtonStyle, // ใช้ Style ปุ่มที่แยกออกมา
+                              style: saveButtonStyle, 
                               onPressed: () {
                                 final petData = PetModel(
                                   name: _nameController.text,

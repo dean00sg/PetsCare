@@ -7,8 +7,8 @@ class Pet {
 }
 
 final List<Pet> pets = [
-  Pet(name: 'Cat', imagePath: 'lib/images/cat_icon.png'),
-  Pet(name: 'Dog', imagePath: 'lib/images/dog_icon.png'),
-  Pet(name: 'Rabbit', imagePath: 'lib/images/rabbit_icon.png'),
-  Pet(name: 'Fish', imagePath: 'lib/images/fish_icon.png'),
+  Pet(name: 'CAT', imagePath: 'lib/images/cat_icon.png'),
+  Pet(name: 'DOG', imagePath: 'lib/images/dog_icon.png'),
+  Pet(name: 'RABBIT', imagePath: 'lib/images/rabbit_icon.png'),
+  Pet(name: 'FISH', imagePath: 'lib/images/fish_icon.png'),
 ];
