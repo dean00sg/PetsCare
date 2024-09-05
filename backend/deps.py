@@ -1,25 +1,37 @@
-from sqlmodel import create_engine, SQLModel, Session
-from config import settings
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base
 from fastapi import Request, HTTPException, Depends
 from security import AuthHandler
+from config import settings
 
 engine = create_engine(settings.DATABASE_URL, echo=True)
 
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+Base = declarative_base()
+
 def init_db():
-    SQLModel.metadata.create_all(engine)
+    Base.metadata.create_all(bind=engine)
 
 def get_session():
-    with Session(engine) as session:
-        yield session
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 auth_handler = AuthHandler()
 
-def get_current_user_role(request: Request, session: Session = Depends(get_session)) -> str:
+def get_current_user_role(request: Request, session=Depends(get_session)) -> str:
     authorization: str = request.headers.get("Authorization")
     if not authorization:
         raise HTTPException(status_code=401, detail="Not authenticated")
     try:
-        token = authorization.split(" ")[1]  # Remove "Bearer" prefix
+        token_parts = authorization.split(" ")
+        if len(token_parts) != 2:
+            raise HTTPException(status_code=401, detail="Invalid authorization header")
+        
+        token = token_parts[1]
         role = auth_handler.get_current_user_role(token)
         if role not in ["admin", "userpets"]:
             raise HTTPException(status_code=403, detail="Invalid role")
