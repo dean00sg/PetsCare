@@ -1,21 +1,25 @@
 from pydantic import BaseModel, EmailStr
-from sqlmodel import SQLModel, Field, Relationship
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
+from deps import Base
 from typing import List, Optional
-from models.pet import Pet, PetProfile
-from models.pet_vac import PetVacProfile
 
-class UserProfile(SQLModel, table=True):
-    user_id: Optional[int] = Field(default=None, primary_key=True)
-    first_name: str
-    last_name: str
-    email: EmailStr
-    contact_number: str
-    password: str
-    role: str = Field(default="userpets")  # Default to "userpets" if not provided
+class UserProfile(Base):
+    __tablename__ = 'Userprofiles'
 
+    user_id = Column(Integer, primary_key=True, index=True)
+    first_name = Column(String, nullable=False)
+    last_name = Column(String, nullable=False)
+    email = Column(String, unique=True, nullable=False)
+    contact_number = Column(String, nullable=False)
+    password = Column(String, nullable=False)
+    role = Column(String, default="userpets")  # Default to "userpets" if not provided
+    
     # Relationship to Pet model
-    pets: List[Pet] = Relationship(back_populates="owner")
+    pets = relationship("Pet", back_populates="owner")
 
+
+# Pydantic schemas for UserProfile
 class UserCreate(BaseModel):
     first_name: str
     last_name: str
@@ -38,10 +42,13 @@ class UserWithPets(BaseModel):
     last_name: str
     email: EmailStr
     contact_number: str
-    pets: List[PetProfile] = []  
+    # pets: List['PetProfile'] = []  # Forward reference for PetProfile
+
+    class Config:
+        orm_mode = True  # Allows working with SQLAlchemy models directly
 
 class DeleteResponse(BaseModel):
-    status : str
+    status: str
     id: int
     first_name: str
     last_name: str
@@ -56,7 +63,7 @@ class Login(BaseModel):
 class UpdateUser(BaseModel):
     first_name: Optional[str] = None
     last_name: Optional[str] = None
-    email:EmailStr
+    email: EmailStr
     contact_number: Optional[str] = None
     new_password: Optional[str] = None
 
@@ -69,6 +76,5 @@ class UpdateUserResponse(BaseModel):
     contact_number: str
     role: str
 
-class PetsWithPetsVacsine(BaseModel):
-    pets: List[PetProfile] = []  # ข้อมูลสัตว์เลี้ยง
-    pet_vac_profiles: List[PetVacProfile] #รายการข้อมูลวัคซีนและการแพ้ยาของสัตว์เลี้ยง
+    class Config:
+        orm_mode = True  # Allows working with SQLAlchemy models directly

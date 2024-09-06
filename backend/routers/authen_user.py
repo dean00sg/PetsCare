@@ -1,9 +1,7 @@
-from typing import Optional
-from fastapi import APIRouter, HTTPException, Depends, Path, Query, Body
-from pydantic import BaseModel
-from sqlmodel import Session, select
+from fastapi import APIRouter, HTTPException, Depends, Query, Body
+from sqlalchemy.orm import Session
 from security import AuthHandler
-from models.user import Login, UpdateUser, UpdateUserResponse, UserProfile, UserCreate, UserUpdate, UserWithPets, DeleteResponse
+from models.user import UserCreate, UpdateUser, UpdateUserResponse, UserProfile, UserWithPets, DeleteResponse
 from deps import get_session
 
 router = APIRouter(tags=["Authentication"])
@@ -11,7 +9,7 @@ router = APIRouter(tags=["Authentication"])
 auth_handler = AuthHandler()
 
 
-@router.post("/register", response_model=UserProfile)
+@router.post("/register", response_model=UserWithPets)
 def register_user(user: UserCreate, session: Session = Depends(get_session)):
     role = user.role or "userpets"  # Default role if not provided
     if role not in ["admin", "userpets"]:
@@ -38,7 +36,7 @@ def login(
     password: str = Query(..., description="Password of the user for login"),
     session: Session = Depends(get_session)
 ):
-    user = session.exec(select(UserProfile).where(UserProfile.email == email)).first()
+    user = session.query(UserProfile).filter(UserProfile.email == email).first()
     if not user or not auth_handler.verify_password(password, user.password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
@@ -53,13 +51,13 @@ def login(
     }
 
 
-@router.get("/", response_model=UserProfile)
+@router.get("/", response_model=UserWithPets)
 def get_user(
-    firstname: str = Query(..., description="First name "),
-    password: str = Query(..., description="Password of "),
+    firstname: str = Query(..., description="First name"),
+    password: str = Query(..., description="Password of the user"),
     session: Session = Depends(get_session)
 ):
-    user = session.exec(select(UserProfile).where(UserProfile.first_name == firstname)).first()
+    user = session.query(UserProfile).filter(UserProfile.first_name == firstname).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
@@ -69,14 +67,15 @@ def get_user(
     
     return user
 
+
 @router.put("/", response_model=UpdateUserResponse)
 def update_user(
     firstname: str = Query(..., description="First name"),
-    password: str = Query(..., description="Password of "),
+    password: str = Query(..., description="Password of the user"),
     update_data: UpdateUser = Body(...),
     session: Session = Depends(get_session)
 ):
-    user = session.exec(select(UserProfile).where(UserProfile.first_name == firstname)).first()
+    user = session.query(UserProfile).filter(UserProfile.first_name == firstname).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
@@ -100,7 +99,6 @@ def update_user(
     session.commit()
     session.refresh(user)
 
-    # Return the response model with status message and user details
     return UpdateUserResponse(
         status="User updated successfully",
         user_id=user.user_id,
@@ -111,13 +109,14 @@ def update_user(
         role=user.role
     )
 
+
 @router.delete("/", response_model=DeleteResponse)
 def delete_user(
     firstname: str = Query(..., description="First name of the user"),
     password: str = Query(..., description="Password of the user"),
     session: Session = Depends(get_session)
 ):
-    user = session.exec(select(UserProfile).where(UserProfile.first_name == firstname)).first()
+    user = session.query(UserProfile).filter(UserProfile.first_name == firstname).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
@@ -125,7 +124,6 @@ def delete_user(
     if not auth_handler.verify_password(password, user.password):
         raise HTTPException(status_code=401, detail="Invalid credentials. Incorrect password provided.")
 
-    # Prepare response data
     delete_response = DeleteResponse(
         status="User deleted successfully",
         id=user.user_id,
@@ -136,7 +134,6 @@ def delete_user(
         role=user.role
     )
 
-    # Delete user and return response
     session.delete(user)
     session.commit()
     

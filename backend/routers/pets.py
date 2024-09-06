@@ -3,7 +3,8 @@ from sqlmodel import Session
 from models.pet import Pet, PetCreate, PetUpdate, PetResponse
 from deps import get_session
 from datetime import date
-
+from dateutil.relativedelta import relativedelta
+from models.user import UserProfile
 router = APIRouter(tags=["Pets"])
 
 def calculate_age(birth_date: date) -> str:
@@ -19,7 +20,8 @@ def create_pet(pet: PetCreate, session: Session = Depends(get_session)):
         sex=pet.sex,
         breed=pet.breed,
         birth_date=pet.birth_date,
-        weight=pet.weight
+        weight=pet.weight,
+        user_id=pet.user_id
     )
 
     session.add(db_pet)
@@ -27,34 +29,43 @@ def create_pet(pet: PetCreate, session: Session = Depends(get_session)):
     session.refresh(db_pet)
 
     return PetResponse(
-        id=db_pet.id,
+        pets_id=db_pet. pets_id,
         name=db_pet.name,
         type_pets=db_pet.type_pets,
         sex=db_pet.sex,
         breed=db_pet.breed,
         birth_date=db_pet.birth_date,
-        weight=db_pet.weight
+        weight=db_pet.weight,
+        user_id=db_pet.user_id
+        
     )
 
-@router.get("/{pet_id}", response_model=PetResponse)
-def get_pet(pet_id: int, session: Session = Depends(get_session)):
-    pet = session.get(Pet, pet_id)
+@router.get("/{pets_id}", response_model=PetResponse)
+def get_pet(pets_id: int, session: Session = Depends(get_session)):
+    # Fetch the pet and its owner by using a join
+    pet = session.query(Pet).join(UserProfile).filter(Pet.pets_id == pets_id).first()
+
     if pet is None:
         raise HTTPException(status_code=404, detail="Pet not found")
 
+    # Get the owner's name from the related UserProfile
+    owner = session.query(UserProfile).filter(UserProfile.user_id == pet.user_id).first()
+
     return PetResponse(
-        id=pet.id,
+        pets_id=pet.pets_id,
         name=pet.name,
         type_pets=pet.type_pets,
         sex=pet.sex,
         breed=pet.breed,
         birth_date=pet.birth_date,
-        weight=pet.weight
+        weight=pet.weight,
+        user_id=pet.user_id,
+        owner_name=f"{owner.first_name} {owner.last_name}"  # Display the owner's full name
     )
 
-@router.put("/{pet_id}", response_model=PetResponse)
-def update_pet(pet_id: int, pet_update: PetUpdate, session: Session = Depends(get_session)):
-    pet = session.get(Pet, pet_id)
+@router.put("/{pets_id}", response_model=PetResponse)
+def update_pet(pets_id: int, pet_update: PetUpdate, session: Session = Depends(get_session)):
+    pet = session.get(Pet, pets_id)
     if pet is None:
         raise HTTPException(status_code=404, detail="Pet not found")
 
@@ -76,18 +87,19 @@ def update_pet(pet_id: int, pet_update: PetUpdate, session: Session = Depends(ge
     session.refresh(pet)
 
     return PetResponse(
-        id=pet.id,
+        pets_id=pet.pets_id,
         name=pet.name,
         type_pets=pet.type_pets,
         sex=pet.sex,
         breed=pet.breed,
         birth_date=pet.birth_date,
-        weight=pet.weight
+        weight=pet.weight,
+        user_id=pet.user_id  # Include user_id in the response
     )
 
-@router.delete("/{pet_id}", response_model=PetResponse)
-def delete_pet(pet_id: int, session: Session = Depends(get_session)):
-    pet = session.get(Pet, pet_id)
+@router.delete("/{pets_id}", response_model=PetResponse)
+def delete_pet(pets_id: int, session: Session = Depends(get_session)):
+    pet = session.get(Pet, pets_id)
     if pet is None:
         raise HTTPException(status_code=404, detail="Pet not found")
 
@@ -95,11 +107,12 @@ def delete_pet(pet_id: int, session: Session = Depends(get_session)):
     session.commit()
 
     return PetResponse(
-        id=pet.id,
+        pets_id=pet.pets_id,
         name=pet.name,
         type_pets=pet.type_pets,
         sex=pet.sex,
         breed=pet.breed,
         birth_date=pet.birth_date,
-        weight=pet.weight
+        weight=pet.weight,
+        user_id=pet.user_id  # Include user_id in the response
     )
