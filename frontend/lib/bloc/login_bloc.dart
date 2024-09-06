@@ -1,26 +1,23 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'login_event.dart';
-import 'login_state.dart';
+import 'package:frontend/bloc/login_event.dart';
+import 'package:frontend/bloc/login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  LoginBloc() : super(LoginInitial());
+  LoginBloc() : super(LoginInitial()) {
+    // เมื่อ Event ของการกดปุ่ม Sign In ถูกเรียกใช้
+    on<LoginButtonPressed>((event, emit) async {
+      emit(LoginLoading()); // เปลี่ยนสถานะเป็นกำลังโหลด
 
-  @override
-  // ignore: override_on_non_overriding_member
-  Stream<LoginState> mapEventToState(LoginEvent event) async* {
-    if (event is LoginButtonPressed) {
-      yield LoginLoading();
       try {
-        // Mock login authentication
+        // รอให้การเข้าสู่ระบบเสร็จสมบูรณ์ (จำลองการเข้าสู่ระบบ)
         await Future.delayed(const Duration(seconds: 2));
-        if (event.username == 'user' && event.password == 'password') {
-          yield LoginSuccess();
-        } else {
-          yield const LoginFailure('Invalid credentials');
-        }
-      } catch (e) {
-        yield const LoginFailure('Login failed');
+
+        // ถ้าเข้าสู่ระบบสำเร็จ
+        emit(LoginSuccess());
+      } catch (error) {
+        // ถ้าเกิดข้อผิดพลาดในการเข้าสู่ระบบ
+        emit(LoginFailure(error.toString()));
       }
-    }
+    });
   }
 }

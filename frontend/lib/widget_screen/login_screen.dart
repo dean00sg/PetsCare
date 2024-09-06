@@ -3,16 +3,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/bloc/login_bloc.dart';
 import 'package:frontend/bloc/login_event.dart';
 import 'package:frontend/bloc/login_state.dart';
+import 'package:frontend/models/login_model.dart'; 
+import 'package:frontend/styles/login_style.dart'; 
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // ตัวควบคุม TextEditingController เพื่อเก็บค่าจาก TextField
+    final TextEditingController usernameController = TextEditingController();
+    final TextEditingController passwordController = TextEditingController();
+
     return BlocProvider(
       create: (_) => LoginBloc(),
       child: Scaffold(
-        backgroundColor: Colors.white, // กำหนดสีพื้นหลัง Scaffold
+        backgroundColor: Colors.white,
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -24,79 +30,51 @@ class LoginScreen extends StatelessWidget {
                 fit: BoxFit.contain,
               ),
               Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20.0), // กำหนด margin ด้านซ้ายและขวา
-                padding: const EdgeInsets.fromLTRB(16.0, 50.0, 16.0, 16.0), // กำหนด padding ของ Container ด้านซ้าย, บน, ขวา, ล่าง
-                width: 350, // กำหนดความกว้าง container
-                height: 400, // กำหนดความสูง container
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 122, 83, 65), // กำหนดสีพื้นหลังของ Container
-                  borderRadius: BorderRadius.circular(25), // กำหนดมุมโค้งของ Container
-                ),
+                margin: const EdgeInsets.symmetric(horizontal: 20.0),
+                padding: const EdgeInsets.fromLTRB(16.0, 50.0, 16.0, 16.0),
+                width: 350,
+                height: 400,
+                decoration: containerDecoration, // ใช้สไตล์ Container จาก login_style
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       const Text(
-                      'SIGN IN',
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
+                        'SIGN IN',
+                        style: signInTitleStyle, // ใช้สไตล์ Title จาก login_style
                       ),
-                    ),
                       const SizedBox(height: 16),
-                      const TextField(
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Color.fromARGB(255, 255, 255, 255), // กำหนดสีพื้นหลัง TextField
-                          hintText: 'User/Email',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(8.0)), // กำหนดมุมโค้งของ TextField
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
+                      // Username Field
+                      TextField(
+                        controller: usernameController,
+                        decoration: inputDecoration('User/Email'), // ใช้สไตล์ TextField จาก login_style
                       ),
                       const SizedBox(height: 30),
-                      const TextField(
+                      // Password Field
+                      TextField(
+                        controller: passwordController,
                         obscureText: true,
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Color.fromARGB(255, 255, 255, 255), // กำหนดสีพื้นหลัง TextField
-                          hintText: 'Password',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(8.0)),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
+                        decoration: inputDecoration('Password'), // ใช้สไตล์ TextField จาก login_style
                       ),
                       const SizedBox(height: 24),
+                      // Sign In Button
                       ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.amber, // สีปุ่ม
-                          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 50), // กำหนดขนาดของปุ่ม
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24), // มุมโค้งของปุ่ม
-                          ),
-                        ),
+                        style: loginButtonStyle, // ใช้สไตล์ปุ่มจาก login_style
                         onPressed: () {
+                          final loginData = LoginModel(
+                            username: usernameController.text,
+                            password: passwordController.text,
+                          );
                           BlocProvider.of<LoginBloc>(context).add(
-                            const LoginButtonPressed(
-                              username: 'user',
-                              password: 'password',
-                            ),
+                            LoginButtonPressed(loginData),
                           );
                         },
                         child: const Text('SIGN IN', style: TextStyle(fontSize: 16)),
                       ),
                       const SizedBox(height: 16),
+                      // Sign Up Button
                       ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.amber, // สีปุ่ม Sign Up
-                          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 50),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(24),
-                          ),
-                        ),
+                        style: loginButtonStyle, // ใช้สไตล์ปุ่มจาก login_style
                         onPressed: () {
                           Navigator.pushNamed(context, '/signup'); // นำไปยังหน้าสมัครใช้งาน
                         },
@@ -109,10 +87,8 @@ class LoginScreen extends StatelessWidget {
               BlocListener<LoginBloc, LoginState>(
                 listener: (context, state) {
                   if (state is LoginSuccess) {
-                    // เมื่อเข้าสู่ระบบสำเร็จ นำผู้ใช้ไปที่หน้าฟีด
                     Navigator.pushNamed(context, '/feed');
                   } else if (state is LoginFailure) {
-                    // ถ้าเข้าสู่ระบบล้มเหลว แสดงข้อความแจ้งเตือน
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(content: Text(state.error)),
                     );
