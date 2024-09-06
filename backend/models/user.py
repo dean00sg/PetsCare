@@ -1,5 +1,6 @@
+from datetime import datetime
 from pydantic import BaseModel, EmailStr
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.orm import relationship
 from deps import Base
 from typing import List, Optional
@@ -18,6 +19,31 @@ class UserProfile(Base):
     # Relationship to Pet model
     pets = relationship("Pet", back_populates="owner")
 
+class LogUserProfile(Base):
+    __tablename__ = 'log_Userprofiles'
+
+    id = Column(Integer, primary_key=True, index=True)
+    action_name = Column(String, nullable=False)
+    action_datetime = Column(DateTime, default=datetime.utcnow()) 
+    user_id = Column(Integer, nullable=False)
+
+    first_name = Column(String, nullable=False)
+    to_first_name = Column(String, nullable=True)
+
+    last_name = Column(String, nullable=False)
+    to_last_name = Column(String, nullable=True)
+
+    email = Column(String, nullable=False)
+    to_email = Column(String, nullable=True)
+
+    contact_number = Column(String, nullable=False)
+    to_contact_number = Column(String, nullable=True)
+
+    password = Column(String, nullable=False)
+    to_password = Column(String, nullable=True)
+
+    role = Column(String, default="userpets")
+   
 
 # Pydantic schemas for UserProfile
 class UserCreate(BaseModel):
