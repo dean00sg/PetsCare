@@ -2,6 +2,7 @@ from datetime import datetime
 from pydantic import BaseModel, EmailStr
 from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.orm import relationship
+from models.pet import PetProfile
 from deps import Base
 from typing import List, Optional
 
@@ -68,7 +69,7 @@ class UserWithPets(BaseModel):
     last_name: str
     email: EmailStr
     contact_number: str
-    # pets: List['PetProfile'] = []  # Forward reference for PetProfile
+    pets: List['PetProfile'] = []  # Forward reference for PetProfile
 
     class Config:
         orm_mode = True  # Allows working with SQLAlchemy models directly
@@ -102,5 +103,28 @@ class UpdateUserResponse(BaseModel):
     contact_number: str
     role: str
 
+    class Config:
+        orm_mode = True  # Allows working with SQLAlchemy models directly
+
+
+class GetUserProfile(BaseModel):
+    user_id: int
+    first_name: str
+    last_name: str
+    email: EmailStr
+    contact_number: str
+    role: str
+
+    class Config:
+        orm_mode = True 
+        
+
+class UserAuthen(BaseModel):
+    user_id: int
+    first_name: str
+    last_name: str
+    email: EmailStr
+    contact_number: str
+    
     class Config:
         orm_mode = True  # Allows working with SQLAlchemy models directly
