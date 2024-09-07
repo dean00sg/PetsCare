@@ -4,6 +4,7 @@ class PetModel {
   final String weight;
   final String sex;
   final String breed;
+  //final String imagePath;
 
   PetModel({
     required this.name,
@@ -11,5 +12,6 @@ class PetModel {
     required this.weight,
     required this.sex,
     required this.breed,
+    //required this.imagePath,
   });
 }

@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:frontend/models/signup_model.dart';
+import 'package:frontend/users/models/signup_model.dart';
 
-// SignupEvent เป็น abstract class เพื่อให้ event อื่นๆ สืบทอดไปใช้
+// Event สำหรับ Sign Up
 abstract class SignupEvent extends Equatable {
   const SignupEvent();
 
@@ -13,7 +13,8 @@ abstract class SignupEvent extends Equatable {
 class SignupButtonPressed extends SignupEvent {
   final SignupModel signupData;
 
-  const SignupButtonPressed(this.signupData);
+  // กำหนด SignupModel ลงในตัวสร้าง
+  const SignupButtonPressed({required this.signupData});
 
   @override
   List<Object?> get props => [signupData];

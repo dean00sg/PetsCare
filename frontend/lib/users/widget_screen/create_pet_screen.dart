@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/bloc/create_pet_bloc.dart';
-import 'package:frontend/bloc/create_pet_event.dart';
-import 'package:frontend/bloc/create_pet_state.dart';
-import 'package:frontend/models/create_pat_model.dart';
-import 'package:frontend/models/pet_models.dart';
-import 'package:frontend/styles/create_pet_style.dart';
+import 'package:frontend/users/bloc/create_pet_bloc.dart';
+//import 'package:frontend/users/bloc/create_pet_event.dart';
+import 'package:frontend/users/bloc/create_pet_state.dart';
+import 'package:frontend/users/models/create_pet_model.dart';
+import 'package:frontend/users/models/pet_models.dart';
+import 'package:frontend/users/styles/create_pet_style.dart';
+import 'package:frontend/users/widget_screen/pet_details_screen.dart';
 
 class CreatePetScreen extends StatefulWidget {
   const CreatePetScreen({super.key});
@@ -174,7 +175,7 @@ class _CreatePetScreenState extends State<CreatePetScreen> {
                             const SizedBox(height: 30),
                             // Save Button
                             ElevatedButton(
-                              style: saveButtonStyle, 
+                              style: saveButtonStyle,
                               onPressed: () {
                                 final petData = PetModel(
                                   name: _nameController.text,
@@ -183,12 +184,18 @@ class _CreatePetScreenState extends State<CreatePetScreen> {
                                   sex: _selectedSex!,
                                   breed: _breedController.text,
                                 );
-                                BlocProvider.of<CreatePetBloc>(context).add(
-                                  SavePetProfile(petData),
+
+                                // ส่งข้อมูลไปยังหน้า PetDetailsScreen
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => PetDetailsScreen(pet: petData),
+                                  ),
                                 );
                               },
                               child: const Text('SAVE', style: TextStyle(fontSize: 16)),
                             ),
+
                             BlocListener<CreatePetBloc, CreatePetState>(
                               listener: (context, state) {
                                 if (state is CreatePetSuccess) {
