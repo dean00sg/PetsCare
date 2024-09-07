@@ -14,6 +14,10 @@ def calculate_age(birth_date: date) -> str:
 
 @router.post("/", response_model=PetResponse)
 def create_pet(pet: PetCreate, session: Session = Depends(get_session)):
+    user = session.query(UserProfile).filter(UserProfile.user_id == pet.user_id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
     db_pet = Pet(
         name=pet.name,
         type_pets=pet.type_pets,
@@ -21,13 +25,14 @@ def create_pet(pet: PetCreate, session: Session = Depends(get_session)):
         breed=pet.breed,
         birth_date=pet.birth_date,
         weight=pet.weight,
-        user_id=pet.user_id
+        user_id=pet.user_id,
+        owner_name=user.first_name
     )
 
     session.add(db_pet)
     session.commit()
     session.refresh(db_pet)
-
+    owner_name = db_pet.owner.first_name if db_pet.owner else "Unknown"
     return PetResponse(
         pets_id=db_pet. pets_id,
         name=db_pet.name,
@@ -36,7 +41,8 @@ def create_pet(pet: PetCreate, session: Session = Depends(get_session)):
         breed=db_pet.breed,
         birth_date=db_pet.birth_date,
         weight=db_pet.weight,
-        user_id=db_pet.user_id
+        user_id=db_pet.user_id,
+        owner_name=owner_name
         
     )
 

@@ -17,8 +17,8 @@ class Pet(Base):
     birth_date = Column(DateTime, nullable=False)
     weight = Column(Float, nullable=False)
 
-    # Foreign key to link the pet to the user
     user_id = Column(Integer, ForeignKey('Userprofiles.user_id'), nullable=False)
+    owner_name = Column(String, nullable=False)
 
     # Relationship to UserProfile
     owner = relationship("UserProfile", back_populates="pets")
