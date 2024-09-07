@@ -2,7 +2,7 @@ from datetime import datetime
 from fastapi import APIRouter, HTTPException, Depends, Query, Body
 from sqlalchemy.orm import Session
 from security import AuthHandler
-from models.user import LogUserProfile, UserCreate, UpdateUser, UpdateUserResponse, UserProfile, UserWithPets, DeleteResponse
+from models.user import LogUserProfile, UserCreate, UserUpdate, UpdateUserResponse, UserProfile, UserWithPets, DeleteResponse,UserAuthen
 from deps import get_session
 
 router = APIRouter(tags=["Authentication"])
@@ -10,7 +10,7 @@ router = APIRouter(tags=["Authentication"])
 auth_handler = AuthHandler()
 
 
-@router.post("/register", response_model=UserWithPets)
+@router.post("/register", response_model=UserAuthen)
 def register_user(user: UserCreate, session: Session = Depends(get_session)):
     role = user.role or "userpets"  # Default role if not provided
     if role not in ["admin", "userpets"]:
@@ -72,7 +72,7 @@ def register_user(user: UserCreate, session: Session = Depends(get_session)):
 #     }
 
 
-@router.get("/", response_model=UserWithPets)
+@router.get("/", response_model=UserAuthen)
 def get_user(
     firstname: str = Query(..., description="First name"),
     password: str = Query(..., description="Password of the user"),
@@ -93,7 +93,7 @@ def get_user(
 def update_user(
     firstname: str = Query(..., description="First name"),
     password: str = Query(..., description="Password of the user"),
-    update_data: UpdateUser = Body(...),
+    update_data: UserUpdate = Body(...),
     session: Session = Depends(get_session)
 ):
     user = session.query(UserProfile).filter(UserProfile.first_name == firstname).first()

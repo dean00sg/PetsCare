@@ -4,7 +4,7 @@ from pydantic import BaseModel
 from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from deps import Base
-from .user import UpdateUser
+
 
 class Pet(Base):
     __tablename__ = 'pets'
@@ -42,6 +42,7 @@ class PetProfile(BaseModel):
     birth_date: datetime
     weight: float
     user_id:int
+    owner_name: str
 
 class PetBase(BaseModel):
     name: str
@@ -53,7 +54,7 @@ class PetCreate(PetBase):
     birth_date: datetime
     weight: float
     user_id:int
-  
+   
 
 class PetResponse(BaseModel):
     pets_id: int
@@ -74,4 +75,5 @@ class PetUpdate(BaseModel):
     breed: Optional[str] = None
     birth_date: Optional[datetime] = None
     weight: Optional[float] = None
+  
 
