@@ -9,135 +9,160 @@ import 'package:frontend/users/styles/signup_style.dart';
 class SignupScreen extends StatelessWidget {
   SignupScreen({super.key});
 
-  // ตัวควบคุม TextEditingController เพื่อเก็บค่าจาก TextField
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _contactNumberController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => SignupBloc(),
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: Center(
-          child: SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.all(24.0),
-              decoration: containerDecoration, // ใช้สีพื้นหลังตามสไตล์
-              width: 320, // ปรับขนาดของ Container ให้เหมาะสมกับหน้าจอมือถือ
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // เพิ่มกรอบวงกลมให้กับรูปภาพ
-                 Container(
-                    width: 170,
-                    height: 170,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                    ),
-                    child: ClipOval(
-                      child: Image.asset(
-                        'lib/images/logo.png',
-                        height: 150,
-                        width: 150,
-                        fit: BoxFit.contain,
-                      ),
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: SingleChildScrollView(
+          child: Container(
+            padding: const EdgeInsets.all(24.0),
+            decoration: containerDecoration,
+            width: 320,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Container(
+                  width: 170,
+                  height: 170,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: ClipOval(
+                    child: Image.asset(
+                      'lib/images/logo.png',
+                      height: 150,
+                      width: 150,
+                      fit: BoxFit.contain,
                     ),
                   ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Already a member? ",
+                      style: generalTextStyle,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(context, '/');
+                      },
+                      child: const Text(
+                        "Sign in",
+                        style: signInLinkStyle,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                const Text('SIGN UP', style: signUpTitleStyle),
+                const SizedBox(height: 16),
+                Form(
+                  child: Column(
                     children: [
-                      const Text(
-                        "Already member? ",
-                        style: generalTextStyle,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, '/');
+                      TextFormField(
+                        controller: _firstNameController,
+                        decoration: inputDecoration('First Name'),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'First name is required';
+                          }
+                          return null;
                         },
-                        child: const Text(
-                          "Sign in",
-                          style: signInLinkStyle,
-                        ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  const Text('SIGN UP', style: signUpTitleStyle),
-                  const SizedBox(height: 16),
-                  // ฟอร์มสำหรับกรอกข้อมูลผู้ใช้
-                  Form(
-                    child: Column(
-                      children: [
-                        TextField(
-                          controller: _firstNameController,
-                          decoration: inputDecoration('FirstName'),
-                        ),
-                        const SizedBox(height: 16),
-                        TextField(
-                          controller: _lastNameController,
-                          decoration: inputDecoration('LastName'),
-                        ),
-                        const SizedBox(height: 16),
-                        TextField(
-                          controller: _emailController,
-                          decoration: inputDecoration('E-mail'),
-                          keyboardType: TextInputType.emailAddress,
-                        ),
-                        const SizedBox(height: 16),
-                        TextField(
-                          controller: _passwordController,
-                          decoration: inputDecoration('Password'),
-                          obscureText: true,
-                        ),
-                        const SizedBox(height: 16),
-                        TextField(
-                          controller: _phoneController,
-                          decoration: inputDecoration('Phone'),
-                          keyboardType: TextInputType.phone,
-                        ),
-                        const SizedBox(height: 24),
-                        // ปุ่มสมัครสมาชิก
-                        BlocConsumer<SignupBloc, SignupState>(
-                          listener: (context, state) {
-                            if (state is SignupSuccess) {
-                              Navigator.pushNamed(context, '/profile', arguments: state.user);
-                            } else if (state is SignupFailure) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text(state.error)),
-                              );
-                            }
-                          },
-                          builder: (context, state) {
-                            if (state is SignupLoading) {
-                              return const CircularProgressIndicator();
-                            }
-                            return ElevatedButton(
-                              style: signUpButtonStyle, // ใช้สไตล์ปุ่มจาก signup_style.dart
-                              onPressed: () {
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _lastNameController,
+                        decoration: inputDecoration('Last Name'),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Last name is required';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _emailController,
+                        decoration: inputDecoration('E-mail'),
+                        keyboardType: TextInputType.emailAddress,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Email is required';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _passwordController,
+                        decoration: inputDecoration('Password'),
+                        obscureText: true,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Password is required';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _contactNumberController,
+                        decoration: inputDecoration('Contact Number'),
+                        keyboardType: TextInputType.phone,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Contact number is required';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 24),
+                      BlocConsumer<SignupBloc, SignupState>(
+                        listener: (context, state) {
+                          if (state is SignupSuccess) {
+                            Navigator.pushNamed(context, '/profile', arguments: state.user);
+                          } else if (state is SignupFailure) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(state.error)),
+                            );
+                          }
+                        },
+                        builder: (context, state) {
+                          if (state is SignupLoading) {
+                            return const CircularProgressIndicator();
+                          }
+                          return ElevatedButton(
+                            style: signUpButtonStyle,
+                            onPressed: () {
+                              if (Form.of(context).validate()) {
                                 final signupData = SignupModel(
                                   firstName: _firstNameController.text,
                                   lastName: _lastNameController.text,
                                   email: _emailController.text,
                                   password: _passwordController.text,
-                                  phone: _phoneController.text,
+                                  contactNumber: _contactNumberController.text,
                                 );
                                 context.read<SignupBloc>().add(SignupButtonPressed(signupData: signupData));
-                              },
-                              child: const Text('SIGN IN', style: TextStyle(fontSize: 18)),
-                            );
-                          },
-                        ),
-                      ],
-                    ),
+                              }
+                            },
+                            child: const Text('SIGN UP', style: TextStyle(fontSize: 18)),
+                          );
+                        },
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
