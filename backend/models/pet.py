@@ -7,7 +7,7 @@ from deps import Base
 
 
 class Pet(Base):
-    __tablename__ = 'pets'
+    __tablename__ = 'Pets'
 
     pets_id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
@@ -22,14 +22,26 @@ class Pet(Base):
 
     # Relationship to UserProfile
     owner = relationship("UserProfile", back_populates="pets")
-# class HealthRecord(Base):
-#     __tablename__ = 'health_records'
 
-#     id = Column(Integer, primary_key=True, index=True)
-#     pet_id = Column(Integer, ForeignKey('pets.pets_id'))
-#     record_date = Column(DateTime, nullable=False)
-#     description = Column(String, nullable=False)
-#     pet = relationship("Pet", back_populates="health_records")
+
+class PetLog(Base):
+    __tablename__ = 'log_Petsprofile'
+
+    id = Column(Integer, primary_key=True, index=True)
+    action_name = Column(String, nullable=False)
+    action_datetime = Column(DateTime, default=datetime.now()) 
+    name = Column(String, nullable=False)
+    to_name = Column(String, nullable=True)
+
+    birth_date = Column(DateTime, nullable=False)
+    to_birth_date = Column(DateTime, nullable=True)
+
+    weight = Column(Float, nullable=False)
+    to_weight = Column(Float, nullable=True)
+
+    user_id = Column(Integer, ForeignKey('Userprofiles.user_id'), nullable=False)
+    owner_name = Column(String, nullable=False)
+
 
 
 
@@ -57,6 +69,7 @@ class PetCreate(PetBase):
    
 
 class PetResponse(BaseModel):
+    status:str
     pets_id: int
     name: str
     type_pets: str
@@ -66,13 +79,11 @@ class PetResponse(BaseModel):
     weight: float
     user_id: int
     owner_name: str 
-  
+
+
 
 class PetUpdate(BaseModel):
     name: Optional[str] = None
-    type_pets: Optional[str] = None
-    sex: Optional[str] = None
-    breed: Optional[str] = None
     birth_date: Optional[datetime] = None
     weight: Optional[float] = None
   

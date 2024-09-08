@@ -25,3 +25,11 @@ class CreateHealthRecord(SQLModel):
     date: datetime
     weight: Optional[float] = Field(default=None)
     notes: Optional[str] = Field(default=None)
+# class HealthRecord(Base):
+#     __tablename__ = 'health_records'
+
+#     id = Column(Integer, primary_key=True, index=True)
+#     pet_id = Column(Integer, ForeignKey('pets.pets_id'))
+#     record_date = Column(DateTime, nullable=False)
+#     description = Column(String, nullable=False)
+#     pet = relationship("Pet", back_populates="health_records")
