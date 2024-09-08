@@ -8,7 +8,7 @@ class PetDetailsScreen extends StatelessWidget {
   // ignore: use_super_parameters
   const PetDetailsScreen({Key? key, required this.pet}) : super(key: key);
 
-   // ฟังก์ชันคำนวณอายุในหน่วยปี เดือน วัน
+  // ฟังก์ชันคำนวณอายุในหน่วยปี เดือน วัน
   Map<String, int> calculateAge(String birthDateString) {
     DateTime birthDate = DateFormat('yyyy-MM-dd').parse(birthDateString);
     DateTime currentDate = DateTime.now();
@@ -36,95 +36,138 @@ class PetDetailsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-     Map<String, int> petAge = calculateAge(pet.dateOfBirth);
+    Map<String, int> petAge = calculateAge(pet.dateOfBirth);
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(pet.name), 
+        title: Text(pet.name, style: const TextStyle(fontSize: 16, color: Colors.white)),
         backgroundColor: Colors.brown[400],
         centerTitle: true,
-        actions: [
-            PopupMenuButton<String>(
-              icon: const Icon(Icons.account_circle),
-              onSelected: (String result) {
-                if (result == 'profile') {
-                  Navigator.pushNamed(context, '/profile');
-                } else if (result == 'signout') {
-                  Navigator.pushNamed(context, '/');
-                }
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.brown[400],
+              ),
+              child: const Text(
+                'Menu',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              title: const Text('HOME'),
+              onTap: () {
+                Navigator.pushNamed(context, '/feed');
               },
-              itemBuilder: (BuildContext context) => [
-                const PopupMenuItem<String>(
-                  value: 'profile',
-                  child: Text('PROFILE'),
-                ),
-                const PopupMenuItem<String>(
-                  value: 'signout',
-                  child: Text('SIGN OUT'),
-                ),
-              ],
+            ),
+            ListTile(
+              title: const Text('PETS'),
+              onTap: () {
+                Navigator.pushNamed(context, '/pet');
+              },
             ),
           ],
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-                width: 170,
-                height: 170,
-                decoration: BoxDecoration(
-                  color: Colors.white, 
-                  shape: BoxShape.circle,
-                  border: Border.all(color: const Color.fromARGB(255, 193, 193, 193), width: 8),
-                ),
-                child: ClipOval(
-                  child: Image.asset(
-                    'lib/images/cat_icon.png', // แสดงรูปภาพจาก assets
-                    width: 150,
-                    height: 150,
-                    fit: BoxFit.cover,
+        child: Container(
+          width: 400,
+          height: 280,
+          padding: const EdgeInsets.all(16.0),
+          decoration: BoxDecoration(
+            color: Colors.brown, 
+            borderRadius: BorderRadius.circular(16), 
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+               Align(
+                alignment: Alignment.center, // จัดให้อยู่ตรงกลาง
+                child: Container(
+                  width: 120,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: const Color.fromARGB(255, 193, 193, 193),
+                      width: 2,
+                    ),
+                  ),
+                  child: ClipOval(
+                    child: Image.asset(
+                      'lib/images/cat_icon.png',
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
-            Text(
-              pet.name,
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              pet.dateOfBirth,
-              style: const TextStyle(fontSize: 20),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Age: ${petAge['years']} y ${petAge['months']} m ${petAge['days']} d',
-              style: const TextStyle(fontSize: 20),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Weigh: ${pet.weight} kg',
-              style: const TextStyle(fontSize: 20),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Sex: ${pet.sex}',
-              style: const TextStyle(fontSize: 20),
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Breed: ${pet.breed}',
-              style: const TextStyle(fontSize: 20),
-            ),          
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context); // กลับไปยังหน้าเดิม
-              },
-              child: const Text('กลับ'),
-            ),
-          ],
+              const SizedBox(width: 30),
+              // ข้อมูลสัตว์เลี้ยง
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(width: 10),
+                    Text(  
+                      pet.name,
+                      style: const TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      ' Age: ${petAge['years']}y ${petAge['months']}m  ${petAge['days']}d',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      '${pet.sex}, Weight: ${pet.weight}kg.',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Breed: ${pet.breed}',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              IconButton(
+                icon: const Icon(
+                  Icons.edit,
+                  color: Colors.white,
+                  size: 30,
+                ),
+                onPressed: () {
+                  // นำไปหน้าแก้ไขสัตว์เลี้ยง
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => EditPetScreen(pet: pet), // หน้าสำหรับแก้ไขสัตว์เลี้ยง
+                  //   ),
+                  // );
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
