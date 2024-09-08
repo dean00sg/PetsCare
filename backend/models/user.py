@@ -1,5 +1,5 @@
 from datetime import datetime
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.orm import relationship
 from models.pet import PetProfile
@@ -54,7 +54,7 @@ class UserCreate(BaseModel):
     email: EmailStr
     contact_number: str
     password: str
-    role: Optional[str] = "userpets"  # Default to "userpets" if not provided
+    role: str = Field(default="userpets")# Default to "userpets" if not provided
 
 class UserUpdate(BaseModel):
     first_name: Optional[str] = None

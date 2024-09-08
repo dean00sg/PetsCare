@@ -11,7 +11,7 @@ auth_handler = AuthHandler()
 
 
 @router.post("/register", response_model=UserAuthen)
-def register_user(user: UserCreate, session: Session = Depends(get_session)):
+async def register_user(user: UserCreate, session: Session = Depends(get_session)):
     role = user.role or "userpets"  # Default role if not provided
     if role not in ["admin", "userpets"]:
         raise HTTPException(status_code=400, detail="Invalid role")
@@ -25,9 +25,8 @@ def register_user(user: UserCreate, session: Session = Depends(get_session)):
         email=user.email,
         contact_number=user.contact_number,
         password=hashed_password,
-        role=role
+        role=user.role
     )
-    
     session.add(db_user)
     session.commit()
     session.refresh(db_user)
@@ -44,7 +43,7 @@ def register_user(user: UserCreate, session: Session = Depends(get_session)):
         password=db_user.password,
         role=db_user.role
     )
-
+    
     session.add(log_entry)
     session.commit()
 
