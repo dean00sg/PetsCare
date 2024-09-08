@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:frontend/models/login_model.dart'; // นำเข้า LoginModel
+import 'package:frontend/users/models/login_model.dart'; // นำเข้า LoginModel
 
 // กำหนด abstract class สำหรับ LoginEvent
 abstract class LoginEvent extends Equatable {

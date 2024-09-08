@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/bloc/login_bloc.dart';
-import 'package:frontend/bloc/login_event.dart';
-import 'package:frontend/bloc/login_state.dart';
-import 'package:frontend/models/login_model.dart'; 
-import 'package:frontend/styles/login_style.dart'; 
+import 'package:frontend/users/bloc/login_bloc.dart';
+import 'package:frontend/users/bloc/login_event.dart';
+import 'package:frontend/users/bloc/login_state.dart';
+import 'package:frontend/users/models/login_model.dart'; 
+import 'package:frontend/users/styles/login_style.dart'; 
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -25,8 +25,8 @@ class LoginScreen extends StatelessWidget {
             children: <Widget>[
               Image.asset(
                 'lib/images/logo.png',
-                height: 300, // ขนาดความสูง logo
-                width: 300, // ขนาดความกว้าง logo
+                height: 300, 
+                width: 300, 
                 fit: BoxFit.contain,
               ),
               Container(
@@ -34,32 +34,29 @@ class LoginScreen extends StatelessWidget {
                 padding: const EdgeInsets.fromLTRB(16.0, 50.0, 16.0, 16.0),
                 width: 350,
                 height: 400,
-                decoration: containerDecoration, // ใช้สไตล์ Container จาก login_style
+                decoration: containerDecoration,
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      const Text(
-                        'SIGN IN',
-                        style: signInTitleStyle, // ใช้สไตล์ Title จาก login_style
-                      ),
+                      const Text('SIGN IN', style: signInTitleStyle),
                       const SizedBox(height: 16),
                       // Username Field
                       TextField(
                         controller: usernameController,
-                        decoration: inputDecoration('User/Email'), // ใช้สไตล์ TextField จาก login_style
+                        decoration: inputDecoration('User/Email'), 
                       ),
                       const SizedBox(height: 30),
                       // Password Field
                       TextField(
                         controller: passwordController,
                         obscureText: true,
-                        decoration: inputDecoration('Password'), // ใช้สไตล์ TextField จาก login_style
+                        decoration: inputDecoration('Password'), 
                       ),
                       const SizedBox(height: 24),
                       // Sign In Button
                       ElevatedButton(
-                        style: loginButtonStyle, // ใช้สไตล์ปุ่มจาก login_style
+                        style: loginButtonStyle, 
                         onPressed: () {
                           final loginData = LoginModel(
                             username: usernameController.text,
@@ -74,7 +71,7 @@ class LoginScreen extends StatelessWidget {
                       const SizedBox(height: 16),
                       // Sign Up Button
                       ElevatedButton(
-                        style: loginButtonStyle, // ใช้สไตล์ปุ่มจาก login_style
+                        style: loginButtonStyle, 
                         onPressed: () {
                           Navigator.pushNamed(context, '/signup'); // นำไปยังหน้าสมัครใช้งาน
                         },

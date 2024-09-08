@@ -1,6 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/bloc/create_pet_event.dart';
-import 'package:frontend/bloc/create_pet_state.dart';
+import 'package:frontend/users/bloc/create_pet_event.dart';
+import 'package:frontend/users/bloc/create_pet_state.dart';
 
 class CreatePetBloc extends Bloc<CreatePetEvent, CreatePetState> {
   CreatePetBloc() : super(CreatePetInitial()) {
