@@ -2,7 +2,7 @@ from datetime import datetime
 from fastapi import APIRouter, HTTPException, Depends, Query, Body
 from sqlalchemy.orm import Session
 from security import AuthHandler
-from models.user import LogUserProfile, UserCreate, UserUpdate, UpdateUserResponse, UserProfile, UserWithPets, DeleteResponse,UserAuthen
+from models.user import LogUserProfile, UpdateUser, UserCreate, UserUpdate, UpdateUserResponse, UserProfile, UserWithPets, DeleteResponse,UserAuthen
 from deps import get_session
 
 router = APIRouter(tags=["Authentication"])
@@ -35,7 +35,7 @@ def register_user(user: UserCreate, session: Session = Depends(get_session)):
     # Log the creation of the new user
     log_entry = LogUserProfile(
         action_name="insert",
-        action_datetime=datetime.utcnow(),
+        action_datetime=datetime.now(),
         user_id=db_user.user_id,
         first_name=db_user.first_name,
         last_name=db_user.last_name,
@@ -93,7 +93,7 @@ def get_user(
 def update_user(
     firstname: str = Query(..., description="First name"),
     password: str = Query(..., description="Password of the user"),
-    update_data: UserUpdate = Body(...),
+    update_data: UpdateUser = Body(...),
     session: Session = Depends(get_session)
 ):
     user = session.query(UserProfile).filter(UserProfile.first_name == firstname).first()
@@ -107,7 +107,7 @@ def update_user(
     # Log the old values
     log_entry = LogUserProfile(
         action_name="update",
-        action_datetime=datetime.utcnow(),
+        action_datetime=datetime.now(),
         user_id=user.user_id,
         first_name=user.first_name,
         last_name=user.last_name,
@@ -165,7 +165,7 @@ def delete_user(
     # Log deletion
     log_entry = LogUserProfile(
         action_name="delete",
-        action_datetime=datetime.utcnow(),
+        action_datetime=datetime.now(),
         user_id=user.user_id,
         first_name=user.first_name,
         last_name=user.last_name,

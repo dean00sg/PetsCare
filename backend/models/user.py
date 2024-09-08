@@ -19,13 +19,14 @@ class UserProfile(Base):
     
     # Relationship to Pet model
     pets = relationship("Pet", back_populates="owner")
+    
 
 class LogUserProfile(Base):
     __tablename__ = 'log_Userprofiles'
 
     id = Column(Integer, primary_key=True, index=True)
     action_name = Column(String, nullable=False)
-    action_datetime = Column(DateTime, default=datetime.utcnow()) 
+    action_datetime = Column(DateTime, default=datetime.now()) 
     user_id = Column(Integer, nullable=False)
 
     first_name = Column(String, nullable=False)
