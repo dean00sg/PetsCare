@@ -51,25 +51,25 @@ def register_user(user: UserCreate, session: Session = Depends(get_session)):
     return db_user
 
 
-# @router.post("/login")
-# def login(
-#     email: str = Query(..., description="Email of the user for login"),
-#     password: str = Query(..., description="Password of the user for login"),
-#     session: Session = Depends(get_session)
-# ):
-#     user = session.query(UserProfile).filter(UserProfile.email == email).first()
-#     if not user or not auth_handler.verify_password(password, user.password):
-#         raise HTTPException(status_code=401, detail="Invalid credentials")
+@router.post("/login")
+def login(
+    email: str = Query(..., description="Email of the user for login"),
+    password: str = Query(..., description="Password of the user for login"),
+    session: Session = Depends(get_session)
+):
+    user = session.query(UserProfile).filter(UserProfile.email == email).first()
+    if not user or not auth_handler.verify_password(password, user.password):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
 
-#     access_token = auth_handler.create_access_token(data={"username": user.email, "role": user.role})
+    access_token = auth_handler.create_access_token(data={"username": user.email, "role": user.role})
     
-#     return {
-#         "access_token": access_token,
-#         "token_type": "bearer",
-#         "user_id": user.user_id,
-#         "name": f"{user.first_name} {user.last_name}",
-#         "role": user.role
-#     }
+    return {
+        "access_token": access_token,
+        "token_type": "bearer",
+        "user_id": user.user_id,
+        "name": f"{user.first_name} {user.last_name}",
+        "role": user.role
+    }
 
 
 @router.get("/", response_model=UserAuthen)
