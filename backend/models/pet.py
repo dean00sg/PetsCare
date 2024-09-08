@@ -22,7 +22,7 @@ class Pet(Base):
 
     # Relationship to UserProfile
     owner = relationship("UserProfile", back_populates="pets")
-
+    # name = relationship("PetVacProfile", back_populates="pet_name")
 
 class PetLog(Base):
     __tablename__ = 'log_Petsprofile'
@@ -79,7 +79,6 @@ class PetResponse(BaseModel):
     weight: float
     user_id: int
     owner_name: str 
-
 
 
 class PetUpdate(BaseModel):
