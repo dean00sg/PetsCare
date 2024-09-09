@@ -2,7 +2,7 @@ from datetime import datetime
 from fastapi import APIRouter, HTTPException, Depends, Query, Body
 from sqlalchemy.orm import Session
 from security import AuthHandler
-from models.user import LogUserProfile, UpdateUser, UserCreate, UserUpdate, UpdateUserResponse, UserProfile, UserWithPets, DeleteResponse,UserAuthen
+from models.user import LogUserLogin, LogUserProfile, UpdateUser, UserCreate, UserLogin, UserUpdate, UpdateUserResponse, UserProfile, UserWithPets, DeleteResponse,UserAuthen
 from deps import get_session
 
 router = APIRouter(tags=["Authentication"])
@@ -56,12 +56,51 @@ def login(
     password: str = Query(..., description="Password of the user for login"),
     session: Session = Depends(get_session)
 ):
+    # Fetch the user from the database using their email
     user = session.query(UserProfile).filter(UserProfile.email == email).first()
+    
     if not user or not auth_handler.verify_password(password, user.password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
+    # Generate the access token
     access_token = auth_handler.create_access_token(data={"username": user.email, "role": user.role})
     
+    # Create the UserLogin record
+    user_login = UserLogin(
+        login_datetime=datetime.now().replace(microsecond=0),
+        user_id=user.user_id,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        email=user.email,
+        contact_number=user.contact_number,
+        access_token=access_token,
+        role=user.role
+    )
+    
+    # Create the LogUserLogin record
+    log_user_login = LogUserLogin(
+        login_id=user_login.login_id,  # You might need to flush the session before using login_id
+        login_datetime=user_login.login_datetime,
+        user_id=user.user_id,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        email=user.email,
+        contact_number=user.contact_number,
+        access_token=access_token,
+        role=user.role
+    )
+    
+    # Add both records to the session
+    session.add(user_login)
+    session.flush()  # Flush to get the generated login_id from the UserLogin record
+    
+    # Update the log_user_login with the generated login_id
+    log_user_login.login_id = user_login.login_id
+    session.add(log_user_login)
+
+    # Commit the session to save the data into both tables
+    session.commit()
+
     return {
         "access_token": access_token,
         "token_type": "bearer",

@@ -2,7 +2,7 @@ from datetime import date
 from fastapi import APIRouter, HTTPException, Depends, Query, Path
 from sqlalchemy.orm import Session
 from sqlmodel import select
-from models.notehealth import PetHealthRecord
+from models.notehealth import CreateHealthRecord
 from models.pet_vac import PetVacProfile
 from models.user import GetUserProfile, UserProfile, UserWithPets
 from models.pet import Pet, PetProfile

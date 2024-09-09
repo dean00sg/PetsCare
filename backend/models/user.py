@@ -1,6 +1,6 @@
 from datetime import datetime
 from pydantic import BaseModel, EmailStr, Field
-from sqlalchemy import Column, DateTime, Integer, String
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 from models.pet import PetProfile
 from deps import Base
@@ -19,7 +19,36 @@ class UserProfile(Base):
     
     # Relationship to Pet model
     pets = relationship("Pet", back_populates="owner")
-    
+
+
+class UserLogin(Base):
+    __tablename__ = 'UserLogin'
+
+    login_id = Column(Integer, primary_key=True, index=True)
+    login_datetime = Column(DateTime, default=lambda: datetime.now().replace(microsecond=0)) 
+    user_id = Column(Integer, ForeignKey('Userprofiles.user_id'), nullable=False)
+    first_name = Column(String, nullable=False)
+    last_name = Column(String, nullable=False)
+    email = Column(String, unique=True, nullable=False)
+    contact_number = Column(String, nullable=False)
+    access_token = Column(String, nullable=False)
+    role = Column(String, nullable=False)
+
+
+class LogUserLogin(Base):
+    __tablename__ = 'log_UserLogin'
+
+    id = Column(Integer, primary_key=True, index=True)
+    login_id = Column(Integer, nullable=False)
+    login_datetime = Column(DateTime, default=lambda: datetime.now().replace(microsecond=0)) 
+    user_id = Column(Integer, ForeignKey('Userprofiles.user_id'), nullable=False)
+    first_name = Column(String, nullable=False)
+    last_name = Column(String, nullable=False)
+    email = Column(String, unique=True, nullable=False)
+    contact_number = Column(String, nullable=False)
+    access_token = Column(String, nullable=False)
+    role = Column(String, nullable=False)
+
 
 class LogUserProfile(Base):
     __tablename__ = 'log_Userprofiles'
