@@ -4,7 +4,7 @@ import 'package:frontend/users/bloc/create_pet_state.dart';
 
 class CreatePetBloc extends Bloc<CreatePetEvent, CreatePetState> {
   CreatePetBloc() : super(CreatePetInitial()) {
-    // เมื่อ Event ของการกดปุ่มบันทึกถูกเรียกใช้
+    // เมื่อ Event ของการบันทึกโปรไฟล์สัตว์เลี้ยงถูกเรียกใช้
     on<SavePetProfile>((event, emit) async {
       emit(CreatePetLoading());
 
@@ -16,6 +16,22 @@ class CreatePetBloc extends Bloc<CreatePetEvent, CreatePetState> {
         emit(CreatePetSuccess());
       } catch (error) {
         // ถ้าเกิดข้อผิดพลาดในการบันทึก
+        emit(CreatePetFailure(error.toString()));
+      }
+    });
+
+    // เมื่อ Event ของการแก้ไขโปรไฟล์สัตว์เลี้ยงถูกเรียกใช้
+    on<UpdatePetProfile>((event, emit) async {
+      emit(CreatePetLoading());
+
+      try {
+        // จำลองการอัปเดตข้อมูลสัตว์เลี้ยง
+        await Future.delayed(const Duration(seconds: 2));
+
+        // ถ้าสำเร็จให้ส่งสถานะ CreatePetUpdatedSuccess
+        emit(CreatePetUpdatedSuccess(event.pet));
+      } catch (error) {
+        // ถ้าเกิดข้อผิดพลาดในการอัปเดต
         emit(CreatePetFailure(error.toString()));
       }
     });

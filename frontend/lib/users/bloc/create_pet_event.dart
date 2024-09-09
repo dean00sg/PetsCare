@@ -1,6 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:frontend/users/models/create_pet_model.dart';
- // นำเข้า PetModel
 
 abstract class CreatePetEvent extends Equatable {
   const CreatePetEvent();
@@ -17,4 +16,14 @@ class SavePetProfile extends CreatePetEvent {
 
   @override
   List<Object?> get props => [petData];
+}
+
+// Event สำหรับการแก้ไขโปรไฟล์สัตว์เลี้ยง (Update)
+class UpdatePetProfile extends CreatePetEvent {
+  final PetModel pet;
+
+  const UpdatePetProfile(this.pet);
+
+  @override
+  List<Object?> get props => [pet];
 }
