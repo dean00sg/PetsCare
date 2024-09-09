@@ -1,15 +1,18 @@
+import 'dart:io'; // Import สำหรับจัดการไฟล์
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/users/bloc/create_pet_bloc.dart';
+//import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart'; // ใช้สำหรับเลือกไฟล์จากโฟลเดอร์
+//import 'package:frontend/users/bloc/create_pet_bloc.dart';
 //import 'package:frontend/users/bloc/create_pet_event.dart';
-import 'package:frontend/users/bloc/create_pet_state.dart';
 import 'package:frontend/users/models/create_pet_model.dart';
 import 'package:frontend/users/models/pet_models.dart';
 import 'package:frontend/users/styles/create_pet_style.dart';
 import 'package:frontend/users/widget_screen/pet_details_screen.dart';
 
 class CreatePetScreen extends StatefulWidget {
-  const CreatePetScreen({super.key});
+  final Pet pet; // รับพารามิเตอร์ pet จากหน้า PetScreen
+
+  const CreatePetScreen({super.key, required this.pet});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -17,6 +20,10 @@ class CreatePetScreen extends StatefulWidget {
 }
 
 class _CreatePetScreenState extends State<CreatePetScreen> {
+  // ตัวแปรควบคุมการอัปโหลดรูปภาพใหม่
+  File? _image;
+  final picker = ImagePicker();
+
   // TextEditingController สำหรับแต่ละฟิลด์
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
@@ -39,192 +46,168 @@ class _CreatePetScreenState extends State<CreatePetScreen> {
     }
   }
 
+  // ฟังก์ชันสำหรับอัปโหลดรูปภาพใหม่
+  Future<void> _pickImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path); // เก็บไฟล์รูปภาพใหม่ที่เลือก
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // รับข้อมูล Pet จาก arguments ที่ถูกส่งมา
-    final Pet pet = ModalRoute.of(context)?.settings.arguments as Pet;
-
-    return BlocProvider(
-      create: (_) => CreatePetBloc(),
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.brown[400],
-          title: Text(
-            'CREATE MY ${pet.name.toUpperCase()}', // ใช้ชื่อ pet ใน title ของ AppBar
-            style: const TextStyle(fontSize: 16, color: Colors.white),
-          ),
-          centerTitle: true,
-          actions: [
-            PopupMenuButton<String>(
-              icon: const Icon(Icons.account_circle),
-              onSelected: (String result) {
-                if (result == 'profile') {
-                  Navigator.pushNamed(context, '/profile');
-                } else if (result == 'signout') {
-                  Navigator.pushNamed(context, '/');
-                }
-              },
-              itemBuilder: (BuildContext context) => [
-                const PopupMenuItem<String>(
-                  value: 'profile',
-                  child: Text('PROFILE'),
-                ),
-                const PopupMenuItem<String>(
-                  value: 'signout',
-                  child: Text('SIGN OUT'),
-                ),
-              ],
-            ),
-          ],
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.brown[400],
+        title: Text(
+          'CREATE MY ${widget.pet.name.toUpperCase()}',
+          style: const TextStyle(fontSize: 16, color: Colors.white),
         ),
-        backgroundColor: Colors.white,
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                width: 500,
-                height: 750,
-                margin: const EdgeInsets.symmetric(horizontal: 20.0),
-                padding: const EdgeInsets.all(16.0),
-                decoration: containerDecoration, 
-                child: Column(
-                  children: <Widget>[
-                    const SizedBox(height: 10),
-                    // แสดงรูปภาพของสัตว์ที่เลือก
-                    Container(
-                      width: 170,
-                      height: 170,
-                      decoration: BoxDecoration(
-                        color: Colors.white, 
-                        shape: BoxShape.circle,
-                        border: Border.all(color: const Color.fromARGB(255, 193, 193, 193), width: 8),
-                      ),
-                      child: ClipOval(
-                        child: Image.asset(
-                          pet.imagePath, // แสดงรูปภาพตามสัตว์ที่เลือก
-                          height: 150,
-                          width: 150,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    // แสดงชื่อสัตว์ที่เลือก
-                    Text(
-                      '${pet.name.toUpperCase()} PROFILE', // ชื่อสัตว์ที่เลือก
-                      style: const TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    // ฟิลด์สำหรับกรอกข้อมูล
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: <Widget>[
-                            const SizedBox(height: 10),
-                            // Name Field
-                            TextField(
-                              controller: _nameController,
-                              decoration: inputDecoration('Name'),
-                            ),
-                            const SizedBox(height: 25),
-                            // Date of Birth Field
-                            TextField(
-                              controller: _dateController,
-                              readOnly: true,
-                              decoration: inputDecoration('Date of Birth'),
-                              onTap: () {
-                                _selectDate(context);
-                              },
-                            ),
-                            const SizedBox(height: 25),
-                            // Weight Field
-                            TextField(
-                              controller: _weightController,
-                              decoration: inputDecoration('Weight'),
-                            ),
-                            const SizedBox(height: 25),
-                            // Sex Dropdown
-                            DropdownButtonFormField<String>(
-                              value: _selectedSex,
-                              decoration: inputDecoration('Sex'),
-                              hint: const Text('Sex'),
-                              items: <String>['Male', 'Female'].map((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  _selectedSex = newValue!;
-                                });
-                              },
-                            ),
-                            const SizedBox(height: 25),
-                            // Breed Field
-                            TextField(
-                              controller: _breedController,
-                              decoration: inputDecoration('Breed'),
-                            ),
-                            const SizedBox(height: 30),
-                            // Save Button
-                            ElevatedButton(
-                              style: saveButtonStyle,
-                              onPressed: () {
-                                final petData = PetModel(
-                                  name: _nameController.text,
-                                  dateOfBirth: _dateController.text,
-                                  weight: _weightController.text,
-                                  sex: _selectedSex!,
-                                  breed: _breedController.text,
-                                );
-
-                                // ส่งข้อมูลไปยังหน้า PetDetailsScreen
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => PetDetailsScreen(pet: petData),
-                                  ),
-                                );
-                              },
-                              child: const Text('SAVE', style: TextStyle(fontSize: 16)),
-                            ),
-
-                            BlocListener<CreatePetBloc, CreatePetState>(
-                              listener: (context, state) {
-                                if (state is CreatePetSuccess) {
-                                  Navigator.pushNamed(context, '/pet_list');
-                                } else if (state is CreatePetFailure) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(state.error)),
-                                  );
-                                }
-                              },
-                              child: BlocBuilder<CreatePetBloc, CreatePetState>(
-                                builder: (context, state) {
-                                  if (state is CreatePetLoading) {
-                                    return const Center(child: CircularProgressIndicator());
-                                  } else {
-                                    return Container();
-                                  }
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
+        centerTitle: true,
+        actions: [
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.account_circle),
+            onSelected: (String result) {
+              if (result == 'profile') {
+                Navigator.pushNamed(context, '/profile');
+              } else if (result == 'signout') {
+                Navigator.pushNamed(context, '/');
+              }
+            },
+            itemBuilder: (BuildContext context) => [
+              const PopupMenuItem<String>(
+                value: 'profile',
+                child: Text('PROFILE'),
+              ),
+              const PopupMenuItem<String>(
+                value: 'signout',
+                child: Text('SIGN OUT'),
               ),
             ],
           ),
+        ],
+      ),
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              width: 500,
+              height: 750,
+              margin: const EdgeInsets.symmetric(horizontal: 20.0),
+              padding: const EdgeInsets.all(16.0),
+              decoration: containerDecoration,
+              child: Column(
+                children: <Widget>[
+                  const SizedBox(height: 30),
+                  Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 90,
+                        backgroundImage: _image != null
+                            ? FileImage(_image!) // แสดงรูปที่อัปโหลดใหม่
+                            : AssetImage(widget.pet.imagePath) as ImageProvider, // แสดงรูปเริ่มต้นจากหน้า PetScreen
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: GestureDetector(
+                          onTap: _pickImage,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.grey.withOpacity(0.7),
+                            ),
+                            padding: const EdgeInsets.all(8.0),
+                            child: const Icon(
+                              Icons.camera_alt,
+                              size: 30,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 30),
+                  // Name Field
+                  TextField(
+                    controller: _nameController,
+                    decoration: inputDecoration('Name'),
+                  ),
+                  const SizedBox(height: 25),
+                  // Date of Birth Field
+                  TextField(
+                    controller: _dateController,
+                    readOnly: true,
+                    decoration: inputDecoration('Date of Birth'),
+                    onTap: () {
+                      _selectDate(context);
+                    },
+                  ),
+                  const SizedBox(height: 25),
+                  // Weight Field
+                  TextField(
+                    controller: _weightController,
+                    decoration: inputDecoration('Weight'),
+                  ),
+                  const SizedBox(height: 25),
+                  // Sex Dropdown
+                  DropdownButtonFormField<String>(
+                    value: _selectedSex,
+                    decoration: inputDecoration('Sex'),
+                    hint: const Text('Sex'),
+                    items: <String>['Male', 'Female'].map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        _selectedSex = newValue!;
+                      });
+                    },
+                  ),
+                  const SizedBox(height: 25),
+                  // Breed Field
+                  TextField(
+                    controller: _breedController,
+                    decoration: inputDecoration('Breed'),
+                  ),
+                  const SizedBox(height: 30),
+                  // Save Button
+                  ElevatedButton(
+                    style: saveButtonStyle,
+                    onPressed: () {
+                      final petData = PetModel(
+                        name: _nameController.text,
+                        dateOfBirth: _dateController.text,
+                        weight: _weightController.text,
+                        sex: _selectedSex!,
+                        breed: _breedController.text,
+                        // ถ้าไม่ได้อัปโหลดรูปใหม่ ให้ใช้รูปเริ่มต้น
+                        imagePath: _image != null ? _image!.path : widget.pet.imagePath,
+                      );
+
+                      // ส่งข้อมูลไปยังหน้า PetDetailsScreen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => PetDetailsScreen(pet: petData),
+                        ),
+                      );
+                    },
+                    child: const Text('SAVE', style: TextStyle(fontSize: 16)),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );

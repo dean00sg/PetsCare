@@ -6,11 +6,24 @@ import 'package:frontend/users/models/create_pet_model.dart';
 import 'package:frontend/users/widget_screen/edit_profile_pet.dart';
 import 'package:intl/intl.dart';
 
-class PetDetailsScreen extends StatelessWidget {
+class PetDetailsScreen extends StatefulWidget {
   final PetModel pet;
 
-  // ignore: use_super_parameters
-  const PetDetailsScreen({Key? key, required this.pet}) : super(key: key);
+  const PetDetailsScreen({super.key, required this.pet});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _PetDetailsScreenState createState() => _PetDetailsScreenState();
+}
+
+class _PetDetailsScreenState extends State<PetDetailsScreen> {
+  late PetModel pet;
+
+  @override
+  void initState() {
+    super.initState();
+    pet = widget.pet; // กำหนดค่าเริ่มต้นให้กับ pet จาก widget
+  }
 
   // ฟังก์ชันคำนวณอายุในหน่วยปี เดือน วัน
   Map<String, int> calculateAge(String birthDateString) {
@@ -48,27 +61,27 @@ class PetDetailsScreen extends StatelessWidget {
         backgroundColor: Colors.brown[400],
         centerTitle: true,
         actions: [
-            PopupMenuButton<String>(
-              icon: const Icon(Icons.account_circle),
-              onSelected: (String result) {
-                if (result == 'profile') {
-                  Navigator.pushNamed(context, '/profile');
-                } else if (result == 'signout') {
-                  Navigator.pushNamed(context, '/');
-                }
-              },
-              itemBuilder: (BuildContext context) => [
-                const PopupMenuItem<String>(
-                  value: 'profile',
-                  child: Text('PROFILE'),
-                ),
-                const PopupMenuItem<String>(
-                  value: 'signout',
-                  child: Text('SIGN OUT'),
-                ),
-              ],
-            ),
-          ],
+          PopupMenuButton<String>(
+            icon: const Icon(Icons.account_circle),
+            onSelected: (String result) {
+              if (result == 'profile') {
+                Navigator.pushNamed(context, '/profile');
+              } else if (result == 'signout') {
+                Navigator.pushNamed(context, '/');
+              }
+            },
+            itemBuilder: (BuildContext context) => [
+              const PopupMenuItem<String>(
+                value: 'profile',
+                child: Text('PROFILE'),
+              ),
+              const PopupMenuItem<String>(
+                value: 'signout',
+                child: Text('SIGN OUT'),
+              ),
+            ],
+          ),
+        ],
       ),
       drawer: Drawer(
         child: ListView(
@@ -107,12 +120,12 @@ class PetDetailsScreen extends StatelessWidget {
             const SizedBox(height: 30),
             Container(
               width: 400,
-              height: 250,
+              height: 260,
               padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
                 color: Colors.brown, // กำหนดพื้นหลังสีน้ำตาลอ่อน
                 borderRadius: BorderRadius.circular(16), // เพิ่มความโค้งที่มุม
-                              ),
+              ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -193,17 +206,21 @@ class PetDetailsScreen extends StatelessWidget {
                           builder: (context) => EditPetScreen(pet: pet),
                         ),
                       );
+
                       if (updatedPet != null) {
-                        // ignore: use_build_context_synchronously
+                        setState(() {
+                          pet = updatedPet; // อัปเดตข้อมูลของ pet หลังจากการแก้ไข
+                        });
+
+                        // ทำการส่งอัปเดตไปยัง Bloc เพื่อบันทึกการเปลี่ยนแปลงใน backend
                         BlocProvider.of<CreatePetBloc>(context).add(UpdatePetProfile(updatedPet));
                       }
                     },
-                  )
+                  ),
                 ],
               ),
             ),
             const SizedBox(height: 20), // เพิ่มระยะห่างระหว่างคอนเทนเนอร์
-
 
             // คอนเทนเนอร์แสดงกราฟ
             Container(

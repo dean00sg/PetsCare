@@ -1,6 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/users/bloc/create_pet_event.dart';
 import 'package:frontend/users/bloc/create_pet_state.dart';
+import 'package:logger/logger.dart';
+
+var logger = Logger();
 
 class CreatePetBloc extends Bloc<CreatePetEvent, CreatePetState> {
   CreatePetBloc() : super(CreatePetInitial()) {
@@ -25,13 +28,15 @@ class CreatePetBloc extends Bloc<CreatePetEvent, CreatePetState> {
       emit(CreatePetLoading());
 
       try {
+        logger.d("Updating pet profile with data: ${event.updatedPet}"); // ใช้ logger แทน print
+
         // จำลองการอัปเดตข้อมูลสัตว์เลี้ยง
         await Future.delayed(const Duration(seconds: 2));
 
         // ถ้าสำเร็จให้ส่งสถานะ CreatePetUpdatedSuccess
-        emit(CreatePetUpdatedSuccess(event.pet));
+        emit(CreatePetUpdatedSuccess(updatedPet: event.updatedPet));
       } catch (error) {
-        // ถ้าเกิดข้อผิดพลาดในการอัปเดต
+        logger.e("Error updating pet profile: $error"); // ใช้ logger สำหรับแสดงข้อผิดพลาด
         emit(CreatePetFailure(error.toString()));
       }
     });

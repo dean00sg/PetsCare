@@ -20,10 +20,10 @@ class SavePetProfile extends CreatePetEvent {
 
 // Event สำหรับการแก้ไขโปรไฟล์สัตว์เลี้ยง (Update)
 class UpdatePetProfile extends CreatePetEvent {
-  final PetModel pet;
+  final PetModel updatedPet;
 
-  const UpdatePetProfile(this.pet);
+  const UpdatePetProfile(this.updatedPet);
 
   @override
-  List<Object?> get props => [pet];
+  List<Object?> get props => [updatedPet];
 }

@@ -22,7 +22,7 @@ class CreatePetSuccess extends CreatePetState {}
 class CreatePetUpdatedSuccess extends CreatePetState {
   final PetModel updatedPet;
 
-  const CreatePetUpdatedSuccess(this.updatedPet);
+  const CreatePetUpdatedSuccess({required this.updatedPet});
 
   @override
   List<Object?> get props => [updatedPet];

@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/users/bloc/create_pet_bloc.dart';
-import 'package:frontend/users/bloc/create_pet_state.dart';
+import 'package:frontend/users/bloc/create_pet_event.dart';
 import 'package:frontend/users/models/create_pet_model.dart';
 import 'package:frontend/users/styles/create_pet_style.dart';
+import 'package:image_picker/image_picker.dart';
 
 class EditPetScreen extends StatefulWidget {
   final PetModel pet;
@@ -16,23 +19,34 @@ class EditPetScreen extends StatefulWidget {
 }
 
 class _EditPetScreenState extends State<EditPetScreen> {
-  // TextEditingController สำหรับแต่ละฟิลด์
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _weightController = TextEditingController();
-  final TextEditingController _breedController = TextEditingController();
+  late TextEditingController _nameController;
+  late TextEditingController _dateController;
+  late TextEditingController _weightController;
+  late TextEditingController _breedController;
   String? _selectedSex;
+  File? _image; // ตัวแปรสำหรับเก็บรูปภาพที่อัปโหลดใหม่
+  final picker = ImagePicker();
 
   @override
   void initState() {
     super.initState();
-    // ตั้งค่าให้ TextEditingController เริ่มต้นด้วยข้อมูลจากสัตว์เลี้ยงที่ต้องการแก้ไข
-    _nameController.text = widget.pet.name;
-    _dateController.text = widget.pet.dateOfBirth;
-    _weightController.text = widget.pet.weight;
-    _breedController.text = widget.pet.breed;
+    _nameController = TextEditingController(text: widget.pet.name);
+    _dateController = TextEditingController(text: widget.pet.dateOfBirth);
+    _weightController = TextEditingController(text: widget.pet.weight);
+    _breedController = TextEditingController(text: widget.pet.breed);
     _selectedSex = widget.pet.sex;
   }
+
+  Future<void> _pickImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path); // เก็บไฟล์รูปภาพใหม่ที่เลือก
+      });
+    }
+  }
+
 
   // ฟังก์ชันแสดง DatePicker
   Future<void> _selectDate(BuildContext context) async {
@@ -51,145 +65,124 @@ class _EditPetScreenState extends State<EditPetScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => CreatePetBloc(),
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.brown[400],
-          title: const Text(
-            'EDIT PET PROFILE',
-            style: TextStyle(fontSize: 16, color: Colors.white),
-          ),
-          centerTitle: true,
-        ),
-        backgroundColor: Colors.white,
-        body: Center(
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('EDIT PORFILE', style: TextStyle(fontSize: 16, color: Colors.white),),
+        backgroundColor: Colors.brown[400],
+        centerTitle: true,
+      ),
+      body: Center(
+        child: Container(
+          width: 500,
+          height: 750,
+          margin: const EdgeInsets.symmetric(horizontal: 20.0),
+          padding: const EdgeInsets.all(16.0),
+          decoration: containerDecoration, // ใช้สไตล์จาก create_pet_style.dart
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Container(
-                width: 500,
-                height: 750,
-                margin: const EdgeInsets.symmetric(horizontal: 20.0),
-                padding: const EdgeInsets.all(16.0),
-                decoration: containerDecoration, // ใช้สไตล์จาก create_pet_style.dart
-                child: Column(
-                  children: <Widget>[
-                    const SizedBox(height: 10),
-                    // แสดงรูปภาพของสัตว์ที่เลือก
-                    Container(
-                      width: 170,
-                      height: 170,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: const Color.fromARGB(255, 193, 193, 193), width: 8),
-                      ),
-                      child: ClipOval(
-                        child: Image.asset(
-                          'lib/images/cat_icon.png', // แสดงรูปภาพจาก assets
-                          height: 150,
-                          width: 150,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    // ฟิลด์สำหรับกรอกข้อมูล
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: <Widget>[
-                            const SizedBox(height: 10),
-                            // Name Field
-                            TextField(
-                              controller: _nameController,
-                              decoration: inputDecoration('Name'),
-                            ),
-                            const SizedBox(height: 25),
-                            // Date of Birth Field
-                            TextField(
-                              controller: _dateController,
-                              readOnly: true,
-                              decoration: inputDecoration('Date of Birth'),
-                              onTap: () {
-                                _selectDate(context);
-                              },
-                            ),
-                            const SizedBox(height: 25),
-                            // Weight Field
-                            TextField(
-                              controller: _weightController,
-                              decoration: inputDecoration('Weight'),
-                            ),
-                            const SizedBox(height: 25),
-                            // Sex Dropdown
-                            DropdownButtonFormField<String>(
-                              value: _selectedSex,
-                              decoration: inputDecoration('Sex'),
-                              hint: const Text('Sex'),
-                              items: <String>['Male', 'Female'].map((String value) {
-                                return DropdownMenuItem<String>(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              }).toList(),
-                              onChanged: (String? newValue) {
-                                setState(() {
-                                  _selectedSex = newValue!;
-                                });
-                              },
-                            ),
-                            const SizedBox(height: 25),
-                            // Breed Field
-                            TextField(
-                              controller: _breedController,
-                              decoration: inputDecoration('Breed'),
-                            ),
-                            const SizedBox(height: 30),
-                            // Save Button
-                            ElevatedButton(
-                              style: saveButtonStyle, // ใช้สไตล์ปุ่มจาก create_pet_style.dart
-                              onPressed: () {
-                                final updatedPet = PetModel(
-                                  name: _nameController.text,
-                                  dateOfBirth: _dateController.text,
-                                  weight: _weightController.text,
-                                  sex: _selectedSex!,
-                                  breed: _breedController.text,
-                                );
-
-                                // ส่งข้อมูลกลับไปยังหน้า PetDetailsScreen
-                                Navigator.pop(context, updatedPet);
-                              },
-                              child: const Text('SAVE', style: TextStyle(fontSize: 16)),
-                            ),
-                            BlocListener<CreatePetBloc, CreatePetState>(
-                              listener: (context, state) {
-                                if (state is CreatePetUpdatedSuccess) {
-                                  Navigator.pop(context, state.updatedPet);
-                                } else if (state is CreatePetFailure) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text(state.error)),
-                                  );
-                                }
-                              },
-                              child: BlocBuilder<CreatePetBloc, CreatePetState>(
-                                builder: (context, state) {
-                                  if (state is CreatePetLoading) {
-                                    return const Center(child: CircularProgressIndicator());
-                                  } else {
-                                    return Container();
-                                  }
-                                },
+              const SizedBox(height: 30),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      const SizedBox(height: 30),
+                      Stack(
+                        children: [
+                          CircleAvatar(
+                            radius: 90,
+                            backgroundImage: _image != null
+                                ? FileImage(_image!) // แสดงรูปที่อัปโหลดใหม่
+                                : AssetImage(widget.pet.imagePath!) as ImageProvider, 
+                          ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: GestureDetector(
+                              onTap: _pickImage,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.grey.withOpacity(0.7),
+                                ),
+                                padding: const EdgeInsets.all(8.0),
+                                child: const Icon(
+                                  Icons.camera_alt,
+                                  size: 30,
+                                  color: Colors.white,
+                                ),
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 10),
+                      // Name Field
+                      TextField(
+                        controller: _nameController,
+                        decoration: inputDecoration('Name'),
+                      ),
+                      const SizedBox(height: 25),
+                      // Date of Birth Field
+                      TextField(
+                        controller: _dateController,
+                        readOnly: true,
+                        decoration: inputDecoration('Date of Birth'),
+                        onTap: () {
+                          _selectDate(context);
+                        },
+                      ),
+                      const SizedBox(height: 25),
+                      // Weight Field
+                      TextField(
+                        controller: _weightController,
+                        decoration: inputDecoration('Weight'),
+                      ),
+                      const SizedBox(height: 25),
+                      // Sex Dropdown
+                      DropdownButtonFormField<String>(
+                        value: _selectedSex,
+                        decoration: inputDecoration('Sex'),
+                        hint: const Text('Sex'),
+                        items: <String>['Male', 'Female'].map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            _selectedSex = newValue!;
+                          });
+                        },
+                      ),
+                      const SizedBox(height: 25),
+                      // Breed Field
+                      TextField(
+                        controller: _breedController,
+                        decoration: inputDecoration('Breed'),
+                      ),
+                      const SizedBox(height: 30),
+                      ElevatedButton(
+                        style: saveButtonStyle,
+                        onPressed: () {
+                          final updatedPet = PetModel(
+                            name: _nameController.text,
+                            dateOfBirth: _dateController.text,
+                            weight: _weightController.text,
+                            sex: _selectedSex!,
+                            breed: _breedController.text, imagePath: '',
+                          );
+
+                          BlocProvider.of<CreatePetBloc>(context)
+                              .add(UpdatePetProfile(updatedPet));
+
+                          Navigator.pop(context, updatedPet);
+                        },
+                        child: const Text('SAVE', style: TextStyle(fontSize: 16)),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -199,3 +192,10 @@ class _EditPetScreenState extends State<EditPetScreen> {
     );
   }
 }
+
+
+
+
+
+
+
