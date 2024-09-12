@@ -1,21 +1,26 @@
-from fastapi import APIRouter, HTTPException, Depends
-from sqlmodel import Session
-from models.pet import Pet, PetCreate, PetLog, PetUpdate, PetResponse
-from deps import get_session
 from datetime import date, datetime
-from dateutil.relativedelta import relativedelta
+from fastapi import APIRouter, HTTPException, Depends
+from sqlalchemy.orm import Session
+from models.pet import Pet, PetCreate, PetLog, PetUpdate, PetResponse
+from deps import get_current_user, get_session
 from models.user import UserProfile
+from dateutil.relativedelta import relativedelta
 
 router = APIRouter(tags=["Pets"])
 
-def calculate_age(birth_date: date) -> str:
-    today = date.today()
-    delta = relativedelta(today, birth_date)
-    return f"{delta.years}y {delta.months}m {delta.days}d"
+# def calculate_age(birth_date: date) -> str:
+#     today = date.today()
+#     delta = relativedelta(today, birth_date)
+#     return f"{delta.years}y {delta.months}m {delta.days}d"
 
 @router.post("/", response_model=PetResponse)
-def create_pet(pet: PetCreate, session: Session = Depends(get_session)):
-    user = session.query(UserProfile).filter(UserProfile.user_id == pet.user_id).first()
+async def create_pet(
+    pet: PetCreate, 
+    session: Session = Depends(get_session),
+    current_username: str = Depends(get_current_user)
+):
+    
+    user = session.query(UserProfile).filter(UserProfile.email == current_username).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
@@ -26,18 +31,19 @@ def create_pet(pet: PetCreate, session: Session = Depends(get_session)):
         breed=pet.breed,
         birth_date=pet.birth_date,
         weight=pet.weight,
-        user_id=pet.user_id,
-        owner_name=user.first_name
+        owner_name=user.first_name,
+        user_id=user.user_id  
     )
 
     session.add(db_pet)
     session.commit()
     session.refresh(db_pet)
 
-    # Create a log entry for pet creation
+  
     log_entry = PetLog(
         action_name="insert",
-        action_datetime=datetime.now(),
+        action_datetime=datetime.now().replace(microsecond=0), 
+        pets_id=db_pet.pets_id, 
         name=db_pet.name,
         birth_date=db_pet.birth_date,
         weight=db_pet.weight,
@@ -49,7 +55,7 @@ def create_pet(pet: PetCreate, session: Session = Depends(get_session)):
     session.commit()
 
     return PetResponse(
-        status="Succces to add your pet is :",
+        status="Success to add your pet is :",
         pets_id=db_pet.pets_id,
         name=db_pet.name,
         type_pets=db_pet.type_pets,
@@ -62,40 +68,57 @@ def create_pet(pet: PetCreate, session: Session = Depends(get_session)):
     )
 
 
-@router.get("/{pets_id}", response_model=PetResponse)
-def get_pet(pets_id: int, session: Session = Depends(get_session)):
-    # Fetch the pet and its owner by using a join
-    pet = session.query(Pet).join(UserProfile).filter(Pet.pets_id == pets_id).first()
+@router.get("/", response_model=list[PetResponse])
+async def get_pets(
+    session: Session = Depends(get_session),
+    current_username: str = Depends(get_current_user)
+):
+    user = session.query(UserProfile).filter(UserProfile.email == current_username).first()
+    
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    pets = session.query(Pet).filter(Pet.user_id == user.user_id).all()
 
+    if not pets:
+        raise HTTPException(status_code=404, detail="No pets found for this user")
+
+    return [
+        PetResponse(
+            status="Success",
+            pets_id=pet.pets_id,
+            name=pet.name,
+            type_pets=pet.type_pets,
+            sex=pet.sex,
+            breed=pet.breed,
+            birth_date=pet.birth_date,
+            weight=pet.weight,
+            user_id=pet.user_id,
+            owner_name=f"{user.first_name} {user.last_name}"  # Owner's full name
+        )
+        for pet in pets
+    ]
+
+
+@router.put("/{pet_name}", response_model=PetResponse)
+async def update_pet(
+    pet_name: str, 
+    pet_update: PetUpdate, 
+    session: Session = Depends(get_session),
+    current_username: str = Depends(get_current_user)
+):
+    user = session.query(UserProfile).filter(UserProfile.email == current_username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    pet = session.query(Pet).filter(Pet.name == pet_name, Pet.user_id == user.user_id).first()
     if pet is None:
         raise HTTPException(status_code=404, detail="Pet not found")
 
-    # Get the owner's name from the related UserProfile
-    owner = session.query(UserProfile).filter(UserProfile.user_id == pet.user_id).first()
-
-    return PetResponse(
-        pets_id=pet.pets_id,
-        name=pet.name,
-        type_pets=pet.type_pets,
-        sex=pet.sex,
-        breed=pet.breed,
-        birth_date=pet.birth_date,
-        weight=pet.weight,
-        user_id=pet.user_id,
-        owner_name=f"{owner.first_name} {owner.last_name}"  # Display the owner's full name
-    )
-
-
-@router.put("/{pets_id}", response_model=PetResponse)
-def update_pet(pets_id: int, pet_update: PetUpdate, session: Session = Depends(get_session)):
-    pet = session.get(Pet, pets_id)
-    if pet is None:
-        raise HTTPException(status_code=404, detail="Pet not found")
-
-    # Create a new log entry for the update action
     log_entry = PetLog(
         action_name="update",
-        action_datetime=datetime.now(),
+        action_datetime=datetime.now().replace(microsecond=0), 
+        pets_id=pet.pets_id,
         name=pet.name,
         to_name=pet_update.name if pet_update.name else pet.name,
         birth_date=pet.birth_date,
@@ -105,11 +128,9 @@ def update_pet(pets_id: int, pet_update: PetUpdate, session: Session = Depends(g
         user_id=pet.user_id,
         owner_name=pet.owner_name
     )
-
-    # Add the new log entry (do not modify the old log)
     session.add(log_entry)
+    session.commit() 
 
-    # Update pet information
     if pet_update.name is not None:
         pet.name = pet_update.name
     if pet_update.birth_date is not None:
@@ -117,13 +138,11 @@ def update_pet(pets_id: int, pet_update: PetUpdate, session: Session = Depends(g
     if pet_update.weight is not None:
         pet.weight = pet_update.weight
 
-    session.add(pet)
-    session.commit()
+    session.commit() 
     session.refresh(pet)
 
-    # คืนค่าทุกฟิลด์ใน PetResponse
     return PetResponse(
-        status="Secces to update your pet",
+        status="Success to update your pet",
         pets_id=pet.pets_id,
         name=pet.name,
         type_pets=pet.type_pets,
@@ -136,39 +155,36 @@ def update_pet(pets_id: int, pet_update: PetUpdate, session: Session = Depends(g
     )
 
 
-@router.delete("/{pets_id}", response_model=PetResponse)
-def delete_pet(pets_id: int, session: Session = Depends(get_session)):
-    pet = session.get(Pet, pets_id)
+@router.delete("/{pet_name}")
+async def delete_pet(
+    pet_name: str, 
+    session: Session = Depends(get_session),
+    current_username: str = Depends(get_current_user)
+):
+    
+    user = session.query(UserProfile).filter(UserProfile.email == current_username).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+
+    pet = session.query(Pet).filter(Pet.name == pet_name, Pet.user_id == user.user_id).first()
     if pet is None:
         raise HTTPException(status_code=404, detail="Pet not found")
 
-    # Create a new log entry for the delete action
     log_entry = PetLog(
         action_name="delete",
-        action_datetime=datetime.now(),
-        name=pet.name,
-        birth_date=pet.birth_date,
-        weight=pet.weight,
-        user_id=pet.user_id,
-        owner_name=pet.owner_name
-    )
-
-    # Add the new log entry (do not modify the old log)
-    session.add(log_entry)
-
-    # Delete the pet entry
-    session.delete(pet)
-    session.commit()
-
-    return PetResponse(
-        status="Succes to delete your pet ",
+        action_datetime=datetime.now().replace(microsecond=0), 
         pets_id=pet.pets_id,
         name=pet.name,
-        type_pets=pet.type_pets,
-        sex=pet.sex,
-        breed=pet.breed,
         birth_date=pet.birth_date,
         weight=pet.weight,
         user_id=pet.user_id,
         owner_name=pet.owner_name
     )
+    session.add(log_entry)
+    session.commit()  
+
+    session.delete(pet)  
+    session.commit()
+
+    return {"status": "Success", "detail": f"Pet '{pet_name}' has been deleted and logged in the system."}
