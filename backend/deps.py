@@ -1,13 +1,14 @@
+from jose import JWTError
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
-from fastapi import Request, HTTPException, Depends
+from fastapi import Request, HTTPException, Depends, status
+from fastapi.security import OAuth2PasswordBearer
 from security import AuthHandler
 from config import settings
 
+
 engine = create_engine(settings.DATABASE_URL, echo=True)
-
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
 Base = declarative_base()
 
 def init_db():
@@ -20,21 +21,42 @@ def get_session():
     finally:
         db.close()
 
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 auth_handler = AuthHandler()
 
-def get_current_user_role(request: Request, session=Depends(get_session)) -> str:
-    authorization: str = request.headers.get("Authorization")
-    if not authorization:
-        raise HTTPException(status_code=401, detail="Not authenticated")
+
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
     try:
-        token_parts = authorization.split(" ")
-        if len(token_parts) != 2:
-            raise HTTPException(status_code=401, detail="Invalid authorization header")
-        
-        token = token_parts[1]
-        role = auth_handler.get_current_user_role(token)
-        if role not in ["admin", "userpets"]:
-            raise HTTPException(status_code=403, detail="Invalid role")
-        return role
-    except Exception:
-        raise HTTPException(status_code=401, detail="Invalid token")
+        payload = auth_handler.decode_access_token(token)
+        username: str = payload.get("username")
+        if username is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+    
+    return username
+
+async def get_current_user_role(token: str = Depends(oauth2_scheme)) -> str:
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = auth_handler.decode_access_token(token)
+        role: str = payload.get("role")
+        if role is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+    
+    if role != "admin":
+        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    
+    return role
