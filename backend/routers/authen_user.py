@@ -1,14 +1,14 @@
 from datetime import datetime
-from fastapi import APIRouter, HTTPException, Depends, Query, Body
+from fastapi import APIRouter, HTTPException, Depends, Body
+from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from security import AuthHandler
-from models.user import LogUserLogin, LogUserProfile, UpdateUser, UserCreate, UserLogin, UserUpdate, UpdateUserResponse, UserProfile, UserWithPets, DeleteResponse,UserAuthen
-from deps import get_session
+from security import AuthHandler, Token
+from models.user import LogUserLogin, LogUserProfile, UpdateUser, UserCreate, UserLogin, UserUpdate, UpdateUserResponse, UserProfile, UserWithPets, DeleteResponse, UserAuthen
+from deps import get_session, get_current_user
 
 router = APIRouter(tags=["Authentication"])
 
 auth_handler = AuthHandler()
-
 
 @router.post("/register", response_model=UserAuthen)
 async def register_user(user: UserCreate, session: Session = Depends(get_session)):
@@ -18,7 +18,6 @@ async def register_user(user: UserCreate, session: Session = Depends(get_session
 
     hashed_password = auth_handler.get_password_hash(user.password)
     
-    # Create new user
     db_user = UserProfile(
         first_name=user.first_name,
         last_name=user.last_name,
@@ -31,7 +30,6 @@ async def register_user(user: UserCreate, session: Session = Depends(get_session
     session.commit()
     session.refresh(db_user)
     
-    # Log the creation of the new user
     log_entry = LogUserProfile(
         action_name="insert",
         action_datetime=datetime.now(),
@@ -50,55 +48,51 @@ async def register_user(user: UserCreate, session: Session = Depends(get_session
     return db_user
 
 
-@router.post("/login")
-def login(
-    email: str = Query(..., description="Email of the user for login"),
-    password: str = Query(..., description="Password of the user for login"),
+@router.post("/login", response_model=Token)
+async def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
     session: Session = Depends(get_session)
 ):
-    # Fetch the user from the database using their email
-    user = session.query(UserProfile).filter(UserProfile.email == email).first()
+    user = session.query(UserProfile).filter(UserProfile.email == form_data.username).first()
     
-    if not user or not auth_handler.verify_password(password, user.password):
-        raise HTTPException(status_code=401, detail="Invalid credentials")
-
-    # Generate the access token
+    if not user or not auth_handler.verify_password(form_data.password, user.password):
+        raise HTTPException(status_code=400, detail="Incorrect username or password")
+    
     access_token = auth_handler.create_access_token(data={"username": user.email, "role": user.role})
     
-    # Create the UserLogin record
-    user_login = UserLogin(
-        login_datetime=datetime.now().replace(microsecond=0),
-        user_id=user.user_id,
-        first_name=user.first_name,
-        last_name=user.last_name,
-        email=user.email,
-        contact_number=user.contact_number,
-        access_token=access_token,
-        role=user.role
-    )
+    existing_login = session.query(UserLogin).filter(UserLogin.user_id == user.user_id).first()
     
-    # Create the LogUserLogin record
-    log_user_login = LogUserLogin(
-        login_id=user_login.login_id,  # You might need to flush the session before using login_id
-        login_datetime=user_login.login_datetime,
-        user_id=user.user_id,
-        first_name=user.first_name,
-        last_name=user.last_name,
-        email=user.email,
-        contact_number=user.contact_number,
-        access_token=access_token,
-        role=user.role
-    )
-    
-    # Add both records to the session
-    session.add(user_login)
-    session.flush()  # Flush to get the generated login_id from the UserLogin record
-    
-    # Update the log_user_login with the generated login_id
-    log_user_login.login_id = user_login.login_id
-    session.add(log_user_login)
+    if existing_login:
+        existing_login.login_datetime = datetime.now().replace(microsecond=0)
+        existing_login.access_token = access_token
+    else:
+        user_login = UserLogin(
+            login_datetime=datetime.now().replace(microsecond=0),
+            user_id=user.user_id,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            email=user.email,
+            contact_number=user.contact_number,
+            access_token=access_token,
+            role=user.role
+        )
+        session.add(user_login)
+        session.flush()
 
-    # Commit the session to save the data into both tables
+        log_user_login = LogUserLogin(
+            action_name="login",
+            login_id=user_login.login_id,
+            login_datetime=user_login.login_datetime,
+            user_id=user.user_id,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            email=user.email,
+            contact_number=user.contact_number,
+            access_token=access_token,
+            role=user.role
+        )
+        session.add(log_user_login)
+
     session.commit()
 
     return {
@@ -111,38 +105,27 @@ def login(
 
 
 @router.get("/", response_model=UserAuthen)
-def get_user(
-    firstname: str = Query(..., description="First name"),
-    password: str = Query(..., description="Password of the user"),
-    session: Session = Depends(get_session)
+async def get_user(
+    session: Session = Depends(get_session),
+    current_user_email: str = Depends(get_current_user)
 ):
-    user = session.query(UserProfile).filter(UserProfile.first_name == firstname).first()
+    user = session.query(UserProfile).filter(UserProfile.email == current_user_email).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    # Verify password of the requester
-    if not auth_handler.verify_password(password, user.password):
-        raise HTTPException(status_code=401, detail="Invalid credentials. Incorrect password provided.")
-    
     return user
 
 
 @router.put("/", response_model=UpdateUserResponse)
-def update_user(
-    firstname: str = Query(..., description="First name"),
-    password: str = Query(..., description="Password of the user"),
+async def update_user(
     update_data: UpdateUser = Body(...),
-    session: Session = Depends(get_session)
+    session: Session = Depends(get_session),
+    current_user_email: str = Depends(get_current_user)
 ):
-    user = session.query(UserProfile).filter(UserProfile.first_name == firstname).first()
+    user = session.query(UserProfile).filter(UserProfile.email == current_user_email).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    # Verify password of the requester
-    if not auth_handler.verify_password(password, user.password):
-        raise HTTPException(status_code=401, detail="Invalid credentials. Incorrect password provided.")
-
-    # Log the old values
     log_entry = LogUserProfile(
         action_name="update",
         action_datetime=datetime.now(),
@@ -155,7 +138,6 @@ def update_user(
         role=user.role
     )
 
-    # Update user information
     if update_data.new_password:
         user.password = auth_handler.get_password_hash(update_data.new_password)
         log_entry.to_password = user.password
@@ -186,21 +168,17 @@ def update_user(
         contact_number=user.contact_number,
         role=user.role
     )
+
+
 @router.delete("/", response_model=DeleteResponse)
-def delete_user(
-    firstname: str = Query(..., description="First name of the user"),
-    password: str = Query(..., description="Password of the user"),
-    session: Session = Depends(get_session)
+async def delete_user(
+    session: Session = Depends(get_session),
+    current_user_email: str = Depends(get_current_user)
 ):
-    user = session.query(UserProfile).filter(UserProfile.first_name == firstname).first()
+    user = session.query(UserProfile).filter(UserProfile.email == current_user_email).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
-    
-    # Verify password of the requester
-    if not auth_handler.verify_password(password, user.password):
-        raise HTTPException(status_code=401, detail="Invalid credentials. Incorrect password provided.")
 
-    # Log deletion
     log_entry = LogUserProfile(
         action_name="delete",
         action_datetime=datetime.now(),
