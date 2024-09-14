@@ -20,6 +20,36 @@ class HealthRecord(Base):
 
     record_date = Column(DateTime, default=lambda: datetime.now().replace(microsecond=0)) 
     description = Column(JSON, nullable=True)
+    
+  
+
+
+
+class LogHealthRecord(Base):
+    __tablename__ = "log_healthrecords"
+
+    id = Column(Integer, primary_key=True, index=True)
+    action_name = Column(String, nullable=False)
+    HR_id = Column(Integer, nullable=False)
+    action_byname = Column(String, nullable=False)
+    action_datetime = Column(DateTime, nullable=False, default=lambda: datetime.now().replace(microsecond=0))
+    pet_type = Column(String, nullable=False)
+    to_pet_type = Column(String, nullable=True)
+    age_years = Column(Integer, nullable=False)
+    to_age_years = Column(Integer, nullable=True)
+    age_months = Column(Integer, nullable=False)
+    to_age_months = Column(Integer, nullable=True)
+    age_days = Column(Integer, nullable=False)
+    to_age_days = Column(Integer, nullable=True)
+    weight_start_months = Column(Float, nullable=False)
+    to_weight_start_months = Column(Float, nullable=True)
+    weight_end_months = Column(Float, nullable=False)
+    to_weight_end_months = Column(Float, nullable=True)
+    record_date = Column(DateTime, nullable=False)
+    to_record_date = Column(DateTime, nullable=True)
+    description = Column(String, nullable=False)
+    to_description = Column(String, nullable=True)
+
 
 class Age(BaseModel):
     years: int
