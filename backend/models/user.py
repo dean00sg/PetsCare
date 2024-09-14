@@ -56,7 +56,7 @@ class LogUserProfile(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     action_name = Column(String, nullable=False)
-    action_datetime = Column(DateTime, default=datetime.now()) 
+    action_datetime =Column(DateTime, default=lambda: datetime.now().replace(microsecond=0)) 
     user_id = Column(Integer, nullable=False)
 
     first_name = Column(String, nullable=False)
