@@ -59,19 +59,19 @@ class LogUserProfile(Base):
     action_datetime =Column(DateTime, default=lambda: datetime.now().replace(microsecond=0)) 
     user_id = Column(Integer, nullable=False)
 
-    first_name = Column(String, nullable=False)
+    first_name = Column(String, nullable=True)
     to_first_name = Column(String, nullable=True)
 
-    last_name = Column(String, nullable=False)
+    last_name = Column(String, nullable=True)
     to_last_name = Column(String, nullable=True)
 
-    email = Column(String, nullable=False)
+    email = Column(String, nullable=True)
     to_email = Column(String, nullable=True)
 
-    contact_number = Column(String, nullable=False)
+    contact_number = Column(String, nullable=True)
     to_contact_number = Column(String, nullable=True)
 
-    password = Column(String, nullable=False)
+    password = Column(String, nullable=True)
     to_password = Column(String, nullable=True)
 
     role = Column(String, default="userpets")
