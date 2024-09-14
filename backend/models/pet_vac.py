@@ -15,7 +15,7 @@ class PetVacProfile(Base):
     vac_name = Column(String, nullable=False)
     startdatevac = Column(DateTime, nullable=False)
     drugname = Column(JSON, nullable=True)
-    pet_name = Column(String, nullable=False)  # Ensure this line is present
+    pet_name = Column(String, nullable=False)  
     owner_name = Column(String, nullable=False)
     user_id = Column(Integer, ForeignKey('Userprofiles.user_id'), nullable=False)
     
@@ -28,8 +28,8 @@ class LogPetVacProfile(Base):
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     action_name = Column(String, nullable=False)
-    action_datetime = Column(DateTime, default=datetime.now()) 
-    vac_id = Column(Integer, nullable=False)
+    action_datetime = Column(DateTime, default=lambda: datetime.now().replace(microsecond=0))
+    vac_id =  Column(Integer, nullable=False)
     vac_name = Column(String, nullable=False)
     to_vac_name = Column(String, nullable=True)
     startdatevac = Column(DateTime, nullable=False)
@@ -37,7 +37,7 @@ class LogPetVacProfile(Base):
     drugname = Column(JSON, nullable=True)
     to_drugname = Column(JSON, nullable=True)
     pet_name = Column(String, nullable=False)
-    user_id = Column(Integer, ForeignKey('Userprofiles.user_id'), nullable=False)
+    user_id = Column(Integer, nullable=False)
     owner_name = Column(String, nullable=False)
    
     # Relationship to UserProfile
@@ -61,6 +61,7 @@ class CreatePetVacProfile(BaseModel):
     vac_name: str
     startdatevac: datetime
     drugname: Optional[List[str]]
+    
 
     class Config:
         orm_mode = True
