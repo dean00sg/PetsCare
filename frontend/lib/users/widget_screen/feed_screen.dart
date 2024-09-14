@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/users/bloc/feed_bloc.dart';
-import 'package:frontend/users/bloc/feed_event.dart';
-import 'package:frontend/users/bloc/feed_state.dart';
+import 'package:frontend/users/event/feed_event.dart';
+import 'package:frontend/users/state/feed_state.dart';
 import '../styles/feed_style.dart';
 
 class FeedScreen extends StatelessWidget {

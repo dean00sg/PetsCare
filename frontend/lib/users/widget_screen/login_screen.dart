@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/users/bloc/login_bloc.dart';
-import 'package:frontend/users/bloc/login_event.dart';
-import 'package:frontend/users/bloc/login_state.dart';
+import 'package:frontend/users/event/login_event.dart';
+import 'package:frontend/users/state/login_state.dart';
 import 'package:frontend/users/models/login_model.dart'; 
 import 'package:frontend/users/styles/login_style.dart'; 
 

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/users/bloc/create_pet_bloc.dart';
-import 'package:frontend/users/bloc/create_pet_event.dart';
+import 'package:frontend/users/event/create_pet_event.dart';
 import 'package:frontend/users/models/create_pet_model.dart';
 import 'package:frontend/users/widget_screen/edit_profile_pet.dart';
 import 'package:intl/intl.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/users/models/pet_models.dart';
-import 'package:frontend/users/bloc/pet_event.dart';
-import 'package:frontend/users/bloc/pet_state.dart';
+import 'package:frontend/users/event/pet_event.dart';
+import 'package:frontend/users/state/pet_state.dart';
 
 class PetBloc extends Bloc<PetEvent, PetState> {
   PetBloc() : super(PetInitial()) {

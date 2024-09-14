@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/users/bloc/pet_bloc.dart';
-import 'package:frontend/users/bloc/pet_event.dart';
-import 'package:frontend/users/bloc/pet_state.dart';
+import 'package:frontend/users/event/pet_event.dart';
+import 'package:frontend/users/state/pet_state.dart';
 import 'package:frontend/users/styles/pet_style.dart';
 
 class PetScreen extends StatelessWidget {

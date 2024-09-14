@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/users/bloc/signup_bloc.dart';
-import 'package:frontend/users/bloc/signup_event.dart';
-import 'package:frontend/users/bloc/signup_state.dart';
+import 'package:frontend/users/event/signup_event.dart';
+import 'package:frontend/users/state/signup_state.dart';
 import 'package:frontend/users/models/signup_model.dart';
 import 'package:frontend/users/styles/signup_style.dart';
 
