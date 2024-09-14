@@ -1,20 +1,9 @@
-import 'package:equatable/equatable.dart';
-import 'package:frontend/users/models/login_model.dart'; // นำเข้า LoginModel
+import 'package:frontend/users/models/login_model.dart';
 
-// กำหนด abstract class สำหรับ LoginEvent
-abstract class LoginEvent extends Equatable {
-  const LoginEvent();
+abstract class LoginEvent {}
 
-  @override
-  List<Object?> get props => [];
-}
-
-// Event เมื่อกดปุ่ม Sign In
 class LoginButtonPressed extends LoginEvent {
   final LoginModel loginData;
 
-  const LoginButtonPressed(this.loginData);
-
-  @override
-  List<Object?> get props => [loginData];
+  LoginButtonPressed(this.loginData);
 }

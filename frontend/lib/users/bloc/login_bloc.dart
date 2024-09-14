@@ -1,22 +1,25 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:frontend/users/event/login_event.dart';
+import 'package:frontend/users/repositories/login_repository.dart';
 import 'package:frontend/users/state/login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  LoginBloc() : super(LoginInitial()) {
-    // เมื่อ Event ของการกดปุ่ม Sign In ถูกเรียกใช้
+  final LoginRepository loginRepository;
+
+  // Initialize LoginBloc with a LoginRepository instance
+  LoginBloc({required this.loginRepository}) : super(LoginInitial()) {
+    // Handle the LoginButtonPressed event
     on<LoginButtonPressed>((event, emit) async {
-      emit(LoginLoading()); // เปลี่ยนสถานะเป็นกำลังโหลด
-
+      emit(LoginLoading()); // Emit loading state before starting login process
       try {
-        // รอให้การเข้าสู่ระบบเสร็จสมบูรณ์ (จำลองการเข้าสู่ระบบ)
-        await Future.delayed(const Duration(seconds: 2));
-
-        // ถ้าเข้าสู่ระบบสำเร็จ
-        emit(LoginSuccess());
+        // Attempt to login using the provided login data
+        final token = await loginRepository.login(event.loginData);
+        // If successful, emit the success state with the token
+        emit(LoginSuccess(token: token));
       } catch (error) {
-        // ถ้าเกิดข้อผิดพลาดในการเข้าสู่ระบบ
-        emit(LoginFailure(error.toString()));
+        // If an error occurs, emit the failure state with the error message
+        emit(LoginFailure(error: error.toString()));
       }
     });
   }
