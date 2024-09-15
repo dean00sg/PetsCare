@@ -13,8 +13,11 @@ class FeedScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.brown[400],
-        title: const Text('PET CARE', style: TextStyle(fontSize: 16, color: Colors.white)),
+        backgroundColor: const Color.fromARGB(255, 122, 83, 65),
+        title: const Text(
+          'PET CARE',
+          style: TextStyle(fontSize: 16, color: Colors.white),
+        ),
         centerTitle: true,
         actions: [
           PopupMenuButton<String>(
@@ -42,11 +45,11 @@ class FeedScreen extends StatelessWidget {
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
-            DrawerHeader(
+            const DrawerHeader(
               decoration: BoxDecoration(
-                color: Colors.brown[400],
+                color:  Color.fromARGB(255, 122, 83, 65),
               ),
-              child: const Text(
+              child: Text(
                 'Menu',
                 style: TextStyle(
                   color: Colors.white,
@@ -77,44 +80,89 @@ class FeedScreen extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             } else if (state is FeedLoaded) {
               return ListView.builder(
-                itemCount: state.feedPosts.length,
+                itemCount: state.feedPosts.length + 1,  // +1 for the welcome section
                 itemBuilder: (context, index) {
-                  FeedPost post = state.feedPosts[index];
-                  return Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Colors.grey[200],
+                  // Welcome section inside ListView.builder
+                  if (index == 0) {
+                    // Welcome section
+                    return Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        children: [
+                          Image.asset(
+                            'lib/images/logo.png',  // Your logo path
+                            height: 170,             // Set the height
+                            width: 170,              // Set the width
+                            fit: BoxFit.contain,      // Control how the image fits within the space
+                          ),
+                          const SizedBox(height: 10),
+                          const Text(
+                            'WELCOME TO PET CARE',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 10),
+                          const Text(
+                            'รู้หรือไม่ว่ามีการดูแลสัตว์เลี้ยงให้มีชีวิตยาวนานอย่างเหมาะสมด้วยการดูแลสุขภาพ เช็คโปรโมชันสำหรับสินค้าเกี่ยวกับสัตว์เลี้ยง อาหารที่แนะนำและอื่น ๆ อีกมากมาย',
+                            style: TextStyle(fontSize: 14, color: Colors.black54),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 20),
+                        ],
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              post.header,
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 8),
-                            if (post.imageUrl != null)
-                              Image.network(
-                                post.imageUrl!,
-                                fit: BoxFit.cover,
-                                height: 200, // Adjust height as needed
-                                width: double.infinity, // Make image full width
+                    );
+                  }
+
+                  // Adjust index for the actual feed posts
+                  final FeedPost post = state.feedPosts[index - 1];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: const Color.fromARGB(255, 122, 83, 65),  // Container color remains the same
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Updated header text color to white
+                              Text(
+                                post.header,
+                                style: const TextStyle(
+                                  fontSize: 18, 
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,  // Header text is now white
+                                ),
+                                textAlign: TextAlign.center,
                               ),
-                            const SizedBox(height: 8),
-                            Text(
-                              post.description ?? 'No description available',
-                              style: const TextStyle(fontSize: 14),
-                            ),
-                          ],
+                              const SizedBox(height: 8),
+                              if (post.imageUrl != null)
+                                Image.network(
+                                  post.imageUrl!,
+                                  fit: BoxFit.cover,
+                                  height: 200, // Adjust height as needed
+                                  width: double.infinity, // Make image full width
+                                ),
+                              const SizedBox(height: 8),
+                              // Updated description text color to white
+                              Text(
+                                post.description ?? 'No description available',
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.white,  // Description text is now white
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
+                    );
+
                 },
               );
             } else if (state is FeedError) {
