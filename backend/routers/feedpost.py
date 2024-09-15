@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import APIRouter, HTTPException, Depends, status
 from sqlalchemy.orm import Session
 from deps import get_session, get_current_user, get_current_user_role
@@ -57,29 +58,29 @@ def create_feed_post(
     )
     return response
 
-@router.get("/{feed_post_id}", response_model=FeedPostResponse)
-def get_feed_post(
-    feed_post_id: int,
-    session: Session = Depends(get_session),
-    username: str = Depends(get_current_user),  # Fetch current user's username
-    role: str = Depends(get_current_user_role)  # Ensure this checks for admin role
+@router.get("/", response_model=List[FeedPostCreate])
+def get_all_feed_posts(
+    session: Session = Depends(get_session)
 ):
-    # Fetch the FeedPost instance
-    db_feed_post = session.query(FeedPost).filter(FeedPost.NT_id == feed_post_id).first()
-    if db_feed_post is None:
-        raise HTTPException(status_code=404, detail="FeedPost not found")
+    # Fetch all FeedPost instances
+    db_feed_posts = session.query(FeedPost).all()
+    
+    if not db_feed_posts:
+        raise HTTPException(status_code=404, detail="No FeedPosts found")
 
     # Prepare response
-    response = FeedPostResponse(
-        status="success",
-        NT_id=db_feed_post.NT_id,
-        header=db_feed_post.header,
-        start_datetime=db_feed_post.start_datetime.replace(microsecond=0),
-        end_datetime=db_feed_post.end_datetime.replace(microsecond=0),
-        image_url=db_feed_post.image_url,
-        description=db_feed_post.description,
-        record_date=db_feed_post.record_date.replace(microsecond=0)
-    )
+    response = [
+        FeedPostCreate(
+            NT_id=feed_post.NT_id,
+            header=feed_post.header,
+            start_datetime=feed_post.start_datetime.replace(microsecond=0),
+            end_datetime=feed_post.end_datetime.replace(microsecond=0),
+            image_url=feed_post.image_url,
+            description=feed_post.description,
+            record_date=feed_post.record_date.replace(microsecond=0)
+        )
+        for feed_post in db_feed_posts
+    ]
     return response
 
 @router.put("/{feed_post_id}", response_model=FeedPostResponse)

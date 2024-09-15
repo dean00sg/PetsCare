@@ -1,4 +1,6 @@
 import 'package:equatable/equatable.dart';
+import 'package:frontend/users/models/feed_model.dart';
+
 
 abstract class FeedState extends Equatable {
   const FeedState();
@@ -12,12 +14,12 @@ class FeedInitial extends FeedState {}
 class FeedLoading extends FeedState {}
 
 class FeedLoaded extends FeedState {
-  final List<String> articles;
+  final List<FeedPost> feedPosts;
 
-  const FeedLoaded(this.articles);
+  const FeedLoaded(this.feedPosts);
 
   @override
-  List<Object> get props => [articles];
+  List<Object> get props => [feedPosts];
 }
 
 class FeedError extends FeedState {
