@@ -1,5 +1,5 @@
 from datetime import datetime
-from fastapi import APIRouter, HTTPException, Depends, Body
+from fastapi import APIRouter, HTTPException, Depends, Body,status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from security import AuthHandler, Token
@@ -48,61 +48,23 @@ async def register_user(user: UserCreate, session: Session = Depends(get_session
     return db_user
 
 
-@router.post("/login", response_model=Token)
-async def login(
-    form_data: OAuth2PasswordRequestForm = Depends(),
-    session: Session = Depends(get_session)
-):
-    user = session.query(UserProfile).filter(UserProfile.email == form_data.username).first()
-    
+@router.post("/login")
+async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_session)):
+    # Query the UserProfile model for the user
+    user = db.query(UserProfile).filter(UserProfile.email == form_data.username).first()
+
+    # Validate the user's credentials
     if not user or not auth_handler.verify_password(form_data.password, user.password):
-        raise HTTPException(status_code=400, detail="Incorrect username or password")
-    
-    access_token = auth_handler.create_access_token(data={"username": user.email, "role": user.role})
-    
-    existing_login = session.query(UserLogin).filter(UserLogin.user_id == user.user_id).first()
-    
-    if existing_login:
-        existing_login.login_datetime = datetime.now().replace(microsecond=0)
-        existing_login.access_token = access_token
-    else:
-        user_login = UserLogin(
-            login_datetime=datetime.now().replace(microsecond=0),
-            user_id=user.user_id,
-            first_name=user.first_name,
-            last_name=user.last_name,
-            email=user.email,
-            contact_number=user.contact_number,
-            access_token=access_token,
-            role=user.role
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
         )
-        session.add(user_login)
-        session.flush()
-
-        log_user_login = LogUserLogin(
-            action_name="login",
-            login_id=user_login.login_id,
-            login_datetime=user_login.login_datetime,
-            user_id=user.user_id,
-            first_name=user.first_name,
-            last_name=user.last_name,
-            email=user.email,
-            contact_number=user.contact_number,
-            access_token=access_token,
-            role=user.role
-        )
-        session.add(log_user_login)
-
-    session.commit()
-
-    return {
-        "access_token": access_token,
-        "token_type": "bearer",
-        "user_id": user.user_id,
-        "name": f"{user.first_name} {user.last_name}",
-        "role": user.role
-    }
-
+    
+    # Generate JWT token for the user
+    token = auth_handler.create_access_token(data={"username": user.email, "role": user.role})
+    
+    return {"access_token": token, "token_type": "bearer"}
 
 @router.get("/", response_model=UserAuthen)
 async def get_user(
