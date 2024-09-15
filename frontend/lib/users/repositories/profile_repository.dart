@@ -17,20 +17,29 @@ class ProfileRepository {
     }
 
     final response = await http.get(
-      Uri.parse('$apiUrl/authentication/profile'),  
+      Uri.parse('$apiUrl/authentication/profile'),
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',  
+        'Authorization': 'Bearer $token',
       },
     );
 
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
-      return UserProfile.fromJson(data);  
+      return UserProfile.fromJson(data);
     } else if (response.statusCode == 401) {
       throw Exception('Unauthorized, please log in again');
     } else {
       throw Exception('Failed to load profile');
     }
+  }
+
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    bool removed = await prefs.remove('token');
+    if (!removed) {
+      throw Exception('Failed to remove token');
+    }
+    print('Token removed successfully'); // Debugging statement
   }
 }

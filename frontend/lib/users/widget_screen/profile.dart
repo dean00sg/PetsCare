@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/users/bloc/profile_bloc.dart';
+import 'package:frontend/users/repositories/profile_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -34,7 +37,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  
+
                   // Profile Texts
                   const Text(
                     'PROFILE',
@@ -44,7 +47,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  
+
                   // First Name
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 10),
@@ -62,7 +65,7 @@ class ProfileScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  
+
                   // Last Name
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 10),
@@ -80,7 +83,7 @@ class ProfileScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  
+
                   // Email
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 10),
@@ -98,7 +101,7 @@ class ProfileScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  
+
                   // Phone
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 10),
@@ -116,9 +119,9 @@ class ProfileScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                  
+
                   const SizedBox(height: 20),
-                  
+
                   // Edit Button
                   SizedBox(
                     width: double.infinity,
@@ -136,9 +139,9 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 10),
-                  
+
                   // Logout Button
                   SizedBox(
                     width: double.infinity,
@@ -147,8 +150,17 @@ class ProfileScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 15),
                         side: const BorderSide(color: Colors.red),
                       ),
-                      onPressed: () {
-                        // Handle Logout button press
+                      onPressed: () async {
+                        final profileRepository = ProfileRepository(apiUrl: 'YOUR_API_URL');
+                        await profileRepository.logout();
+
+                        // Verify token removal
+                        final prefs = await SharedPreferences.getInstance();
+                        final token = prefs.getString('token');
+                        print('Token after logout: $token'); // Debugging statement
+
+                        // Navigate to the login screen or another appropriate screen
+                        Navigator.of(context).pushReplacementNamed('/login');
                       },
                       child: const Text(
                         'Logout',
@@ -156,6 +168,7 @@ class ProfileScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+
                 ],
               ),
             );
