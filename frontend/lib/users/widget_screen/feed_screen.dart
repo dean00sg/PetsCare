@@ -79,45 +79,46 @@ class FeedScreen extends StatelessWidget {
             if (state is FeedLoading) {
               return const Center(child: CircularProgressIndicator());
             } else if (state is FeedLoaded) {
-              return ListView.builder(
-                itemCount: state.feedPosts.length + 1,  // +1 for the welcome section
-                itemBuilder: (context, index) {
-                  // Welcome section inside ListView.builder
-                  if (index == 0) {
-                    // Welcome section
-                    return Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          Image.asset(
-                            'lib/images/logo.png',  // Your logo path
-                            height: 170,             // Set the height
-                            width: 170,              // Set the width
-                            fit: BoxFit.contain,      // Control how the image fits within the space
-                          ),
-                          const SizedBox(height: 10),
-                          const Text(
-                            'WELCOME TO PET CARE',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
+              return Container(
+                color: Colors.white,  // Set the background color of the body to white
+                child: ListView.builder(
+                  itemCount: state.feedPosts.length + 1,  // +1 for the welcome section
+                  itemBuilder: (context, index) {
+                    // Welcome section inside ListView.builder
+                    if (index == 0) {
+                      return Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          children: [
+                            Image.asset(
+                              'lib/images/logo.png',  // Your logo path
+                              height: 170,             // Set the height
+                              width: 170,              // Set the width
+                              fit: BoxFit.contain,      // Control how the image fits within the space
                             ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 10),
-                          const Text(
-                            'รู้หรือไม่ว่ามีการดูแลสัตว์เลี้ยงให้มีชีวิตยาวนานอย่างเหมาะสมด้วยการดูแลสุขภาพ เช็คโปรโมชันสำหรับสินค้าเกี่ยวกับสัตว์เลี้ยง อาหารที่แนะนำและอื่น ๆ อีกมากมาย',
-                            style: TextStyle(fontSize: 14, color: Colors.black54),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 20),
-                        ],
-                      ),
-                    );
-                  }
+                            const SizedBox(height: 10),
+                            const Text(
+                              'WELCOME TO PET CARE',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 10),
+                            const Text(
+                              'รู้หรือไม่ว่ามีการดูแลสัตว์เลี้ยงให้มีชีวิตยาวนานอย่างเหมาะสมด้วยการดูแลสุขภาพ เช็คโปรโมชันสำหรับสินค้าเกี่ยวกับสัตว์เลี้ยง อาหารที่แนะนำและอื่น ๆ อีกมากมาย',
+                              style: TextStyle(fontSize: 14, color: Colors.black54),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 20),
+                          ],
+                        ),
+                      );
+                    }
 
-                  // Adjust index for the actual feed posts
-                  final FeedPost post = state.feedPosts[index - 1];
+                    // Adjust index for the actual feed posts
+                    final FeedPost post = state.feedPosts[index - 1];
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                       child: Container(
@@ -162,8 +163,8 @@ class FeedScreen extends StatelessWidget {
                         ),
                       ),
                     );
-
-                },
+                  },
+                ),
               );
             } else if (state is FeedError) {
               return Center(child: Text(state.message));
