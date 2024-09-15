@@ -1,6 +1,7 @@
 from datetime import datetime
 from fastapi import APIRouter, HTTPException, Depends, Body,status
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from jose import JWTError
 from sqlalchemy.orm import Session
 from security import AuthHandler, Token
 from models.user import LogUserLogin, LogUserProfile, UpdateUser, UserCreate, UserLogin, UserUpdate, UpdateUserResponse, UserProfile, UserWithPets, DeleteResponse, UserAuthen
@@ -66,17 +67,27 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
     
     return {"access_token": token, "token_type": "bearer"}
 
-@router.get("/", response_model=UserAuthen)
-async def get_user(
-    session: Session = Depends(get_session),
-    current_user_email: str = Depends(get_current_user)
-):
-    user = session.query(UserProfile).filter(UserProfile.email == current_user_email).first()
-    if not user:
+@router.get("/profile")
+async def get_user_profile(db: Session = Depends(get_session), token: str = Depends(OAuth2PasswordBearer(tokenUrl="/login"))):
+    try:
+        # Decode the token and extract user information
+        user_data = auth_handler.decode_access_token(token)
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
+    # Retrieve the user's profile using the decoded email
+    user_profile = db.query(UserProfile).filter(UserProfile.email == user_data['username']).first()
+
+    if not user_profile:
         raise HTTPException(status_code=404, detail="User not found")
 
-    return user
-
+    # Return the user's profile details
+    return {
+        "first_name": user_profile.first_name,
+        "last_name": user_profile.last_name,
+        "email": user_profile.email,
+        "contact_number": user_profile.contact_number
+    }
 
 @router.put("/", response_model=UpdateUserResponse)
 async def update_user(
