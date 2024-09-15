@@ -1,4 +1,3 @@
-// Model for fetching a FeedPost (used in GET request)
 class FeedPost {
   int ntId;
   String header;
@@ -20,13 +19,13 @@ class FeedPost {
 
   factory FeedPost.fromJson(Map<String, dynamic> json) {
     return FeedPost(
-      ntId: json['NT_id'],
-      header: json['header'],
-      startDatetime: DateTime.parse(json['start_datetime']),
-      endDatetime: DateTime.parse(json['end_datetime']),
+      ntId: json['NT_id'] ?? 0, // Default value if null
+      header: json['header'] ?? 'No header', // Default value if null
+      startDatetime: DateTime.parse(json['start_datetime'] ?? DateTime.now().toIso8601String()),
+      endDatetime: DateTime.parse(json['end_datetime'] ?? DateTime.now().toIso8601String()),
       imageUrl: json['image_url'],
       description: json['description'],
-      recordDate: DateTime.parse(json['record_date']),
+      recordDate: DateTime.parse(json['record_date'] ?? DateTime.now().toIso8601String()),
     );
   }
 }
