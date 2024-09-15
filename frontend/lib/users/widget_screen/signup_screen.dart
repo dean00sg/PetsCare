@@ -54,7 +54,7 @@ class SignupScreen extends StatelessWidget {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(context, '/');
+                        Navigator.pushNamed(context, '/login');
                       },
                       child: const Text(
                         "Sign in",
@@ -130,7 +130,13 @@ class SignupScreen extends StatelessWidget {
                       BlocConsumer<SignupBloc, SignupState>(
                         listener: (context, state) {
                           if (state is SignupSuccess) {
-                            Navigator.pushNamed(context, '/profile', arguments: state.user);
+                            // เมื่อ signup สำเร็จ นำทางไปยังหน้า login
+                            Navigator.pushReplacementNamed(context, '/login');
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Signup Successful! Please log in.'),
+                              ),
+                            );
                           } else if (state is SignupFailure) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text(state.error)),
