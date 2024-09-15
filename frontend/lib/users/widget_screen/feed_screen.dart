@@ -98,14 +98,18 @@ class FeedScreen extends StatelessWidget {
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: 8),
+                            if (post.imageUrl != null)
+                              Image.network(
+                                post.imageUrl!,
+                                fit: BoxFit.cover,
+                                height: 200, // Adjust height as needed
+                                width: double.infinity, // Make image full width
+                              ),
+                            const SizedBox(height: 8),
                             Text(
                               post.description ?? 'No description available',
                               style: const TextStyle(fontSize: 14),
-                              textAlign: TextAlign.center,
                             ),
-                            const SizedBox(height: 8),
-                            if (post.imageUrl != null)
-                              Image.network(post.imageUrl!, fit: BoxFit.cover),
                           ],
                         ),
                       ),
