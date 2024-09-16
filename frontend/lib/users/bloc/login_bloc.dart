@@ -8,17 +8,20 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
   LoginBloc({required this.loginRepository}) : super(LoginInitial()) {
     on<LoginButtonPressed>((event, emit) async {
-        emit(LoginLoading());
-        try {
-          final token = await loginRepository.login(event.loginData);
-          print("Login successful, token: $token"); // Debugging statement
-          emit(LoginSuccess(token: token));
-        } catch (error) {
-          print("Login failed: $error"); // Debugging statement
-          emit(LoginFailure(error: error.toString()));
-        }
-      });
+      emit(LoginLoading());
+      try {
+        final result = await loginRepository.login(event.loginData);
+        
+        // Handle the nullable string issue
+        final token = result['access_token'] ?? ''; // Provide default value if null
+        final role = result['role'] ?? ''; // Provide default value if null
 
+        print("Login successful, token: $token, role: $role");
+        emit(LoginSuccess(token: token, role: role));
+      } catch (error) {
+        print("Login failed: $error");
+        emit(LoginFailure(error: error.toString()));
+      }
+    });
   }
-  
 }

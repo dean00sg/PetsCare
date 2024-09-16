@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/users/bloc/login_bloc.dart';
 import 'package:frontend/users/event/login_event.dart';
-// import 'package:frontend/users/repositories/login_repository.dart';
 import 'package:frontend/users/models/login_model.dart';
 import 'package:frontend/users/state/login_state.dart';
 import 'package:frontend/users/styles/login_style.dart';
@@ -20,8 +19,12 @@ class LoginScreen extends StatelessWidget {
       body: BlocListener<LoginBloc, LoginState>(
         listener: (context, state) {
           if (state is LoginSuccess) {
-            print("Navigating to Feed screen"); // Debugging statement
-            Navigator.pushNamed(context, '/feed');
+            print("Login successful with role: ${state.role}");
+            if (state.role == 'admin') {
+              Navigator.pushNamed(context, '/feedadmin'); // Navigate to admin page
+            } else if (state.role == 'userpets') {
+              Navigator.pushNamed(context, '/feed'); // Navigate to user page
+            }
           } else if (state is LoginFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.error)),

@@ -13,11 +13,12 @@ class LoginLoading extends LoginState {}
 
 class LoginSuccess extends LoginState {
   final String token;
+  final String role;
 
-  const LoginSuccess({required this.token});
+  const LoginSuccess({required this.token, required this.role});
 
   @override
-  List<Object?> get props => [token];
+  List<Object?> get props => [token, role];
 }
 
 class LoginFailure extends LoginState {

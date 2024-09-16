@@ -3,10 +3,12 @@ import 'package:http/http.dart' as http;
 import 'package:frontend/users/models/login_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:jwt_decoder/jwt_decoder.dart';
+
 class LoginRepository {
   final String apiUrl = 'http://127.0.0.1:8000/authentication/login';
 
-  Future<String> login(LoginModel loginData) async {
+  Future<Map<String, String>> login(LoginModel loginData) async {
     try {
       final response = await http.post(
         Uri.parse(apiUrl),
@@ -20,8 +22,15 @@ class LoginRepository {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', data['access_token']);  // เก็บ token
-        return data['access_token'];
+
+        final token = data['access_token'] ?? '';
+        Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
+        final role = decodedToken['role'] ?? ''; // Extract role from token
+
+        await prefs.setString('token', token);
+        await prefs.setString('role', role);
+        print('Decoded role: $role'); // Print decoded role
+        return {'access_token': token, 'role': role};
       } else {
         final errorData = json.decode(response.body);
         throw Exception(errorData['detail'] ?? 'Failed to login');
