@@ -36,6 +36,7 @@ class LoginScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
+                const SizedBox(height: 60),
                 Image.asset(
                   'lib/images/logo.png',
                   height: 300,
@@ -45,7 +46,7 @@ class LoginScreen extends StatelessWidget {
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 20.0),
                   padding: const EdgeInsets.fromLTRB(16.0, 50.0, 16.0, 16.0),
-                  width: 350,
+                  width: 320,
                   height: 400,
                   decoration: containerDecoration,
                   child: Column(

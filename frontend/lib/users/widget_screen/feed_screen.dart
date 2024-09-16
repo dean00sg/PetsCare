@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../appbar/navbar.dart';
+import '../appbar/sidebar.dart';
 import '../bloc/feed_bloc.dart';
 import '../event/feed_event.dart';
 import '../state/feed_state.dart';
 import '../models/feed_model.dart';
 import '../repositories/feed_repository.dart';
+
 
 class FeedScreen extends StatelessWidget {
   const FeedScreen({super.key});
@@ -12,66 +15,8 @@ class FeedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 122, 83, 65),
-        title: const Text(
-          'PET CARE',
-          style: TextStyle(fontSize: 16, color: Colors.white),
-        ),
-        centerTitle: true,
-        actions: [
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.account_circle),
-            onSelected: (String result) {
-              if (result == 'profile') {
-                Navigator.pushNamed(context, '/profile');
-              } else if (result == 'signout') {
-                Navigator.pushNamed(context, '/');
-              }
-            },
-            itemBuilder: (BuildContext context) => [
-              const PopupMenuItem<String>(
-                value: 'profile',
-                child: Text('PROFILE'),
-              ),
-              const PopupMenuItem<String>(
-                value: 'signout',
-                child: Text('SIGN OUT'),
-              ),
-            ],
-          ),
-        ],
-      ),
-      drawer: Drawer(
-        child: ListView(
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color:  Color.fromARGB(255, 122, 83, 65),
-              ),
-              child: Text(
-                'Menu',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ListTile(
-              title: const Text('PETS'),
-              onTap: () {
-                Navigator.pushNamed(context, '/pet');
-              },
-            ),
-            ListTile(
-              title: const Text('My Pets'),
-              onTap: () {
-                // Handle tap
-              },
-            ),
-          ],
-        ),
-      ),
+      appBar: const Navbar(), 
+      drawer: const Sidebar(), 
       body: BlocProvider(
         create: (context) => FeedBloc(feedRepository: FeedRepository(apiUrl: 'http://127.0.0.1:8000'))..add(FetchFeedData()),
         child: BlocBuilder<FeedBloc, FeedState>(
@@ -80,21 +25,20 @@ class FeedScreen extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             } else if (state is FeedLoaded) {
               return Container(
-                color: Colors.white,  // Set the background color of the body to white
+                color: Colors.white,  
                 child: ListView.builder(
-                  itemCount: state.feedPosts.length + 1,  // +1 for the welcome section
+                  itemCount: state.feedPosts.length + 1,  
                   itemBuilder: (context, index) {
-                    // Welcome section inside ListView.builder
                     if (index == 0) {
                       return Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
                           children: [
                             Image.asset(
-                              'lib/images/logo.png',  // Your logo path
-                              height: 170,             // Set the height
-                              width: 170,              // Set the width
-                              fit: BoxFit.contain,      // Control how the image fits within the space
+                              'lib/images/logo.png',  
+                              height: 170,             
+                              width: 170,              
+                              fit: BoxFit.contain,      
                             ),
                             const SizedBox(height: 10),
                             const Text(
@@ -117,14 +61,14 @@ class FeedScreen extends StatelessWidget {
                       );
                     }
 
-                    // Adjust index for the actual feed posts
+
                     final FeedPost post = state.feedPosts[index - 1];
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: const Color.fromARGB(255, 122, 83, 65),  // Container color remains the same
+                          color: Colors.brown, 
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
@@ -137,7 +81,7 @@ class FeedScreen extends StatelessWidget {
                                 style: const TextStyle(
                                   fontSize: 18, 
                                   fontWeight: FontWeight.bold,
-                                  color: Colors.white,  // Header text is now white
+                                  color: Colors.white,  
                                 ),
                                 textAlign: TextAlign.center,
                               ),
