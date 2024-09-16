@@ -35,11 +35,30 @@ class ProfileRepository {
   }
 
   Future<void> logout() async {
-    final prefs = await SharedPreferences.getInstance();
+  final prefs = await SharedPreferences.getInstance();
+  final token = prefs.getString('token');
+
+  if (token == null) {
+    throw Exception('Token not found, user not logged in');
+  }
+
+  final response = await http.post(
+    Uri.parse('$apiUrl/authentication/logout'),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+  );
+
+  if (response.statusCode == 200) {
     bool removed = await prefs.remove('token');
     if (!removed) {
       throw Exception('Failed to remove token');
     }
-    print('Token removed successfully'); // Debugging statement
+    print('User logged out successfully');
+  } else {
+    throw Exception('Failed to log out');
   }
+}
+
 }

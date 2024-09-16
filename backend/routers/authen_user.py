@@ -4,8 +4,9 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError
 from sqlalchemy.orm import Session
 from security import AuthHandler, Token
-from models.user import LogUserLogin, LogUserProfile, UpdateUser, UserCreate, UserLogin, UserUpdate, UpdateUserResponse, UserProfile, UserWithPets, DeleteResponse, UserAuthen
+from models.user import LogUserLogin, LogUserProfile, UpdateUser, UserCreate, UserUpdate, UpdateUserResponse, UserProfile, UserWithPets, DeleteResponse, UserAuthen
 from deps import get_session, get_current_user
+from sqlalchemy.exc import IntegrityError
 
 router = APIRouter(tags=["Authentication"])
 
@@ -13,7 +14,7 @@ auth_handler = AuthHandler()
 
 @router.post("/register", response_model=UserAuthen)
 async def register_user(user: UserCreate, session: Session = Depends(get_session)):
-    role = user.role or "userpets"  # Default role if not provided
+    role = user.role or "userpets"  
     if role not in ["admin", "userpets"]:
         raise HTTPException(status_code=400, detail="Invalid role")
 
@@ -51,10 +52,9 @@ async def register_user(user: UserCreate, session: Session = Depends(get_session
 
 @router.post("/login")
 async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_session)):
-    # Query the UserProfile model for the user
+
     user = db.query(UserProfile).filter(UserProfile.email == form_data.username).first()
 
-    # Validate the user's credentials
     if not user or not auth_handler.verify_password(form_data.password, user.password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -62,26 +62,110 @@ async def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = 
             headers={"WWW-Authenticate": "Bearer"},
         )
     
-    # Generate JWT token for the user
+
     token = auth_handler.create_access_token(data={"username": user.email, "role": user.role})
     
+   
+    log_entry = LogUserLogin(
+        action_name="Login",
+        login_datetime=datetime.now().replace(microsecond=0),
+        user_id=user.user_id,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        email=user.email,
+        contact_number=user.contact_number,
+        access_token=token,  
+        role=user.role
+    )
+    
+    db.add(log_entry)
+    db.commit()
+
     return {"access_token": token, "token_type": "bearer"}
 
+
+
+
+
+@router.post("/logout")
+async def logout(
+    token: str = Depends(OAuth2PasswordBearer(tokenUrl="/login")),  
+    db: Session = Depends(get_session)  
+):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    
+    try:
+        payload = auth_handler.decode_access_token(token)
+        username: str = payload.get("username")
+        if username is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+
+    user = db.query(UserProfile).filter(UserProfile.email == username).first()
+    if user is None:
+        raise credentials_exception
+
+    log_entry = LogUserLogin(
+        action_name="Logout", 
+        login_datetime=datetime.now().replace(microsecond=0),  
+        user_id=user.user_id,
+        first_name=user.first_name,
+        last_name=user.last_name,
+        email=user.email,
+        contact_number=user.contact_number,
+        access_token="N/A",  
+        role=user.role
+    )
+
+    try:
+     
+        db.add(log_entry)
+        db.commit()
+
+    except IntegrityError:
+        db.rollback()  
+  
+        new_log_entry = LogUserLogin(
+            action_name="Logout",
+            login_datetime=datetime.now().replace(microsecond=0),  
+            user_id=user.user_id,
+            first_name=user.first_name,
+            last_name=user.last_name,
+            email=user.email,
+            contact_number=user.contact_number,
+            access_token="N/A",  
+            role=user.role
+        )
+        db.add(new_log_entry)
+        db.commit()
+    
+    return {"message": "User logged out successfully"}
+
+
+
+
+
+#----------------------------------------------------------------------------------------------------------------------------------------
 @router.get("/profile")
 async def get_user_profile(db: Session = Depends(get_session), token: str = Depends(OAuth2PasswordBearer(tokenUrl="/login"))):
     try:
-        # Decode the token and extract user information
+     
         user_data = auth_handler.decode_access_token(token)
     except JWTError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
-    # Retrieve the user's profile using the decoded email
+   
     user_profile = db.query(UserProfile).filter(UserProfile.email == user_data['username']).first()
 
     if not user_profile:
         raise HTTPException(status_code=404, detail="User not found")
 
-    # Return the user's profile details
+    
     return {
         "first_name": user_profile.first_name,
         "last_name": user_profile.last_name,

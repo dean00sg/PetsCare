@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/users/bloc/profile_bloc.dart';
 import 'package:frontend/users/repositories/profile_repository.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -151,16 +150,15 @@ class ProfileScreen extends StatelessWidget {
                         side: const BorderSide(color: Colors.red),
                       ),
                       onPressed: () async {
-                        final profileRepository = ProfileRepository(apiUrl: 'YOUR_API_URL');
-                        await profileRepository.logout();
+                        try {
+                          final profileRepository = ProfileRepository(apiUrl: 'http://127.0.0.1:8000');
+                          await profileRepository.logout();
 
-                        // Verify token removal
-                        final prefs = await SharedPreferences.getInstance();
-                        final token = prefs.getString('token');
-                        print('Token after logout: $token'); // Debugging statement
-
-                        // Navigate to the login screen or another appropriate screen
-                        Navigator.of(context).pushReplacementNamed('/login');
+                          // Navigate to the login screen or another appropriate screen
+                          Navigator.of(context).pushReplacementNamed('/login');
+                        } catch (error) {
+                          print('Error during logout: $error');
+                        }
                       },
                       child: const Text(
                         'Logout',
