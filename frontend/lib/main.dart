@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/admin/widget/add_feedpost.dart';
 import 'package:frontend/admin/widget/feed_admin.dart';
+import 'package:frontend/admin/widget/notification_main.dart';
 import 'package:frontend/users/bloc/login_bloc.dart';
-// import 'package:frontend/users/bloc/signup_bloc.dart';
 import 'package:frontend/users/bloc/profile_bloc.dart';
 import 'package:frontend/users/bloc/signup_bloc.dart';
 import 'package:frontend/users/repositories/login_repository.dart';
@@ -32,7 +33,6 @@ class MyApp extends StatelessWidget {
           create: (context) => ProfileBloc(profileRepository: ProfileRepository(apiUrl: 'http://127.0.0.1:8000')),
         ),
         BlocProvider(
-
           create: (context) => SignupBloc(signupRepository: SignupRepository()),
         ),
       ],
@@ -48,7 +48,9 @@ class MyApp extends StatelessWidget {
           '/signup': (context) => SignupScreen(),
           '/feed': (context) => const FeedScreen(),
           '/feedadmin': (context) => const FeedadminScreen(),
-          '/profile': (context) => const ProfileScreen(), 
+          '/profile': (context) => const ProfileScreen(),
+          '/notifications': (context) => const NotificationWidget(), 
+          '/addfeedpost': (context) => const FeedPostWidget(), 
         },
       ),
     );

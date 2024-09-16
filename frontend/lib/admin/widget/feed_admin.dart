@@ -53,7 +53,7 @@ class FeedadminScreen extends StatelessWidget {
                 color: Color.fromARGB(255, 38, 111, 202),
               ),
               child: Text(
-                'Menu',
+                'Admin Service',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,
@@ -61,15 +61,15 @@ class FeedadminScreen extends StatelessWidget {
               ),
             ),
             ListTile(
-              title: const Text('PETS'),
+              title: const Text('Check Info'),
               onTap: () {
                 Navigator.pushNamed(context, '/pet');
               },
             ),
             ListTile(
-              title: const Text('My Pets'),
+              title: const Text('Add Notification'),
               onTap: () {
-                // Handle tap
+                Navigator.pushNamed(context, '/notifications');
               },
             ),
           ],
