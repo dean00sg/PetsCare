@@ -1,26 +1,23 @@
-// bloc/feed_bloc.dart
+// bloc/add_feedpost.dart
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/admin/event/add_feedpost.dart';
 import 'package:frontend/admin/repositories/add_feedpost.dart';
 import 'package:frontend/admin/state/add_feedpost.dart';
 
+class AddFeedBloc extends Bloc<AddFeedPostEvent, FeedState> {
+  final AddFeedRepository repository;
 
-class FeedBloc extends Bloc<FeedEvent, FeedState> {
-  final FeedRepository repository;
-
-  FeedBloc({required this.repository}) : super(FeedInitial()) {
-    // Use on<Event> instead of mapEventToState
+  AddFeedBloc({required this.repository}) : super(FeedInitial()) {
     on<AddFeedPostEvent>(_onAddFeedPost);
   }
 
-  // Define the event handler for AddFeedPostEvent
   Future<void> _onAddFeedPost(AddFeedPostEvent event, Emitter<FeedState> emit) async {
     emit(FeedLoading());
     try {
-      await repository.addFeedPost(event.post);
-      emit(FeedSuccess());
+      final addedPost = await repository.addFeedPost(event.post); // Await backend response
+      emit(FeedSuccess(addedPost)); // Emit success state with added post
     } catch (e) {
-      emit(FeedFailure(e.toString()));
+      emit(FeedFailure(e.toString())); // Emit failure state
     }
   }
 }

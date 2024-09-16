@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/admin/widget/add_feedpost.dart';
+import 'package:frontend/admin/bloc/add_feedpost.dart'; // Ensure correct import
+import 'package:frontend/admin/repositories/add_feedpost.dart'; // Ensure correct import
+
+import 'package:frontend/admin/widget/add_feedpost.dart'; // Correct imports
 import 'package:frontend/admin/widget/feed_admin.dart';
 import 'package:frontend/admin/widget/notification_main.dart';
 import 'package:frontend/users/bloc/login_bloc.dart';
@@ -13,7 +16,6 @@ import 'package:frontend/users/widget_screen/feed_screen.dart';
 import 'package:frontend/users/widget_screen/login_screen.dart';
 import 'package:frontend/users/widget_screen/profile.dart';
 import 'package:frontend/users/widget_screen/signup_screen.dart';
-
 
 void main() {
   runApp(const MyApp());
@@ -35,6 +37,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => SignupBloc(signupRepository: SignupRepository()),
         ),
+        BlocProvider(
+          create: (context) => AddFeedBloc(repository: AddFeedRepository()), // Correct parameter name
+        ),
       ],
       child: MaterialApp(
         title: 'Pet Care',
@@ -49,8 +54,8 @@ class MyApp extends StatelessWidget {
           '/feed': (context) => const FeedScreen(),
           '/feedadmin': (context) => const FeedadminScreen(),
           '/profile': (context) => const ProfileScreen(),
-          '/notifications': (context) => const NotificationWidget(), 
-          '/addfeedpost': (context) => const FeedPostWidget(), 
+          '/notifications': (context) => const NotificationWidget(),
+          '/addfeedpost': (context) => const FeedPostWidget(),
         },
       ),
     );

@@ -1,10 +1,10 @@
-// widgets/feed_post_widget.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/admin/bloc/add_feedpost.dart';
 import 'package:frontend/admin/event/add_feedpost.dart';
 import 'package:frontend/admin/models/add_feedpost.dart';
 import 'package:frontend/admin/state/add_feedpost.dart';
+import 'package:intl/intl.dart'; // For formatting the date and time
 
 class FeedPostWidget extends StatefulWidget {
   const FeedPostWidget({super.key});
@@ -15,126 +15,110 @@ class FeedPostWidget extends StatefulWidget {
 
 class _FeedPostWidgetState extends State<FeedPostWidget> {
   final _formKey = GlobalKey<FormState>();
-  String header = '';
-  DateTime startDatetime = DateTime.now();
-  DateTime endDatetime = DateTime.now();
-  String imageUrl = '';
-  String description = '';
+  final TextEditingController _headerController = TextEditingController();
+  final TextEditingController _startDateController = TextEditingController();
+  final TextEditingController _endDateController = TextEditingController();
+  final TextEditingController _imageUrlController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+
+  Future<void> _selectDateTime(BuildContext context, TextEditingController controller) async {
+    DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
+
+    if (pickedDate != null) {
+      TimeOfDay? pickedTime = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+      );
+
+      if (pickedTime != null) {
+        final DateTime fullDateTime = DateTime(
+          pickedDate.year,
+          pickedDate.month,
+          pickedDate.day,
+          pickedTime.hour,
+          pickedTime.minute,
+        );
+
+        controller.text = DateFormat('yyyy-MM-dd HH:mm').format(fullDateTime); // Formatting the selected date and time
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 38, 111, 202), 
-        title: const Text('Admin', style: TextStyle(fontSize: 16, color: Colors.white)),
-        centerTitle: true,
-        actions: [
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.account_circle),
-            onSelected: (String result) {
-              if (result == 'profile') {
-                Navigator.pushNamed(context, '/profile');
-              } else if (result == 'signout') {
-                Navigator.pushNamed(context, '/');
-              }
-            },
-            itemBuilder: (BuildContext context) => [
-              const PopupMenuItem<String>(
-                value: 'profile',
-                child: Text('PROFILE'),
-              ),
-              const PopupMenuItem<String>(
-                value: 'signout',
-                child: Text('SIGN OUT'),
-              ),
-            ],
-          ),
-        ],
-      ),
-      drawer: Drawer(
-        child: ListView(
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 38, 111, 202),
-              ),
-              child: Text(
-                'Admin Service',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ListTile(
-              title: const Text('Check Info'),
-              onTap: () {
-                Navigator.pushNamed(context, '/pet');
-              },
-            ),
-            ListTile(
-              title: const Text('Add Notification'),
-              onTap: () {
-                // Handle tap
-              },
-            ),
-          ],
-        ),
+        title: const Text('Add FeedPost'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: BlocListener<FeedBloc, FeedState>(
+        child: BlocListener<AddFeedBloc, FeedState>(
           listener: (context, state) {
             if (state is FeedSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Feed post added successfully')));
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Feed post added successfully')),
+              );
+              Navigator.pushNamed(context, '/feedadmin'); // Navigate to '/feed' after success
             } else if (state is FeedFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to add post: ${state.error}')));
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Failed to add post: ${state.error}')),
+              );
             }
           },
           child: Form(
             key: _formKey,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('FeedPost', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 20),
                 TextFormField(
+                  controller: _headerController,
                   decoration: const InputDecoration(labelText: 'Header'),
-                  onChanged: (value) => setState(() => header = value),
                   validator: (value) => value!.isEmpty ? 'Please enter a header' : null,
                 ),
-                const SizedBox(height: 10),
                 TextFormField(
-                  decoration: const InputDecoration(labelText: 'Start DateTime'),
-                  onChanged: (value) => setState(() => startDatetime = DateTime.parse(value)),
+                  controller: _startDateController,
+                  decoration: const InputDecoration(
+                    labelText: 'Start DateTime',
+                    suffixIcon: Icon(Icons.calendar_today),
+                  ),
+                  readOnly: true, // Makes the field read-only
+                  onTap: () => _selectDateTime(context, _startDateController),
+                  validator: (value) => value!.isEmpty ? 'Please select a start date and time' : null,
                 ),
-                const SizedBox(height: 10),
                 TextFormField(
-                  decoration: const InputDecoration(labelText: 'End DateTime'),
-                  onChanged: (value) => setState(() => endDatetime = DateTime.parse(value)),
+                  controller: _endDateController,
+                  decoration: const InputDecoration(
+                    labelText: 'End DateTime',
+                    suffixIcon: Icon(Icons.calendar_today),
+                  ),
+                  readOnly: true,
+                  onTap: () => _selectDateTime(context, _endDateController),
+                  validator: (value) => value!.isEmpty ? 'Please select an end date and time' : null,
                 ),
-                const SizedBox(height: 10),
                 TextFormField(
+                  controller: _imageUrlController,
                   decoration: const InputDecoration(labelText: 'Image URL'),
-                  onChanged: (value) => setState(() => imageUrl = value),
                 ),
-                const SizedBox(height: 10),
                 TextFormField(
+                  controller: _descriptionController,
                   decoration: const InputDecoration(labelText: 'Description'),
-                  onChanged: (value) => setState(() => description = value),
                 ),
                 const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: () {
                     if (_formKey.currentState!.validate()) {
                       final post = FeedPost(
-                        header: header,
-                        startDatetime: startDatetime,
-                        endDatetime: endDatetime,
-                        imageUrl: imageUrl,
-                        description: description,
+                        header: _headerController.text,
+                        startDatetime: DateTime.parse(_startDateController.text),
+                        endDatetime: DateTime.parse(_endDateController.text),
+                        imageUrl: _imageUrlController.text,
+                        description: _descriptionController.text,
                       );
-                      BlocProvider.of<FeedBloc>(context).add(AddFeedPostEvent(post));
+                      BlocProvider.of<AddFeedBloc>(context).add(AddFeedPostEvent(post));
                     }
                   },
                   child: const Text('Submit'),
