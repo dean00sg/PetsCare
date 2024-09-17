@@ -147,21 +147,24 @@ class SignupScreen extends StatelessWidget {
                           if (state is SignupLoading) {
                             return const CircularProgressIndicator();
                           }
-                          return ElevatedButton(
-                            style: signUpButtonStyle,
-                            onPressed: () {
-                              if (Form.of(context).validate()) {
-                                final signupData = SignupModel(
-                                  firstName: _firstNameController.text,
-                                  lastName: _lastNameController.text,
-                                  email: _emailController.text,
-                                  password: _passwordController.text,
-                                  contactNumber: _contactNumberController.text,
-                                );
-                                context.read<SignupBloc>().add(SignupButtonPressed(signupData: signupData));
-                              }
-                            },
-                            child: const Text('SIGN UP', style: TextStyle(fontSize: 18)),
+                          return SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              style: signUpButtonStyle,
+                              onPressed: () {
+                                if (Form.of(context).validate()) {
+                                  final signupData = SignupModel(
+                                    firstName: _firstNameController.text,
+                                    lastName: _lastNameController.text,
+                                    email: _emailController.text,
+                                    password: _passwordController.text,
+                                    contactNumber: _contactNumberController.text,
+                                  );
+                                  context.read<SignupBloc>().add(SignupButtonPressed(signupData: signupData));
+                                }
+                              },
+                              child: const Text('SIGN UP', style: TextStyle(fontSize: 18)),
+                            ),
                           );
                         },
                       ),

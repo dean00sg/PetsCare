@@ -65,26 +65,36 @@ class LoginScreen extends StatelessWidget {
                         decoration: inputDecoration('Password'),
                       ),
                       const SizedBox(height: 24),
-                      ElevatedButton(
-                        style: loginButtonStyle,
-                        onPressed: () {
-                          final loginData = LoginModel(
-                            username: usernameController.text,
-                            password: passwordController.text,
-                          );
-                          BlocProvider.of<LoginBloc>(context).add(
-                            LoginButtonPressed(loginData),
-                          );
-                        },
-                        child: const Text('SIGN IN', style: TextStyle(fontSize: 16)),
+                      // ปุ่ม SIGN IN
+                      SizedBox(
+                        width: double.infinity, 
+                        child: ElevatedButton(
+                          style: loginButtonStyle,
+                          onPressed: () {
+                            final loginData = LoginModel(
+                              username: usernameController.text,
+                              password: passwordController.text,
+                            );
+                            BlocProvider.of<LoginBloc>(context).add(
+                              LoginButtonPressed(loginData),
+                            );
+                          },
+                          child: const Text('SIGN IN', style: TextStyle(fontSize: 16)),
+                        ),
                       ),
+
                       const SizedBox(height: 16),
-                      ElevatedButton(
-                        style: loginButtonStyle,
-                        onPressed: () {
-                          Navigator.pushNamed(context, '/signup');
-                        },
-                        child: const Text('SIGN UP', style: TextStyle(fontSize: 16)),
+
+                      // ปุ่ม SIGN UP
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: loginButtonStyle,
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/signup');
+                          },
+                          child: const Text('SIGN UP', style: TextStyle(fontSize: 16)),
+                        ),
                       ),
                     ],
                   ),
