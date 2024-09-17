@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/admin/bloc/add_feedpost.dart'; // Ensure correct import
 import 'package:frontend/admin/repositories/add_feedpost.dart'; // Ensure correct import
-
+import 'package:frontend/admin/bloc/check_info_bloc.dart';
+import 'package:frontend/admin/widget/check_info_screen.dart';
 import 'package:frontend/admin/widget/add_feedpost.dart'; // Correct imports
 import 'package:frontend/admin/widget/feed_admin.dart';
 import 'package:frontend/admin/widget/notification_main.dart';
@@ -19,7 +20,6 @@ import 'package:frontend/users/widget_screen/create_pet_screen.dart';
 import 'package:frontend/users/widget_screen/feed_screen.dart';
 import 'package:frontend/users/widget_screen/login_screen.dart';
 import 'package:frontend/users/widget_screen/pet_screen.dart';
-
 import 'package:frontend/users/widget_screen/profile.dart';
 import 'package:frontend/users/widget_screen/signup_screen.dart';
 
@@ -38,16 +38,23 @@ class MyApp extends StatelessWidget {
           create: (context) => LoginBloc(loginRepository: LoginRepository()),
         ),
         BlocProvider(
-          create: (context) => ProfileBloc(profileRepository: ProfileRepository(apiUrl: 'http://127.0.0.1:8000')),
+          create: (context) => ProfileBloc(
+              profileRepository:
+                  ProfileRepository(apiUrl: 'http://127.0.0.1:8000')),
         ),
         BlocProvider(
           create: (context) => SignupBloc(signupRepository: SignupRepository()),
         ),
         BlocProvider(
-          create: (context) => AddFeedBloc(repository: AddFeedRepository()), // Correct parameter name
+          create: (context) => AddFeedBloc(
+              repository: AddFeedRepository()), // Correct parameter name
         ),
         BlocProvider(
-          create: (context) => CreatePetBloc(createPetRepository: CreatePetRepository()),
+          create: (context) =>
+              CreatePetBloc(createPetRepository: CreatePetRepository()),
+        ),
+        BlocProvider(
+          create: (context) => AdminCheckInfoBloc(),
         ),
       ],
       child: MaterialApp(
@@ -68,6 +75,7 @@ class MyApp extends StatelessWidget {
           '/addfeedpost': (context) => const FeedPostWidget(),
           '/createpetsmain': (context) => const PetSMaincreen(),
           '/createpets': (context) => const CreatePetScreen(),
+          '/checkinfo': (context) => const AdminCheckInfoScreen(),
         },
       ),
     );

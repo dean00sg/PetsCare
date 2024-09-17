@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../appbar/navbar.dart';
-import '../appbar/sidebar.dart';
+import '../appbar/slidebar.dart';
 import '../bloc/feed_bloc.dart';
 import '../event/feed_event.dart';
 import '../state/feed_state.dart';

@@ -1,86 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:frontend/admin/appbar/navbar.dart';
+import 'package:frontend/admin/appbar/sidebar.dart';
 import 'package:frontend/users/bloc/feed_bloc.dart';
 import 'package:frontend/users/event/feed_event.dart';
 import 'package:frontend/users/models/feed_model.dart';
 import 'package:frontend/users/repositories/feed_repository.dart';
 import 'package:frontend/users/state/feed_state.dart';
 
-
 class FeedadminScreen extends StatelessWidget {
   const FeedadminScreen({super.key});
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 38, 111, 202),
-        title: const Text(
-          'Admin',
-          style: TextStyle(fontSize: 16, color: Colors.white),
-        ),
-        centerTitle: true,
-        actions: [
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.account_circle),
-            onSelected: (String result) {
-              if (result == 'profile') {
-                Navigator.pushNamed(context, '/profileadmin');
-              } else if (result == 'signout') {
-                Navigator.pushNamed(context, '/');
-              }
-            },
-            itemBuilder: (BuildContext context) => [
-              const PopupMenuItem<String>(
-                value: 'profile',
-                child: Text('PROFILE'),
-              ),
-              const PopupMenuItem<String>(
-                value: 'signout',
-                child: Text('SIGN OUT'),
-              ),
-            ],
-          ),
-        ],
-      ),
-      drawer: Drawer(
-        child: ListView(
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 38, 111, 202),
-              ),
-              child: Text(
-                'Admin Service',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            ListTile(
-              title: const Text('FeedPost'),
-              onTap: () {
-                Navigator.pushNamed(context, '/feedadmin');
-              },
-            ),
-            ListTile(
-              title: const Text('Check Info'),
-              onTap: () {
-                Navigator.pushNamed(context, '/pet');
-              },
-            ),
-            ListTile(
-              title: const Text('Add Notification'),
-              onTap: () {
-                Navigator.pushNamed(context, '/notifications');
-              },
-            ),
-          ],
-        ),
-      ),
+      appBar: const Navbar(), 
+      drawer: const Sidebar(), 
       body: BlocProvider(
         create: (context) => FeedBloc(feedRepository: FeedRepository(apiUrl: 'http://127.0.0.1:8000'))..add(FetchFeedData()),
         child: BlocBuilder<FeedBloc, FeedState>(

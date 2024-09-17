@@ -1,9 +1,10 @@
-// widgets/notification_widget.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/admin/appbar/navbar.dart';
+import 'package:frontend/admin/appbar/sidebar.dart';
 import 'package:frontend/admin/bloc/notification_main.dart';
 import 'package:frontend/admin/event/notification_main.dart';
-import 'package:frontend/admin/state/notification_main.dart';
+import 'package:frontend/admin/style/notification_stye.dart';
 
 class NotificationWidget extends StatelessWidget {
   const NotificationWidget({super.key});
@@ -11,159 +12,74 @@ class NotificationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 38, 111, 202), // Consistent AppBar style
-        title: const Text(
-          'Admin',
-          style: TextStyle(fontSize: 16, color: Colors.white),
-        ),
-        centerTitle: true,
-        actions: [
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.account_circle),
-            onSelected: (String result) {
-              if (result == 'profile') {
-                Navigator.pushNamed(context, '/profileadmin');
-              } else if (result == 'signout') {
-                Navigator.pushNamed(context, '/');
-              }
-            },
-            itemBuilder: (BuildContext context) => [
-              const PopupMenuItem<String>(
-                value: 'profile',
-                child: Text('PROFILE'),
-              ),
-              const PopupMenuItem<String>(
-                value: 'signout',
-                child: Text('SIGN OUT'),
-              ),
-            ],
-          ),
-        ],
-      ),
-      drawer: Drawer(
-        child: ListView(
-          children: <Widget>[
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Color.fromARGB(255, 38, 111, 202),
-              ),
-              child: Text(
-                'Admin Service',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
+      appBar: const Navbar(), 
+      drawer: const Sidebar(), 
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 50), // ปรับ padding
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 4), // ปรับระยะห่างระหว่างหัวข้อและ GridView
+            const Text(
+              'Notification',
+              style: TextStyle(
+                fontSize: 40, // ปรับขนาดตัวอักษร
+                fontWeight: FontWeight.bold,
               ),
             ),
-            ListTile(
-              title: const Text('FeedPost'),
-              onTap: () {
-                Navigator.pushNamed(context, '/feedadmin');
-              },
-            ),
-            ListTile(
-              title: const Text('Check Info'),
-              onTap: () {
-                Navigator.pushNamed(context, '/pet');
-              },
-            ),
-            ListTile(
-              title: const Text('Add Notification'),
-              onTap: () {
-                // Handle tap
-              },
+            const SizedBox(height: 20), // ปรับระยะห่างระหว่างหัวข้อและ GridView
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 2,
+                mainAxisSpacing: 30, // ระยะห่างระหว่างแถว
+                crossAxisSpacing: 30, // ระยะห่างระหว่างคอลัมน์
+                childAspectRatio: 1, // เปลี่ยนให้เป็นสี่เหลี่ยมจัตุรัส
+                children: [
+                  _buildNotificationCard(
+                    context,
+                    title: 'Add FeedPost',
+                    icon: Icons.notifications,
+                    color: Colors.blue,
+                    onTap: () {
+                      Navigator.of(context).pushNamed('/addfeedpost');
+                      BlocProvider.of<NotificationBloc>(context).add(AddNotificationEvent());
+                    },
+                  ),
+                  _buildNotificationCard(
+                    context,
+                    title: 'Add News Feed Advice',
+                    icon: Icons.article,
+                    color: Colors.teal,
+                    onTap: () {
+                      BlocProvider.of<NotificationBloc>(context).add(AddNewsFeedAdviceEvent());
+                    },
+                  ),
+                ],
+              ),
             ),
           ],
         ),
       ),
-      body: BlocProvider(
-        create: (_) => NotificationBloc(),
-        child: BlocBuilder<NotificationBloc, NotificationState>(
-          builder: (context, state) {
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Notification',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      // Add Notification Button
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pushNamed('/addfeedpost');
-                          BlocProvider.of<NotificationBloc>(context).add(AddNotificationEvent());
-                        },
-                        child: Container(
-                          width: 140,
-                          height: 140,
-                          decoration: BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: const Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.notifications, size: 50, color: Colors.white),
-                              SizedBox(height: 10),
-                              Text(
-                                'Add FeedPost',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 20),
-                      // Add News Feed Advice Button
-                      GestureDetector(
-                        onTap: () {
-                          BlocProvider.of<NotificationBloc>(context).add(AddNewsFeedAdviceEvent());
-                        },
-                        child: Container(
-                          width: 140,
-                          height: 140,
-                          decoration: BoxDecoration(
-                            color: Colors.teal,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: const Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(Icons.article, size: 50, color: Colors.white),
-                              SizedBox(height: 10),
-                              Text(
-                                'Add News Feed Advice',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  // Display state updates (if needed)
-                  if (state is NotificationAddedState)
-                    const Text('Notification added!'),
-                  if (state is NewsFeedAdviceAddedState)
-                    const Text('News Feed Advice added!'),
-                ],
-              ),
-            );
-          },
+    );
+  }
+
+  Widget _buildNotificationCard(BuildContext context,
+      {required String title, required IconData icon, required Color color, required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: notificationCardDecoration.copyWith(color: color), // ใช้ decoration จาก style file
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 50, color: Colors.white),
+            const SizedBox(height: 8), // ระยะห่างระหว่างไอคอนและข้อความ
+            Text(
+              title,
+              style: notificationCardTextStyle, // ใช้ text style จาก style file
+              textAlign: TextAlign.center,
+            ),
+          ],
         ),
       ),
     );
