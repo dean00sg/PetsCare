@@ -6,57 +6,106 @@ class Sidebar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero, // กำหนด padding เป็น 0
-        children: <Widget>[
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Color.fromARGB(255, 38, 111, 202),
-            ),
-            child: Text(
-              'Admin Service',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
+      child: Container(
+        color: Colors.white,
+        child: ListView(
+          children: <Widget>[
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Color.fromARGB(255, 38, 111, 202),
+              ),
+              child: Text(
+                'Admin Service',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
               ),
             ),
-          ),
-          ListTile(
-            title: const Text('FeedPost'),
-            onTap: () {
-              Navigator.pushNamed(
-                  context, '/feedadmin'); // เปลี่ยนเส้นทางไปยังหน้า feedpost
-            },
-          ),
-          ListTile(
-            title: const Text('Check Info'),
-            onTap: () {
-              Navigator.pushNamed(context, '/checkinfo'); // เปลี่ยนเส้นทางไปยังหน้า checkinfo
-            },
-          ),
-          // ListTile(
-          //   title: const Text('Check Info'),
-          //   onTap: () {
-          //     Navigator.push(
-          //       context,
-          //       MaterialPageRoute(
-          //         builder: (context) => BlocProvider(
-          //           create: (context) => AdminCheckInfoBloc(),
-          //           child: const AdminCheckInfoScreen(),
-          //         ),
-          //       ),
-          //     );
-          //   },
-          // ),
-          ListTile(
-            title: const Text('Add Notification'),
-            onTap: () {
-              Navigator.pushNamed(context,
-                  '/notifications'); // เปลี่ยนเส้นทางไปยังหน้า addnotification
-            },
-          ),
-        ],
+            // ใช้ Container ครอบ ListTile แต่ละอัน
+            const SizedBox(height: 25),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 38, 111, 202),
+                borderRadius: BorderRadius.circular(4),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 3),
+                  ),
+                ], 
+              ),
+              child: Column(
+                children: [
+                  ListTile(
+                    title: const Text('Feed', style: TextStyle(color: Colors.white)),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/feedadmin');
+                    },
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 15),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8.0),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 38, 111, 202),
+                borderRadius: BorderRadius.circular(4),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 3),
+                  ),
+                ], 
+              ),
+              child: Column(
+                children: [
+                  ListTile(
+                    title: const Text('Check Info', style: TextStyle(color: Colors.white)),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/checkinfo');
+                    },
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 15),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8.0),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 38, 111, 202),
+                borderRadius: BorderRadius.circular(4),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 3),
+                  ),
+                ], 
+              ),
+              child: Column(
+                children: [
+                  ListTile(
+                    title: const Text('Add Notification', style: TextStyle(color: Colors.white)),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/notifications');
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
+
+

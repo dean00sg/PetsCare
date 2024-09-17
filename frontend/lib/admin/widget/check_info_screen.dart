@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/admin/appbar/navbar.dart';
 import 'package:frontend/admin/bloc/check_info_bloc.dart';
 import 'package:frontend/admin/event/check_info_event.dart';
-import 'package:frontend/admin/appbar/sidebar.dart';
+import 'package:frontend/admin/appbar/slidebar.dart';
 import 'package:frontend/admin/style/check_info_stye.dart'; 
 
 class AdminCheckInfoScreen extends StatelessWidget {
