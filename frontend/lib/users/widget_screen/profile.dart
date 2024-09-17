@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/users/bloc/profile_bloc.dart';
 import 'package:frontend/users/repositories/profile_repository.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:frontend/users/state/profile_state.dart';
+import 'package:frontend/users/widget_screen/editprofile.dart';
 import 'package:frontend/users/styles/profile_style.dart';
-
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -12,11 +12,10 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, 
+      backgroundColor: Colors.white,
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text('Profile',
-          style: TextStyle(fontSize: 22, color: Colors.white),),
+        title: const Text('Profile', style: TextStyle(fontSize: 22, color: Colors.white)),
         backgroundColor: Colors.brown,
         centerTitle: true,
         toolbarHeight: 70,
@@ -29,10 +28,10 @@ class ProfileScreen extends StatelessWidget {
           } else if (state is ProfileLoaded) {
             return Center(
               child: Container(
-                width: 320, 
+                width: 320,
                 height: 600,
                 padding: const EdgeInsets.all(20.0),
-                decoration: profileContainerDecoration, 
+                decoration: profileContainerDecoration,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -42,10 +41,7 @@ class ProfileScreen extends StatelessWidget {
                     const SizedBox(height: 20),
 
                     // Profile Title
-                    const Text(
-                      'PROFILE',
-                      style: titleStyle,
-                    ),
+                    const Text('PROFILE', style: titleStyle),
                     const SizedBox(height: 20),
 
                     // First Name
@@ -55,14 +51,8 @@ class ProfileScreen extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'FirstName:',
-                            style: profileDetailTextStyle,
-                          ),
-                          Text(
-                            state.profile.firstName,
-                            style: profileDetailTextStyle,
-                          ),
+                          const Text('FirstName:', style: profileDetailTextStyle),
+                          Text(state.profile.firstName, style: profileDetailTextStyle),
                         ],
                       ),
                     ),
@@ -75,16 +65,9 @@ class ProfileScreen extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'LastName:',
-                            style: profileDetailTextStyle,
-                          ),
-                          Text(
-                            state.profile.lastName,
-                            style: profileDetailTextStyle,
-                          ),
+                          const Text('LastName:', style: profileDetailTextStyle),
+                          Text(state.profile.lastName, style: profileDetailTextStyle),
                         ],
-
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -96,14 +79,8 @@ class ProfileScreen extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'E-mail:',
-                            style: profileDetailTextStyle,
-                          ),
-                          Text(
-                            state.profile.email,
-                            style: profileDetailTextStyle,
-                          ),
+                          const Text('E-mail:', style: profileDetailTextStyle),
+                          Text(state.profile.email, style: profileDetailTextStyle),
                         ],
                       ),
                     ),
@@ -116,14 +93,8 @@ class ProfileScreen extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Text(
-                            'Phone:',
-                            style: profileDetailTextStyle,
-                          ),
-                          Text(
-                            state.profile.phone,
-                            style: profileDetailTextStyle,
-                          ),
+                          const Text('Phone:', style: profileDetailTextStyle),
+                          Text(state.profile.phone, style: profileDetailTextStyle),
                         ],
                       ),
                     ),
@@ -134,13 +105,17 @@ class ProfileScreen extends StatelessWidget {
                       width: double.infinity,
                       child: ElevatedButton(
                         style: editButtonStyle,
-                        onPressed: () {
-                          // Handle Edit button press
+                        onPressed: () async {
+                          final result = await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => EditProfileScreen(profile: state.profile),
+                            ),
+                          );
+                          if (result == true) {
+                            context.read<ProfileBloc>().loadProfile(); // Reload profile if updated
+                          }
                         },
-                        child: const Text(
-                          'Edit',
-                          style: TextStyle(fontSize: 16),
-                        ),
+                        child: const Text('Edit', style: TextStyle(fontSize: 16)),
                       ),
                     ),
                     const SizedBox(height: 12),
@@ -154,18 +129,10 @@ class ProfileScreen extends StatelessWidget {
                           final profileRepository = ProfileRepository(apiUrl: 'http://127.0.0.1:8000');
                           await profileRepository.logout();
 
-                          // Verify token removal
-                          final prefs = await SharedPreferences.getInstance();
-                          final token = prefs.getString('token');
-                          print('Token after logout: $token'); // Debugging statement
-
                           // Navigate to the login screen or another appropriate screen
                           Navigator.of(context).pushReplacementNamed('/login');
                         },
-                        child: const Text(
-                          'Logout',
-                          style: TextStyle(fontSize: 16, color: Colors.white),
-                        ),
+                        child: const Text('Logout', style: TextStyle(fontSize: 16, color: Colors.white)),
                       ),
                     ),
                   ],

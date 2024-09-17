@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:frontend/users/models/profile_model.dart';
 import 'package:frontend/users/repositories/profile_repository.dart';
+import 'package:frontend/users/state/profile_state.dart';
 
 // Profile Bloc
 class ProfileBloc extends Cubit<ProfileState> {
@@ -9,30 +10,22 @@ class ProfileBloc extends Cubit<ProfileState> {
   ProfileBloc({required this.profileRepository}) : super(ProfileInitial());
 
   Future<void> loadProfile() async {
-    emit(ProfileLoading()); // Emit loading state before loading the profile
+    emit(ProfileLoading());
     try {
       final profile = await profileRepository.getProfile();
-      emit(ProfileLoaded(profile)); // Emit the profile loaded state if successful
+      emit(ProfileLoaded(profile));
     } catch (error) {
-      emit(ProfileLoadFailure()); // Emit failure state if there's an error
+      emit(ProfileLoadFailure());
+    }
+  }
+
+  Future<void> updateProfile(UserProfile updatedProfile) async {
+    emit(ProfileUpdating());
+    try {
+      await profileRepository.updateProfile(updatedProfile);
+      emit(ProfileUpdated(updatedProfile));
+    } catch (error) {
+      emit(ProfileUpdateFailure());
     }
   }
 }
-
-// States:
-abstract class ProfileState {}
-
-// Initial state when the ProfileBloc is created
-class ProfileInitial extends ProfileState {}
-
-// Loading state when profile data is being fetched
-class ProfileLoading extends ProfileState {}
-
-// State when the profile is successfully loaded
-class ProfileLoaded extends ProfileState {
-  final UserProfile profile;
-  ProfileLoaded(this.profile);
-}
-
-// State when there's an error loading the profile
-class ProfileLoadFailure extends ProfileState {}

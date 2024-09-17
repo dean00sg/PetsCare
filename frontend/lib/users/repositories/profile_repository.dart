@@ -17,7 +17,7 @@ class ProfileRepository {
     }
 
     final response = await http.get(
-      Uri.parse('$apiUrl/authentication/profile'),
+      Uri.parse('$apiUrl/profile'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -35,30 +35,52 @@ class ProfileRepository {
   }
 
   Future<void> logout() async {
-  final prefs = await SharedPreferences.getInstance();
-  final token = prefs.getString('token');
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
 
-  if (token == null) {
-    throw Exception('Token not found, user not logged in');
-  }
-
-  final response = await http.post(
-    Uri.parse('$apiUrl/authentication/logout'),
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    },
-  );
-
-  if (response.statusCode == 200) {
-    bool removed = await prefs.remove('token');
-    if (!removed) {
-      throw Exception('Failed to remove token');
+    if (token == null) {
+      throw Exception('Token not found, user not logged in');
     }
-    print('User logged out successfully');
-  } else {
-    throw Exception('Failed to log out');
-  }
-}
 
+    final response = await http.post(
+      Uri.parse('$apiUrl/authentication/logout'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      bool removed = await prefs.remove('token');
+      if (!removed) {
+        throw Exception('Failed to remove token');
+      }
+      print('User logged out successfully');
+    } else {
+      throw Exception('Failed to log out');
+    }
+  }
+
+  // Add this method for updating the profile
+  Future<void> updateProfile(UserProfile updatedProfile) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    if (token == null) {
+      throw Exception('Token not found, user not logged in');
+    }
+
+    final response = await http.put(
+      Uri.parse('$apiUrl/profile'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(updatedProfile.toJson()), // Assuming toJson() exists in UserProfile model
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to update profile');
+    }
+  }
 }

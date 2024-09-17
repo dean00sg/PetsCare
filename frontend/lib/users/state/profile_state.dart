@@ -1,27 +1,23 @@
-import 'package:equatable/equatable.dart';
 import 'package:frontend/users/models/profile_model.dart';
 
-abstract class ProfileState extends Equatable {
-  @override
-  List<Object?> get props => [];
-}
+abstract class ProfileState {}
+
+class ProfileInitial extends ProfileState {}
 
 class ProfileLoading extends ProfileState {}
 
 class ProfileLoaded extends ProfileState {
-  final UserProfile userProfile;
-
-  ProfileLoaded({required this.userProfile});
-
-  @override
-  List<Object?> get props => [userProfile];
+  final UserProfile profile;
+  ProfileLoaded(this.profile);
 }
 
-class ProfileError extends ProfileState {
-  final String message;
+class ProfileLoadFailure extends ProfileState {}
 
-  ProfileError(this.message);
+class ProfileUpdating extends ProfileState {}
 
-  @override
-  List<Object?> get props => [message];
+class ProfileUpdated extends ProfileState {
+  final UserProfile profile;
+  ProfileUpdated(this.profile);
 }
+
+class ProfileUpdateFailure extends ProfileState {}
