@@ -1,43 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/users/appbar/navbar.dart';
+import 'package:frontend/users/appbar/sidebar.dart';
 import 'package:frontend/users/bloc/pet_bloc.dart';
 import 'package:frontend/users/event/pet_event.dart';
 import 'package:frontend/users/state/pet_state.dart';
 import 'package:frontend/users/styles/pet_style.dart';
 
-class PetScreen extends StatelessWidget {
-  const PetScreen({super.key});
+class PetSMaincreen extends StatelessWidget {
+  const PetSMaincreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('PETS', style: TextStyle(fontSize: 16, color: Colors.white)),
-        backgroundColor: Colors.brown[400],
-        centerTitle: true,
-        actions: [
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.account_circle),
-            onSelected: (String result) {
-              if (result == 'profile') {
-                Navigator.pushNamed(context, '/profile');
-              } else if (result == 'signout') {
-                Navigator.pushNamed(context, '/');
-              }
-            },
-            itemBuilder: (BuildContext context) => [
-              const PopupMenuItem<String>(
-                value: 'profile',
-                child: Text('PROFILE'),
-              ),
-              const PopupMenuItem<String>(
-                value: 'signout',
-                child: Text('SIGN OUT'),
-              ),
-            ],
-          ),
-        ],
-      ),
+      appBar: const Navbar(), 
+      drawer: const Sidebar(), 
       body: BlocProvider(
         create: (context) => PetBloc()..add(LoadPets()),
         child: BlocBuilder<PetBloc, PetState>(
@@ -61,12 +38,15 @@ class PetScreen extends StatelessWidget {
                       onTap: () {
                         Navigator.pushNamed(
                           context,
-                          '/create_pet',
-                          arguments: pet, // ส่งข้อมูล Pet ไปยังหน้า CreatePetScreen
+                          '/createpets',
+                          arguments: {
+                              'name': pet.name,     
+                              'imagePath': pet.imagePath, 
+                            },
                         );
                       },
                       child: Container(
-                        decoration: petContainerDecoration, // ใช้ Style จาก pet_style.dart
+                        decoration: petContainerDecoration,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
@@ -78,7 +58,7 @@ class PetScreen extends StatelessWidget {
                             const SizedBox(height: 8),
                             Text(
                               pet.name,
-                              style: petNameStyle, // ใช้ Style จาก pet_style.dart
+                              style: petNameStyle,
                             ),
                           ],
                         ),

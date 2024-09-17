@@ -21,9 +21,15 @@ class Sidebar extends StatelessWidget {
             ),
           ),
           ListTile(
+            title: const Text('Feed'),
+            onTap: () {
+              Navigator.pushNamed(context, '/feed');
+            },
+          ),
+          ListTile(
             title: const Text('PETS'),
             onTap: () {
-              Navigator.pushNamed(context, '/pet');
+              Navigator.pushNamed(context, '/createpetsmain');
             },
           ),
           ListTile(

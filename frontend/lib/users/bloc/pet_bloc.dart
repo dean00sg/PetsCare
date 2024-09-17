@@ -12,7 +12,6 @@ class PetBloc extends Bloc<PetEvent, PetState> {
   void _onLoadPets(LoadPets event, Emitter<PetState> emit) async {
     emit(PetLoading());
     try {
-      // จำลองการดึงข้อมูล
       final List<Pet> pets = [
         Pet(name: 'Cat', imagePath: 'lib/images/cat_icon.png'),
         Pet(name: 'Dog', imagePath: 'lib/images/dog_icon.png'),
