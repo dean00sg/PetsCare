@@ -6,6 +6,7 @@ import 'package:frontend/admin/repositories/add_feedpost.dart'; // Ensure correc
 import 'package:frontend/admin/widget/add_feedpost.dart'; // Correct imports
 import 'package:frontend/admin/widget/feed_admin.dart';
 import 'package:frontend/admin/widget/notification_main.dart';
+import 'package:frontend/admin/widget/profile.dart';
 import 'package:frontend/users/bloc/login_bloc.dart';
 import 'package:frontend/users/bloc/profile_bloc.dart';
 import 'package:frontend/users/bloc/signup_bloc.dart';
@@ -54,6 +55,7 @@ class MyApp extends StatelessWidget {
           '/feed': (context) => const FeedScreen(),
           '/feedadmin': (context) => const FeedadminScreen(),
           '/profile': (context) => const ProfileScreen(),
+          '/profileadmin': (context) => const ProfileAdminScreen(),
           '/notifications': (context) => const NotificationWidget(),
           '/addfeedpost': (context) => const FeedPostWidget(),
         },

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:frontend/admin/style/profile.dart';
 import 'package:frontend/users/bloc/profile_bloc.dart';
 import 'package:frontend/users/repositories/profile_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:frontend/users/styles/profile_style.dart';
 
 
-class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+
+class ProfileAdminScreen extends StatelessWidget {
+  const ProfileAdminScreen({super.key});
+
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +20,7 @@ class ProfileScreen extends StatelessWidget {
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text('Profile',
           style: TextStyle(fontSize: 22, color: Colors.white),),
-        backgroundColor: Colors.brown,
+        backgroundColor: const Color.fromARGB(255, 38, 111, 202),
         centerTitle: true,
         toolbarHeight: 70,
       ),
@@ -43,7 +46,7 @@ class ProfileScreen extends StatelessWidget {
 
                     // Profile Title
                     const Text(
-                      'PROFILE',
+                      'PROFILE ADMIN',
                       style: titleStyle,
                     ),
                     const SizedBox(height: 20),

@@ -23,7 +23,7 @@ class NotificationWidget extends StatelessWidget {
             icon: const Icon(Icons.account_circle),
             onSelected: (String result) {
               if (result == 'profile') {
-                Navigator.pushNamed(context, '/profile');
+                Navigator.pushNamed(context, '/profileadmin');
               } else if (result == 'signout') {
                 Navigator.pushNamed(context, '/');
               }
@@ -55,6 +55,12 @@ class NotificationWidget extends StatelessWidget {
                   fontSize: 24,
                 ),
               ),
+            ),
+            ListTile(
+              title: const Text('FeedPost'),
+              onTap: () {
+                Navigator.pushNamed(context, '/feedadmin');
+              },
             ),
             ListTile(
               title: const Text('Check Info'),
