@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/admin/style/profile.dart';
+import 'package:frontend/admin/widget/editprofile.dart';
 import 'package:frontend/users/bloc/profile_bloc.dart';
 import 'package:frontend/users/repositories/profile_repository.dart';
 import 'package:frontend/users/state/profile_state.dart';
-import 'package:frontend/users/widget_screen/editprofile.dart';
+
 
 
 class ProfileAdminScreen extends StatelessWidget {
@@ -111,7 +112,7 @@ class ProfileAdminScreen extends StatelessWidget {
                         onPressed: () async {
                           final result = await Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => EditProfileScreen(profile: state.profile),
+                              builder: (context) => EditProfileAdminScreen(profile: state.profile),
                             ),
                           );
                           if (result == true) {

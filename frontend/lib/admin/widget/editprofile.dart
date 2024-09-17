@@ -5,16 +5,16 @@ import 'package:frontend/users/bloc/profile_bloc.dart';
 import 'package:frontend/users/models/profile_model.dart';
 
 
-class EditProfileScreen extends StatefulWidget {
+class EditProfileAdminScreen extends StatefulWidget {
   final UserProfile profile;
 
-  const EditProfileScreen({Key? key, required this.profile}) : super(key: key);
+  const EditProfileAdminScreen({Key? key, required this.profile}) : super(key: key);
 
   @override
   _EditProfileScreenState createState() => _EditProfileScreenState();
 }
 
-class _EditProfileScreenState extends State<EditProfileScreen> {
+class _EditProfileScreenState extends State<EditProfileAdminScreen> {
   final _formKey = GlobalKey<FormState>();
   late String _firstName;
   late String _lastName;
