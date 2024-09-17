@@ -1,29 +1,36 @@
 import 'package:flutter/material.dart';
 
-// สไตล์สำหรับ Container
+// สไตล์ของ Container หลัก
 final BoxDecoration containerDecoration = BoxDecoration(
-  color: const Color.fromARGB(255, 122, 83, 65),
-  borderRadius: BorderRadius.circular(25),
+  color: Colors.brown, // สีน้ำตาลตามรูป
+  borderRadius: BorderRadius.circular(25), // ขอบโค้งมน
 );
 
-// สไตล์ปุ่มบันทึก (Save)
-final ButtonStyle saveButtonStyle = ElevatedButton.styleFrom(
-  backgroundColor: Colors.amber,
-  padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 50),
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(24),
-  ),
-);
-
-// สไตล์ TextField
+// สไตล์ของ TextField
 InputDecoration inputDecoration(String hintText) {
   return InputDecoration(
     filled: true,
     fillColor: Colors.white,
     hintText: hintText,
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(8.0),
+      borderRadius: BorderRadius.circular(20),
       borderSide: BorderSide.none,
     ),
   );
 }
+
+// สไตล์ของปุ่ม Save
+final ButtonStyle saveButtonStyle = ElevatedButton.styleFrom(
+  backgroundColor: Colors.amber,
+  shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(24),
+  ),
+  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 80),
+);
+
+// สไตล์ของข้อความ "Profile"
+const TextStyle profileTextStyle = TextStyle(
+  color: Colors.white,
+  fontSize: 20,
+  fontWeight: FontWeight.bold,
+);
