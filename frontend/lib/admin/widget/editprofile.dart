@@ -4,7 +4,6 @@ import 'package:frontend/admin/style/profile.dart';
 import 'package:frontend/users/bloc/profile_bloc.dart';
 import 'package:frontend/users/models/profile_model.dart';
 
-
 class EditProfileAdminScreen extends StatefulWidget {
   final UserProfile profile;
 
@@ -42,95 +41,124 @@ class _EditProfileScreenState extends State<EditProfileAdminScreen> {
         toolbarHeight: 70,
       ),
       body: Center(
-        child: Container(
-          width: 320,
+        child: Container( //ปรับขนาดของ container
+          width: 320, 
+          height: 610, 
           padding: const EdgeInsets.all(20.0),
           decoration: profileContainerDecoration,
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('PROFILE ADMIN', style: titleStyle),
-                const SizedBox(height: 20),
+          child: SingleChildScrollView( //SingleChildScrollView ป้องกันการล้นของหน้าจอ
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Profile Icon
+                  profileAvatarDecoration,
+                  const SizedBox(height: 20),
 
-                // First Name
-                Container(
-                  padding: containerPadding,
-                  decoration: containerDecoration,
-                  child: TextFormField(
-                    initialValue: _firstName,
-                    decoration: const InputDecoration(labelText: 'First Name', border: InputBorder.none),
-                    onSaved: (value) {
-                      _firstName = value!;
-                    },
-                  ),
-                ),
-                const SizedBox(height: 12),
+                  // Profile Title
+                  const Text('PROFILE ADMIN', style: titleStyle),
+                  const SizedBox(height: 20),
 
-                // Last Name
-                Container(
-                  padding: containerPadding,
-                  decoration: containerDecoration,
-                  child: TextFormField(
-                    initialValue: _lastName,
-                    decoration: const InputDecoration(labelText: 'Last Name', border: InputBorder.none),
-                    onSaved: (value) {
-                      _lastName = value!;
-                    },
+                  //First Name
+                  Container(
+                    padding: containerPadding,
+                    decoration: containerDecoration,
+                    child: TextFormField(
+                      initialValue: _firstName,
+                      style: const TextStyle(color: Colors.white), //กำหนดสีของตัวอักษรในช่องกรอกให้เป็นสีขาว
+                      decoration: const InputDecoration(
+                        labelText: 'First Name',
+                        border: InputBorder.none,
+                        labelStyle: TextStyle(color: Colors.white), //กำหนดสีของ label ให้เป็นสีขาว
+                      ),
+                      onSaved: (value) {
+                        _firstName = value!;
+                      },
+                    ),
                   ),
-                ),
-                const SizedBox(height: 12),
+                  const SizedBox(height: 12),
 
-                // Email (Non-editable)
-                Container(
-                  padding: containerPadding,
-                  decoration: containerDecoration,
-                  child: TextFormField(
-                    initialValue: _email,
-                    decoration: const InputDecoration(labelText: 'Email', border: InputBorder.none),
-                    enabled: false,
+                  //Last Name
+                  Container(
+                    padding: containerPadding,
+                    decoration: containerDecoration,
+                    child: TextFormField(
+                      initialValue: _lastName,
+                      style: const TextStyle(color: Colors.white), 
+                      decoration: const InputDecoration(
+                        labelText: 'Last Name',
+                        border: InputBorder.none,
+                        labelStyle: TextStyle(color: Colors.white), 
+                      ),
+                      onSaved: (value) {
+                        _lastName = value!;
+                      },
+                    ),
                   ),
-                ),
-                const SizedBox(height: 12),
+                  const SizedBox(height: 12),
 
-                // Phone
-                Container(
-                  padding: containerPadding,
-                  decoration: containerDecoration,
-                  child: TextFormField(
-                    initialValue: _phone,
-                    decoration: const InputDecoration(labelText: 'Phone', border: InputBorder.none),
-                    onSaved: (value) {
-                      _phone = value!;
-                    },
+                  //Email (ไม่สามารถแก้ไขได้)
+                  Container(
+                    padding: containerPadding,
+                    decoration: containerDecoration,
+                    child: TextFormField(
+                      initialValue: _email,
+                      style: const TextStyle(color: Colors.white), 
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
+                        border: InputBorder.none,
+                        labelStyle: TextStyle(color: Colors.white), 
+                      ),
+                      enabled: false, // ปิดการแก้ไขช่องกรอกนี้
+                    ),
                   ),
-                ),
-                const SizedBox(height: 25),
+                  const SizedBox(height: 12),
 
-                // Save Button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: editButtonStyle,
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        _formKey.currentState!.save();
-                        final updatedProfile = UserProfile(
-                          firstName: _firstName,
-                          lastName: _lastName,
-                          email: _email,
-                          phone: _phone,
-                        );
-                        context.read<ProfileBloc>().updateProfile(updatedProfile);
-                        Navigator.pop(context, true); // Indicate profile updated
-                      }
-                    },
-                    child: const Text('Save', style: TextStyle(fontSize: 16)),
+                  //Phone
+                  Container(
+                    padding: containerPadding,
+                    decoration: containerDecoration,
+                    child: TextFormField(
+                      initialValue: _phone,
+                      style: const TextStyle(color: Colors.white), 
+                      decoration: const InputDecoration(
+                        labelText: 'Phone',
+                        border: InputBorder.none,
+                        labelStyle: TextStyle(color: Colors.white), 
+                      ),
+                      onSaved: (value) {
+                        _phone = value!;
+                      },
+                    ),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 25),
+
+                  // ปุ่ม Save
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: editButtonStyle,
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          _formKey.currentState!.save();
+                          final updatedProfile = UserProfile(
+                            firstName: _firstName,
+                            lastName: _lastName,
+                            email: _email,
+                            phone: _phone,
+                          );
+                          // อัปเดตโปรไฟล์โดยใช้ Bloc
+                          context.read<ProfileBloc>().updateProfile(updatedProfile);
+                          Navigator.pop(context, true); // บอกให้หน้าก่อนหน้ารู้ว่าโปรไฟล์ได้รับการอัปเดตแล้ว
+                        }
+                      },
+                      child: const Text('Save', style: TextStyle(fontSize: 16)),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
