@@ -7,6 +7,7 @@ import 'package:frontend/admin/widget/check_info_screen.dart';
 import 'package:frontend/admin/widget/add_feedpost.dart'; // Correct imports
 import 'package:frontend/admin/widget/feed_admin.dart';
 import 'package:frontend/admin/widget/notification_main.dart';
+import 'package:frontend/admin/widget/petprofile.dart';
 import 'package:frontend/admin/widget/profile.dart';
 import 'package:frontend/users/bloc/create_pet_bloc.dart';
 import 'package:frontend/users/bloc/login_bloc.dart';
@@ -76,6 +77,7 @@ class MyApp extends StatelessWidget {
           '/createpetsmain': (context) => const PetSMaincreen(),
           '/createpets': (context) => const CreatePetScreen(),
           '/checkinfo': (context) => const AdminCheckInfoScreen(),
+          '/petsprofile': (context) => const PetProfileScreen(),
         },
       ),
     );

@@ -13,6 +13,7 @@ class PetSMaincreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: const Navbar(), 
       drawer: const Sidebar(), 
       body: BlocProvider(
@@ -66,7 +67,7 @@ class PetSMaincreen extends StatelessWidget {
                                   CircleAvatar(
                                     radius: 50,
                                     backgroundImage: AssetImage(pet.imagePath),
-                                    backgroundColor: Colors.grey[300],
+                                    backgroundColor: const Color.fromARGB(255, 255, 255, 255),
                                   ),
                                   const SizedBox(height: 8),
                                   Text(

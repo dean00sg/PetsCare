@@ -51,12 +51,13 @@ class AdminCheckInfoScreen extends StatelessWidget {
 
   Widget _buildInfoCard(BuildContext context, String title, IconData icon, Color color) {
     return GestureDetector(
-      onTap: () {
+      onTap: () async {
         if (title == 'check all user') {
           BlocProvider.of<AdminCheckInfoBloc>(context).add(CheckAllUsersEvent());
         } else if (title == 'check all user by name') {
           BlocProvider.of<AdminCheckInfoBloc>(context).add(CheckUsersByNameEvent());
         } else if (title == 'check owner of pets') {
+          await Navigator.of(context).pushNamed('/petsprofile');
           BlocProvider.of<AdminCheckInfoBloc>(context).add(CheckOwnersOfPetsEvent());
         } else if (title == 'check vaccine of pets') {
           BlocProvider.of<AdminCheckInfoBloc>(context).add(CheckVaccinesOfPetsEvent());
@@ -83,4 +84,5 @@ class AdminCheckInfoScreen extends StatelessWidget {
       ),
     );
   }
+
 }
