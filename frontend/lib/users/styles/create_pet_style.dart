@@ -3,7 +3,14 @@ import 'package:flutter/material.dart';
 // สไตล์ของ Container หลัก
 final BoxDecoration containerDecoration = BoxDecoration(
   color: Colors.brown, // สีน้ำตาลตามรูป
-  borderRadius: BorderRadius.circular(25), // ขอบโค้งมน
+  borderRadius: BorderRadius.circular(20),
+  boxShadow: [
+    BoxShadow(
+      color: Colors.black.withOpacity(0.3),
+      offset: const Offset(0, 4),
+      blurRadius: 8,
+    ),
+  ],
 );
 
 // สไตล์ของ TextField

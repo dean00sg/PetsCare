@@ -7,9 +7,6 @@ import 'package:frontend/admin/state/add_feedpost.dart';
 import 'package:frontend/admin/style/add_feedpost_style.dart';
 import 'package:intl/intl.dart';
 
-import '../appbar/navbar.dart';
-import '../appbar/slidebar.dart';
-
 class FeedPostWidget extends StatefulWidget {
   const FeedPostWidget({super.key});
 
@@ -56,20 +53,18 @@ class _FeedPostWidgetState extends State<FeedPostWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const Navbar(), 
-      drawer: const Sidebar(), 
-      // appBar: AppBar(
-      //   iconTheme: const IconThemeData(color: Colors.white),
-      //   title: const Text('Feed Post', style: TextStyle(fontSize: 22, color: Colors.white)),
-      //   backgroundColor: const Color.fromARGB(255, 38, 111, 202), 
-      //   centerTitle: true,
-      //   toolbarHeight: 70,
-      // ),
+      appBar: AppBar(
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text('New Feed', style: TextStyle(fontSize: 22, color: Colors.white)),
+        backgroundColor: const Color.fromARGB(255, 38, 111, 202), 
+        centerTitle: true,
+        toolbarHeight: 70,
+      ),
       body: Center(
         child: SingleChildScrollView(
           child: Container(
-            width: 320,
-            padding: const EdgeInsets.all(16.0),
+            width: 350,
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start, // Align to the left
               children: [
@@ -86,7 +81,6 @@ class _FeedPostWidgetState extends State<FeedPostWidget> {
                 ),
                 const SizedBox(height: 20),
                 Container(
-                  //width: 320,
                   decoration: mainContainerDecoration, 
                   padding: const EdgeInsets.all(16.0),
                   child: BlocListener<AddFeedBloc, FeedState>(
@@ -203,7 +197,7 @@ class _FeedPostWidgetState extends State<FeedPostWidget> {
                                   BlocProvider.of<AddFeedBloc>(context).add(AddFeedPostEvent(post));
                                 }
                               },
-                              child: const Text('Save', style: TextStyle(color: Colors.white), ),
+                              child: const Text('Save', style: TextStyle(color: Colors.white, fontSize: 16) ),
                             ),
                           ),
                           const SizedBox(height: 25),

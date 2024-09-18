@@ -3,7 +3,14 @@ import 'package:flutter/material.dart';
 // สไตล์ของ Container หลักที่ครอบทุกอย่าง
 final BoxDecoration mainContainerDecoration = BoxDecoration(
   color: const Color.fromARGB(255, 38, 111, 202),
-  borderRadius: BorderRadius.circular(10),
+  borderRadius: BorderRadius.circular(20),
+  boxShadow: [
+    BoxShadow(
+      color: Colors.black.withOpacity(0.3),
+      offset: const Offset(0, 4),
+      blurRadius: 8,
+    ),
+  ],
 );
 
 // สไตล์ของ ElevatedButton
