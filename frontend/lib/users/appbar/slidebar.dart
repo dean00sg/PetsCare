@@ -133,7 +133,6 @@ class _SidebarState extends State<Sidebar> {
                     children: pets.map((pet) {
                       return Container(
                         margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-                        padding: const EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
                           color: Colors.brown[50], 
                           borderRadius: BorderRadius.circular(4),
@@ -142,13 +141,13 @@ class _SidebarState extends State<Sidebar> {
                           children: [
                             Image.asset(
                               pet.imagePath,
-                              width: 30,
-                              height: 30,
+                              width: 50,
+                              height: 50,
                             ),
                             const SizedBox(width: 10),
                             Text(
                               pet.name,
-                              style: const TextStyle(color: Colors.brown),
+                              style: const TextStyle(color: Colors.brown, fontSize: 18),
                             ),
                           ],
                         ),

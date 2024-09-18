@@ -95,12 +95,15 @@ class _CreatePetScreenState extends State<CreatePetScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'MY ${args != null ? args!['name'].toUpperCase() : ''}',
-                  style: TextStyle(
-                    fontSize: 40,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.brown[900], 
+                Padding(
+                  padding: const EdgeInsets.only(top: 16),
+                  child: Text(
+                    'MY ${args != null ? args!['name'].toUpperCase() : ''}',
+                    style: TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.brown[900], 
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16), 
@@ -143,7 +146,9 @@ class _CreatePetScreenState extends State<CreatePetScreen> {
                       // วันเกิดของสัตว์เลี้ยง
                       TextField(
                         controller: _dateController,
-                        decoration: inputDecoration('Date of Birth'), 
+                        decoration: inputDecoration('Date of Birth').copyWith(
+                          suffixIcon: const Icon(Icons.calendar_today),
+                      ),
                         readOnly: true,
                         onTap: () => _selectDate(context),
                       ),

@@ -24,49 +24,66 @@ class PetSMaincreen extends StatelessWidget {
             } else if (state is PetLoaded) {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 50),
-                child: GridView.builder(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 30,
-                    crossAxisSpacing: 30,
-                    childAspectRatio: 4 / 4,
-                  ),
-                  itemCount: state.pets.length,
-                  itemBuilder: (context, index) {
-                    final pet = state.pets[index];
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/createpets',
-                          arguments: {
-                              'name': pet.name,     
-                              'imagePath': pet.imagePath, 
-                            },
-                        );
-                      },
-                      child: Container(
-                        decoration: petContainerDecoration,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircleAvatar(
-                              radius: 50,
-                              backgroundImage: AssetImage(pet.imagePath),
-                              backgroundColor: Colors.grey[300],
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              pet.name,
-                              style: petNameStyle,
-                            ),
-                          ],
-                        ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'TYPE PETS',
+                      style: TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.brown[900],
                       ),
-                    );
-                  },
+                    ),
+                    const SizedBox(height: 20), // ระยะห่างระหว่างข้อความและ GridView
+                    Expanded( // ใช้ Expanded เพื่อให้ GridView ครอบคลุมพื้นที่ที่เหลืออยู่
+                      child: GridView.builder(
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          mainAxisSpacing: 30,
+                          crossAxisSpacing: 30,
+                          childAspectRatio: 4 / 4,
+                        ),
+                        itemCount: state.pets.length,
+                        itemBuilder: (context, index) {
+                          final pet = state.pets[index];
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/createpets',
+                                arguments: {
+                                  'name': pet.name,     
+                                  'imagePath': pet.imagePath, 
+                                },
+                              );
+                            },
+                            child: Container(
+                              decoration: petContainerDecoration,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CircleAvatar(
+                                    radius: 50,
+                                    backgroundImage: AssetImage(pet.imagePath),
+                                    backgroundColor: Colors.grey[300],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    pet.name,
+                                    style: petNameStyle,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               );
+
             } else if (state is PetError) {
               return Center(child: Text(state.error));
             } else {
