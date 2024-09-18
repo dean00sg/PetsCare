@@ -20,11 +20,12 @@ class NotificationWidget extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 4), // ปรับระยะห่างระหว่างหัวข้อและ GridView
-            const Text(
+            Text(
               'Notification',
               style: TextStyle(
                 fontSize: 40, // ปรับขนาดตัวอักษร
                 fontWeight: FontWeight.bold,
+                color: Colors.blueGrey[900],
               ),
             ),
             const SizedBox(height: 20), // ปรับระยะห่างระหว่างหัวข้อและ GridView

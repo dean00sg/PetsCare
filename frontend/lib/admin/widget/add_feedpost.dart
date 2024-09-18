@@ -4,7 +4,11 @@ import 'package:frontend/admin/bloc/add_feedpost.dart';
 import 'package:frontend/admin/event/add_feedpost.dart';
 import 'package:frontend/admin/models/add_feedpost.dart';
 import 'package:frontend/admin/state/add_feedpost.dart';
-import 'package:intl/intl.dart'; // For formatting the date and time
+import 'package:frontend/admin/style/add_feedpost_style.dart';
+import 'package:intl/intl.dart';
+
+import '../appbar/navbar.dart';
+import '../appbar/slidebar.dart';
 
 class FeedPostWidget extends StatefulWidget {
   const FeedPostWidget({super.key});
@@ -26,7 +30,7 @@ class _FeedPostWidgetState extends State<FeedPostWidget> {
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
+      lastDate: DateTime.now(),
     );
 
     if (pickedDate != null) {
@@ -44,7 +48,7 @@ class _FeedPostWidgetState extends State<FeedPostWidget> {
           pickedTime.minute,
         );
 
-        controller.text = DateFormat('yyyy-MM-dd HH:mm').format(fullDateTime); // Formatting the selected date and time
+        controller.text = DateFormat('yyyy-MM-dd HH:mm').format(fullDateTime);
       }
     }
   }
@@ -52,76 +56,161 @@ class _FeedPostWidgetState extends State<FeedPostWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Add FeedPost'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: BlocListener<AddFeedBloc, FeedState>(
-          listener: (context, state) {
-            if (state is FeedSuccess) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Feed post added successfully')),
-              );
-              Navigator.pushNamed(context, '/feedadmin'); // Navigate to '/feed' after success
-            } else if (state is FeedFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Failed to add post: ${state.error}')),
-              );
-            }
-          },
-          child: Form(
-            key: _formKey,
+      appBar: const Navbar(), 
+      drawer: const Sidebar(), 
+      // appBar: AppBar(
+      //   iconTheme: const IconThemeData(color: Colors.white),
+      //   title: const Text('Feed Post', style: TextStyle(fontSize: 22, color: Colors.white)),
+      //   backgroundColor: const Color.fromARGB(255, 38, 111, 202), 
+      //   centerTitle: true,
+      //   toolbarHeight: 70,
+      // ),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Container(
+            width: 320,
+            padding: const EdgeInsets.all(16.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start, // Align to the left
               children: [
-                TextFormField(
-                  controller: _headerController,
-                  decoration: const InputDecoration(labelText: 'Header'),
-                  validator: (value) => value!.isEmpty ? 'Please enter a header' : null,
-                ),
-                TextFormField(
-                  controller: _startDateController,
-                  decoration: const InputDecoration(
-                    labelText: 'Start DateTime',
-                    suffixIcon: Icon(Icons.calendar_today),
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Feed Post',
+                    style: TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blueGrey[900],
+                    ),
                   ),
-                  readOnly: true, // Makes the field read-only
-                  onTap: () => _selectDateTime(context, _startDateController),
-                  validator: (value) => value!.isEmpty ? 'Please select a start date and time' : null,
-                ),
-                TextFormField(
-                  controller: _endDateController,
-                  decoration: const InputDecoration(
-                    labelText: 'End DateTime',
-                    suffixIcon: Icon(Icons.calendar_today),
-                  ),
-                  readOnly: true,
-                  onTap: () => _selectDateTime(context, _endDateController),
-                  validator: (value) => value!.isEmpty ? 'Please select an end date and time' : null,
-                ),
-                TextFormField(
-                  controller: _imageUrlController,
-                  decoration: const InputDecoration(labelText: 'Image URL'),
-                ),
-                TextFormField(
-                  controller: _descriptionController,
-                  decoration: const InputDecoration(labelText: 'Description'),
                 ),
                 const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      final post = FeedPost(
-                        header: _headerController.text,
-                        startDatetime: DateTime.parse(_startDateController.text),
-                        endDatetime: DateTime.parse(_endDateController.text),
-                        imageUrl: _imageUrlController.text,
-                        description: _descriptionController.text,
-                      );
-                      BlocProvider.of<AddFeedBloc>(context).add(AddFeedPostEvent(post));
-                    }
-                  },
-                  child: const Text('Submit'),
+                Container(
+                  //width: 320,
+                  decoration: mainContainerDecoration, 
+                  padding: const EdgeInsets.all(16.0),
+                  child: BlocListener<AddFeedBloc, FeedState>(
+                    listener: (context, state) {
+                      if (state is FeedSuccess) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Feed post added successfully')),
+                        );
+                        Navigator.pushNamed(context, '/feedadmin'); // Navigate to '/feed' after success
+                      } else if (state is FeedFailure) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Failed to add post: ${state.error}')),
+                        );
+                      }
+                    },
+                    child: Form(
+                      key: _formKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 20),
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            child: const Text(
+                              'Header :', 
+                              style: TextStyle(color: Colors.white, fontSize: 16),
+                            ),
+                          ),
+                          TextFormField(
+                            controller: _headerController,
+                            decoration: inputDecoration('Header'),
+                            validator: (value) => value!.isEmpty ? 'Please enter a header' : null,
+                          ),
+                          const SizedBox(height: 10),
+                          
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            child: const Text(
+                              'Start DateTime :', 
+                              style: TextStyle(color: Colors.white, fontSize: 16),
+                            ),
+                          ),
+                          TextFormField(
+                            controller: _startDateController,
+                            decoration: inputDecoration('Start DateTime').copyWith(
+                              suffixIcon: const Icon(Icons.calendar_today),
+                            ),
+                            readOnly: true, // Makes the field read-only
+                            onTap: () => _selectDateTime(context, _startDateController),
+                            validator: (value) => value!.isEmpty ? 'Please select a start date and time' : null,
+                          ),
+                          const SizedBox(height: 10),
+                          
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            child: const Text(
+                              'End DateTime :', 
+                              style: TextStyle(color: Colors.white, fontSize: 16),
+                            ),
+                          ),
+                          TextFormField(
+                            controller: _endDateController,
+                            decoration: inputDecoration('End DateTime').copyWith(
+                              suffixIcon: const Icon(Icons.calendar_today),
+                            ),
+                            readOnly: true,
+                            onTap: () => _selectDateTime(context, _endDateController),
+                            validator: (value) => value!.isEmpty ? 'Please select an end date and time' : null,
+                          ),
+                          const SizedBox(height: 10),
+                          
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            child: const Text(
+                              'Image URL :', 
+                              style: TextStyle(color: Colors.white, fontSize: 16),
+                            ),
+                          ),
+                          TextFormField(
+                            controller: _imageUrlController,
+                            decoration: inputDecoration('Image URL'),
+                          ),
+                          const SizedBox(height: 10),
+                          
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            child: const Text(
+                              'Description :', 
+                              style: TextStyle(color: Colors.white, fontSize: 16),
+                            ),
+                          ),
+                          TextFormField(
+                            controller: _descriptionController,
+                            decoration: inputDecoration('Description'),
+                            maxLines: 4, 
+                            minLines: 4, 
+                            keyboardType: TextInputType.multiline,
+                          ),
+                          const SizedBox(height: 20),
+                          
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              style: submitButtonStyle, // ใช้สไตล์ที่สร้างไว้
+                              onPressed: () {
+                                if (_formKey.currentState!.validate()) {
+                                  final post = FeedPost(
+                                    header: _headerController.text,
+                                    startDatetime: DateTime.parse(_startDateController.text),
+                                    endDatetime: DateTime.parse(_endDateController.text),
+                                    imageUrl: _imageUrlController.text,
+                                    description: _descriptionController.text,
+                                  );
+                                  BlocProvider.of<AddFeedBloc>(context).add(AddFeedPostEvent(post));
+                                }
+                              },
+                              child: const Text('Save', style: TextStyle(color: Colors.white), ),
+                            ),
+                          ),
+                          const SizedBox(height: 25),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),

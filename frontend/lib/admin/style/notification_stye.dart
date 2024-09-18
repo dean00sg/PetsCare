@@ -15,7 +15,6 @@ final BoxDecoration notificationCardDecoration = BoxDecoration(
 const TextStyle notificationCardTextStyle = TextStyle(
   color: Colors.white,
   fontSize: 16,
-  fontWeight: FontWeight.bold,
 );
 
 

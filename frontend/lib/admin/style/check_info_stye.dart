@@ -15,5 +15,4 @@ final BoxDecoration infoCardDecoration = BoxDecoration(
 const TextStyle infoCardTextStyle = TextStyle(
   color: Colors.white,
   fontSize: 16,
-  fontWeight: FontWeight.bold,
 );
