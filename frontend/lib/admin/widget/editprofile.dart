@@ -43,7 +43,7 @@ class _EditProfileScreenState extends State<EditProfileAdminScreen> {
       body: Center(
         child: Container( //ปรับขนาดของ container
           width: 320, 
-          height: 610, 
+          height: 680, 
           padding: const EdgeInsets.all(20.0),
           decoration: profileContainerDecoration,
           child: SingleChildScrollView( //SingleChildScrollView ป้องกันการล้นของหน้าจอ
