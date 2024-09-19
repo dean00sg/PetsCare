@@ -5,7 +5,7 @@ import 'package:frontend/users/models/pet_models.dart';
 import 'package:frontend/users/models/create_pet_model.dart';
 
 class CreatePetRepository {
-  final String apiUrl = 'http://127.0.0.1:8000/pets'; // Update with your actual API URL
+  final String apiUrl = 'http://10.0.2.2:8000/pets'; // Update with your actual API URL
 
   // POST: Create a new pet
   Future<void> createPet(PetModel petData) async {
@@ -21,11 +21,11 @@ class CreatePetRepository {
         },
         body: jsonEncode({
           'name': petData.name,
-          'type_pets': petData.typePets,  // Ensure the field matches 'type_pets'
+          'type_pets': petData.typePets,  
           'sex': petData.sex,
           'breed': petData.breed,
-          'birth_date': petData.dateOfBirth,  // Ensure 'birth_date' is passed correctly
-          'weight': petData.weight,  // Send weight as a double
+          'birth_date': petData.dateOfBirth,  
+          'weight': petData.weight, 
         }),
       );
 

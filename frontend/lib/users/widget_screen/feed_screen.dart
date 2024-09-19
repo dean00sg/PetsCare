@@ -18,7 +18,7 @@ class FeedScreen extends StatelessWidget {
       appBar: const Navbar(), 
       drawer: const Sidebar(), 
       body: BlocProvider(
-        create: (context) => FeedBloc(feedRepository: FeedRepository(apiUrl: 'http://127.0.0.1:8000'))..add(FetchFeedData()),
+        create: (context) => FeedBloc(feedRepository: FeedRepository(apiUrl: 'http://10.0.2.2:8000'))..add(FetchFeedData()),
         child: BlocBuilder<FeedBloc, FeedState>(
           builder: (context, state) {
             if (state is FeedLoading) {

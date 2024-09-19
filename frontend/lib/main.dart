@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => ProfileBloc(
               profileRepository:
-                  ProfileRepository(apiUrl: 'http://127.0.0.1:8000')),
+                  ProfileRepository(apiUrl: 'http://10.0.2.2:8000')),
         ),
         BlocProvider(
           create: (context) => SignupBloc(signupRepository: SignupRepository()),
