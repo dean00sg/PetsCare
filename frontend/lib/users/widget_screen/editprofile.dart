@@ -43,7 +43,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       body: Center(
         child: Container(
           width: 320,
-          height: 610,
+          height: 680,
           padding: const EdgeInsets.all(20.0),
           decoration: profileContainerDecoration, // ใช้ profileContainerDecoration จาก profile_style
           child: SingleChildScrollView(

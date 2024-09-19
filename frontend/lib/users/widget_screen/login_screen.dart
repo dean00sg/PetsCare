@@ -47,7 +47,7 @@ class LoginScreen extends StatelessWidget {
                   margin: const EdgeInsets.symmetric(horizontal: 20.0),
                   padding: const EdgeInsets.fromLTRB(16.0, 50.0, 16.0, 16.0),
                   width: 320,
-                  height: 400,
+                  height: 450,
                   decoration: containerDecoration,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
