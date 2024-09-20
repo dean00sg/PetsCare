@@ -13,16 +13,23 @@ class _CheckAllUsersScreenState extends State<CheckAllUsersScreen> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<UserBloc>(context).loadUserPets(); 
+    // Use loadUserPets() to load the data
+    BlocProvider.of<UserBloc>(context).loadUserPets();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () {
+            Navigator.of(context).pop(); // Back button functionality
+          },
+        ),
         iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text('Check User', style: TextStyle(fontSize: 22, color: Colors.white)),
-        backgroundColor: const Color.fromARGB(255, 38, 111, 202), 
+        title: const Text('Check all user', style: TextStyle(fontSize: 22, color: Colors.white)),
+        backgroundColor: const Color.fromARGB(255, 38, 111, 202),
         centerTitle: true,
         toolbarHeight: 70,
       ),
@@ -40,13 +47,14 @@ class _CheckAllUsersScreenState extends State<CheckAllUsersScreen> {
             ),
             const SizedBox(height: 20),
             Expanded(
-              child: BlocBuilder<UserBloc, UserState>( 
+              child: BlocBuilder<UserBloc, UserState>(
                 builder: (context, state) {
                   if (state is UserLoading) {
                     return const Center(child: CircularProgressIndicator());
                   } else if (state is UserPetsLoaded) {
                     final List<UserProfilePets> profiles = state.profiles;
 
+                    // Filter users with role 'userpets'
                     List<UserProfilePets> userPets = profiles
                         .where((user) => user.role == 'userpets')
                         .toList();

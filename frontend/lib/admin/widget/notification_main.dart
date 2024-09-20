@@ -4,7 +4,7 @@ import 'package:frontend/admin/appbar/navbar.dart';
 import 'package:frontend/admin/appbar/slidebar.dart';
 
 import 'package:frontend/admin/bloc/notification_main.dart';
-import 'package:frontend/admin/event/notification_main.dart';
+
 import 'package:frontend/admin/style/notification_stye.dart';
 
 class NotificationWidget extends StatelessWidget {
@@ -46,7 +46,7 @@ class NotificationWidget extends StatelessWidget {
                       color: Colors.blue,
                       onTap: () {
                         Navigator.of(context).pushNamed('/addfeedpost');
-                        BlocProvider.of<NotificationBloc>(context).add(AddNotificationEvent());
+                     
                       },
                     ),
                     _buildNotificationCard(
@@ -55,7 +55,7 @@ class NotificationWidget extends StatelessWidget {
                       icon: Icons.article,
                       color: Colors.teal,
                       onTap: () {
-                        BlocProvider.of<NotificationBloc>(context).add(AddNewsFeedAdviceEvent());
+                        
                       },
                     ),
                   ],

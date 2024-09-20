@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:frontend/admin/appbar/navbar.dart';
-import 'package:frontend/admin/bloc/check_info_bloc.dart';
-import 'package:frontend/admin/event/check_info_event.dart';
+
 import 'package:frontend/admin/appbar/slidebar.dart';
 import 'package:frontend/admin/style/check_info_stye.dart'; 
 
@@ -56,17 +55,13 @@ class AdminCheckInfoScreen extends StatelessWidget {
       if (title == 'check all user') {
    
         await Navigator.of(context).pushNamed('/checkAllUsersScreen'); 
-        BlocProvider.of<AdminCheckInfoBloc>(context).add(CheckAllUsersEvent());
       } else if (title == 'check all user by name') {
    
-        BlocProvider.of<AdminCheckInfoBloc>(context).add(CheckUsersByNameEvent());
       } else if (title == 'check owner of pets') {
         
         await Navigator.of(context).pushNamed('/petsprofile'); 
-        BlocProvider.of<AdminCheckInfoBloc>(context).add(CheckOwnersOfPetsEvent());
       } else if (title == 'check vaccine of pets') {
       
-        BlocProvider.of<AdminCheckInfoBloc>(context).add(CheckVaccinesOfPetsEvent());
       }
     },
       child: Container(

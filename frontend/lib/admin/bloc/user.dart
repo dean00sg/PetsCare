@@ -1,14 +1,13 @@
-// lib/users/bloc/profile_bloc.dart
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/admin/event/user.dart';
 import 'package:frontend/admin/repositories/user_repository.dart';
 import 'package:frontend/admin/state/user.dart';
 
-
 class UserBloc extends Bloc<UserEvent, UserState> {
   final UserRepository userRepository;
 
   UserBloc({required this.userRepository}) : super(UserInitial()) {
+    // Register the LoadUserPets event handler
     on<LoadUserPets>(_onLoadUserPets);
   }
 
@@ -24,6 +23,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   }
 
   void loadUserPets() {
-    add(LoadUserPets());
+    add(LoadUserPets()); 
   }
 }
