@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/admin/bloc/add_feedpost.dart'; // Ensure correct import
+import 'package:frontend/admin/bloc/user.dart';
 import 'package:frontend/admin/repositories/add_feedpost.dart'; // Ensure correct import
 import 'package:frontend/admin/bloc/check_info_bloc.dart';
+import 'package:frontend/admin/repositories/user_repository.dart';
+import 'package:frontend/admin/widget/check_alluser.dart';
 import 'package:frontend/admin/widget/check_info_screen.dart';
 import 'package:frontend/admin/widget/add_feedpost.dart'; // Correct imports
 import 'package:frontend/admin/widget/feed_admin.dart';
@@ -37,6 +40,11 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => LoginBloc(loginRepository: LoginRepository()),
+        ),
+        BlocProvider<UserBloc>(
+          create: (context) => UserBloc(
+            userRepository: UserRepository(),
+          ),
         ),
         BlocProvider(
           create: (context) => ProfileBloc(
@@ -78,6 +86,7 @@ class MyApp extends StatelessWidget {
           '/createpets': (context) => const CreatePetScreen(),
           '/checkinfo': (context) => const AdminCheckInfoScreen(),
           '/petsprofile': (context) => const PetProfileScreen(),
+          '/checkAllUsersScreen': (context) => CheckAllUsersScreen(),
         },
       ),
     );

@@ -49,22 +49,28 @@ class AdminCheckInfoScreen extends StatelessWidget {
     );
   }
 
+
   Widget _buildInfoCard(BuildContext context, String title, IconData icon, Color color) {
-    return GestureDetector(
-      onTap: () async {
-        if (title == 'check all user') {
-          BlocProvider.of<AdminCheckInfoBloc>(context).add(CheckAllUsersEvent());
-        } else if (title == 'check all user by name') {
-          BlocProvider.of<AdminCheckInfoBloc>(context).add(CheckUsersByNameEvent());
-        } else if (title == 'check owner of pets') {
-          await Navigator.of(context).pushNamed('/petsprofile');
-          BlocProvider.of<AdminCheckInfoBloc>(context).add(CheckOwnersOfPetsEvent());
-        } else if (title == 'check vaccine of pets') {
-          BlocProvider.of<AdminCheckInfoBloc>(context).add(CheckVaccinesOfPetsEvent());
-        }
-      },
+  return GestureDetector(
+    onTap: () async {
+      if (title == 'check all user') {
+   
+        await Navigator.of(context).pushNamed('/checkAllUsersScreen'); 
+        BlocProvider.of<AdminCheckInfoBloc>(context).add(CheckAllUsersEvent());
+      } else if (title == 'check all user by name') {
+   
+        BlocProvider.of<AdminCheckInfoBloc>(context).add(CheckUsersByNameEvent());
+      } else if (title == 'check owner of pets') {
+        
+        await Navigator.of(context).pushNamed('/petsprofile'); 
+        BlocProvider.of<AdminCheckInfoBloc>(context).add(CheckOwnersOfPetsEvent());
+      } else if (title == 'check vaccine of pets') {
+      
+        BlocProvider.of<AdminCheckInfoBloc>(context).add(CheckVaccinesOfPetsEvent());
+      }
+    },
       child: Container(
-        decoration: infoCardDecoration.copyWith(color: color), // Apply decoration from the style file
+        decoration: infoCardDecoration.copyWith(color: color), 
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -77,7 +83,7 @@ class AdminCheckInfoScreen extends StatelessWidget {
             Text(
               title,
               textAlign: TextAlign.center,
-              style: infoCardTextStyle, // Apply text style from the style file
+              style: infoCardTextStyle, 
             ),
           ],
         ),

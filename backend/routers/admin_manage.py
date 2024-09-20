@@ -19,9 +19,9 @@ def calculate_age(birth_date: date) -> str:
 @router.get("/", response_model=List[GetUserProfile])
 async def get_users(
     session: Session = Depends(get_session),
-    role: str = Depends(get_current_user_role)  # Ensure the current user is an admin
+    role: str = Depends(get_current_user_role)  
 ):
-    # Admin verification is handled by get_current_user_role
+   
     users = session.query(UserProfile).all()
     return users
 
