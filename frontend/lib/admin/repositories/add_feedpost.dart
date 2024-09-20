@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart'; 
 
 class AddFeedRepository {
-  final String apiUrl = 'http://10.0.2.2:8000/feedpost';
+  final String apiUrl = 'http://10.0.2.2:8000/feedpost/';
 
   Future<FeedPost> addFeedPost(FeedPost feedPostData) async {
     final prefs = await SharedPreferences.getInstance();

@@ -17,7 +17,7 @@ class ProfileRepository {
     }
 
     final response = await http.get(
-      Uri.parse('$apiUrl/profile'),
+      Uri.parse('$apiUrl/profile/'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -61,7 +61,6 @@ class ProfileRepository {
     }
   }
 
-  // Add this method for updating the profile
   Future<void> updateProfile(UserProfile updatedProfile) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
@@ -71,16 +70,21 @@ class ProfileRepository {
     }
 
     final response = await http.put(
-      Uri.parse('$apiUrl/profile'),
+      Uri.parse('$apiUrl/profile/'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode(updatedProfile.toJson()), // Assuming toJson() exists in UserProfile model
+      body: jsonEncode({
+        'first_name': updatedProfile.firstName,
+        'last_name': updatedProfile.lastName,
+        'contact_number': updatedProfile.phone,
+      }),
     );
 
     if (response.statusCode != 200) {
       throw Exception('Failed to update profile');
     }
   }
+
 }

@@ -5,7 +5,7 @@ import 'package:frontend/users/models/pet_models.dart';
 import 'package:frontend/users/models/create_pet_model.dart';
 
 class CreatePetRepository {
-  final String apiUrl = 'http://10.0.2.2:8000/pets'; // Update with your actual API URL
+  final String apiUrl = 'http://10.0.2.2:8000/pets/'; 
 
   // POST: Create a new pet
   Future<void> createPet(PetModel petData) async {

@@ -9,7 +9,7 @@ class FeedRepository {
 
   Future<List<FeedPost>> fetchFeedPosts() async {
     try {
-      final response = await http.get(Uri.parse('$apiUrl/feedpost'));
+      final response = await http.get(Uri.parse('$apiUrl/feedpost/'));
 
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body);
