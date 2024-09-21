@@ -112,7 +112,7 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
                             final pets = entry.value;
 
                             return Container(
-                              margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 30),
+                              margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
                               decoration: AppStyles.userContainerDecoration,
                               child: Padding(
                                 padding: const EdgeInsets.all(12.0),
@@ -139,7 +139,7 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
                                           child: Container(
                                             decoration: AppStyles.petCardDecoration,
                                             constraints: const BoxConstraints(
-                                              maxWidth: 300,
+                                              maxWidth: 320,
                                             ),
                                             child: Padding(
                                               padding: const EdgeInsets.all(8.0),

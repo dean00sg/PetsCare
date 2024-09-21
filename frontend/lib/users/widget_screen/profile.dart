@@ -28,8 +28,9 @@ class ProfileScreen extends StatelessWidget {
           } else if (state is ProfileLoaded) {
             return Center(
               child: Container(
-                width: 320,
+                width: 350,
                 height: 600,
+                margin: const EdgeInsets.symmetric(vertical: 8),
                 padding: const EdgeInsets.all(20.0),
                 decoration: profileContainerDecoration,
                 child: Column(

@@ -109,7 +109,7 @@ class _CreatePetScreenState extends State<CreatePetScreen> {
                 const SizedBox(height: 16), 
                 // Container สำหรับโปรไฟล์สัตว์เลี้ยง
                 Container(
-                  width: 320,
+                  width: 350,
                   decoration: containerDecoration, 
                   padding: const EdgeInsets.all(16.0),
                   child: Column(

@@ -63,7 +63,7 @@ class _FeedPostWidgetState extends State<FeedPostWidget> {
       body: Center(
         child: SingleChildScrollView(
           child: Container(
-            width: 350,
+            width: 370,
             padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start, // Align to the left
