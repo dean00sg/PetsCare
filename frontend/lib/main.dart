@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/admin/bloc/add_feedpost.dart'; // Ensure correct import
+import 'package:frontend/admin/bloc/add_notification.dart';
 import 'package:frontend/admin/bloc/user.dart';
 import 'package:frontend/admin/repositories/add_feedpost.dart'; // Ensure correct import
 import 'package:frontend/admin/bloc/check_info_bloc.dart';
+import 'package:frontend/admin/repositories/add_notification.dart';
 import 'package:frontend/admin/repositories/user_repository.dart';
+import 'package:frontend/admin/widget/add_notification.dart';
 import 'package:frontend/admin/widget/check_alluser.dart';
 import 'package:frontend/admin/widget/check_info_screen.dart';
 import 'package:frontend/admin/widget/add_feedpost.dart'; // Correct imports
@@ -28,6 +31,7 @@ import 'package:frontend/users/widget_screen/pet_screen.dart';
 import 'package:frontend/users/widget_screen/profile.dart';
 import 'package:frontend/users/widget_screen/signup_screen.dart';
 
+
 void main() {
   runApp(const MyApp());
 }
@@ -42,26 +46,27 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => LoginBloc(loginRepository: LoginRepository()),
         ),
-        BlocProvider<UserBloc>(
-          create: (context) => UserBloc(
-            userRepository: UserRepository(),
+        BlocProvider(
+          create: (context) => UserBloc(userRepository: UserRepository()),
+        ),
+        BlocProvider(
+          create: (context) => AddNotificationBloc(
+            notificationRepository: AddNotificationUserRepository(apiUrl: 'http://10.0.2.2:8000'),
+            userListRepository: UserListRepository(), // Add this line
           ),
         ),
         BlocProvider(
           create: (context) => ProfileBloc(
-              profileRepository:
-                  ProfileRepository(apiUrl: 'http://10.0.2.2:8000')),
+              profileRepository: ProfileRepository(apiUrl: 'http://10.0.2.2:8000')),
         ),
         BlocProvider(
           create: (context) => SignupBloc(signupRepository: SignupRepository()),
         ),
         BlocProvider(
-          create: (context) => AddFeedBloc(
-              repository: AddFeedRepository()), // Correct parameter name
+          create: (context) => AddFeedBloc(repository: AddFeedRepository()),
         ),
         BlocProvider(
-          create: (context) =>
-              CreatePetBloc(createPetRepository: CreatePetRepository()),
+          create: (context) => CreatePetBloc(createPetRepository: CreatePetRepository()),
         ),
         BlocProvider(
           create: (context) => AdminCheckInfoBloc(),
@@ -89,6 +94,7 @@ class MyApp extends StatelessWidget {
           '/petsprofile': (context) => const PetProfileScreen(),
           '/checkAllUsersScreen': (context) => CheckAllUsersScreen(),
           '/notificationUser': (context) => const NotificationUser(),
+          '/addnotificationUser': (context) => const AddNotificationScreen(),
         },
       ),
     );

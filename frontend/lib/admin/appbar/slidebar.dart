@@ -16,7 +16,7 @@ class Sidebar extends StatelessWidget {
                 color: Color.fromARGB(255, 38, 111, 202),
               ),
               child: Text(
-                'Admin Service',
+                'ADMIN SERVICE',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 24,
@@ -43,7 +43,7 @@ class Sidebar extends StatelessWidget {
               child: Column(
                 children: [
                   ListTile(
-                    title: const Text('Feed', style: TextStyle(color: Colors.white)),
+                    title: const Text('HOME', style: TextStyle(color: Colors.white)),
                     onTap: () {
                       Navigator.pushNamed(context, '/feedadmin');
                     },
@@ -70,7 +70,7 @@ class Sidebar extends StatelessWidget {
               child: Column(
                 children: [
                   ListTile(
-                    title: const Text('Check Info', style: TextStyle(color: Colors.white)),
+                    title: const Text('CHECK INFO', style: TextStyle(color: Colors.white)),
                     onTap: () {
                       Navigator.pushNamed(context, '/checkinfo');
                     },
@@ -97,7 +97,7 @@ class Sidebar extends StatelessWidget {
               child: Column(
                 children: [
                   ListTile(
-                    title: const Text('Add Notification', style: TextStyle(color: Colors.white)),
+                    title: const Text('ADD NOTIFICATION', style: TextStyle(color: Colors.white)),
                     onTap: () {
                       Navigator.pushNamed(context, '/notifications');
                     },

@@ -42,7 +42,7 @@ class NotificationWidget extends StatelessWidget {
                     _buildNotificationCard(
                       context,
                       title: 'Add FeedPost',
-                      icon: Icons.notifications,
+                      icon: Icons.article,
                       color: Colors.blue,
                       onTap: () {
                         Navigator.of(context).pushNamed('/addfeedpost');
@@ -51,11 +51,11 @@ class NotificationWidget extends StatelessWidget {
                     ),
                     _buildNotificationCard(
                       context,
-                      title: 'Add News Feed Advice',
-                      icon: Icons.article,
+                      title: 'Add Notification to User',
+                      icon: Icons.notifications,
                       color: Colors.teal,
                       onTap: () {
-                        
+                        Navigator.of(context).pushNamed('/addnotificationUser');
                       },
                     ),
                   ],

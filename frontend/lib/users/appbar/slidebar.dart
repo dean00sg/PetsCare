@@ -85,7 +85,7 @@ class _SidebarState extends State<Sidebar> {
               child: Column(
                 children: [
                   ListTile(
-                    title: const Text('TYPE PETS', style: TextStyle(color: Colors.white)),
+                    title: const Text('NEW PETS', style: TextStyle(color: Colors.white)),
                     onTap: () {
                       Navigator.pushNamed(context, '/createpetsmain');
                     },
