@@ -5,90 +5,222 @@ import 'package:frontend/admin/event/petprofile.dart';
 import 'package:frontend/admin/models/petprofile.dart';
 import 'package:frontend/admin/repositories/petprofile.dart';
 import 'package:frontend/admin/state/petprofile.dart';
+import '../style/petprofile_style.dart';
+import '../appbar/search_bar.dart';
 
-class PetProfileScreen extends StatelessWidget {
+class PetProfileScreen extends StatefulWidget {
   const PetProfileScreen({super.key});
+
+  @override
+  _PetProfileScreenState createState() => _PetProfileScreenState();
+}
+
+class _PetProfileScreenState extends State<PetProfileScreen> {
+  String _searchQuery = ''; // ตัวแปรสำหรับเก็บค่าการค้นหา
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => PetProfileBloc(PetProfileRepository())..add(FetchPetsEvent()),
+      create: (context) =>
+          PetProfileBloc(PetProfileRepository())..add(FetchPetsEvent()),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('User with Pets'),
+          iconTheme: const IconThemeData(color: Colors.white),
+          title: const Text('Owner with Pets',
+              style: TextStyle(fontSize: 22, color: Colors.white)),
+          backgroundColor: const Color.fromARGB(255, 38, 111, 202),
+          centerTitle: true,
+          toolbarHeight: 70,
         ),
         body: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: BlocBuilder<PetProfileBloc, PetProfileState>(
-            builder: (context, state) {
-              if (state is PetLoadingState) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (state is PetLoadedState) {
-                if (state.pets.isEmpty) {
-                  return const Center(child: Text('No pets available.'));
-                }
+          child: Column(
+            children: [
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: EdgeInsets.only(left: 25, top: 16), 
+                  child: Text(
+                    'User with Pets',
+                    style: TextStyle(
+                      fontSize: 40,
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromRGBO(38, 50, 56, 1),
+                    ),
+                  ),
+                ),
+              ),
+              // เรียกใช้ CustomSearchBar
+              CustomSearchBar(
+                onChanged: (value) {
+                  setState(() {
+                    _searchQuery = value.toLowerCase(); // อัปเดตค่าการค้นหา
+                  });
+                },
+              ),
+              Expanded(
+                child: BlocBuilder<PetProfileBloc, PetProfileState>(
+                  builder: (context, state) {
+                    if (state is PetLoadingState) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is PetLoadedState) {
+                      if (state.pets.isEmpty) {
+                        return const Center(child: Text('No pets available.'));
+                      }
 
-                // Group pets by owner
-                final Map<String, List<PetProfileModel>> ownerPetsMap = {};
-                for (var pet in state.pets) {
-                  ownerPetsMap.putIfAbsent(pet.owner_name, () => []).add(pet);
-                }
+                      // Group pets by owner
+                      final Map<String, List<PetProfileModel>> ownerPetsMap = {};
+                      for (var pet in state.pets) {
+                        ownerPetsMap.putIfAbsent(pet.owner_name, () => []).add(pet);
+                      }
 
-                return ListView(
-                  children: ownerPetsMap.entries.map((entry) {
-                    final ownerName = entry.key;
-                    final pets = entry.value;
+                      // กรองผลลัพธ์ตาม search query (ค้นหาทั้งข้อมูลเจ้าของและสัตว์เลี้ยง)
+                      final filteredOwnerPetsMap = ownerPetsMap.entries.where((entry) {
+                        final ownerName = entry.key.toLowerCase();
+                        final filteredPets = entry.value.where((pet) {
+                          // ค้นหาทั้งหมดในข้อมูลสัตว์เลี้ยง
+                          return ownerName.contains(_searchQuery) ||
+                                 pet.name.toLowerCase().contains(_searchQuery) ||
+                                 pet.type_pets.toLowerCase().contains(_searchQuery) ||
+                                 pet.breed.toLowerCase().contains(_searchQuery) ||
+                                 pet.birth_date.toString().contains(_searchQuery) ||
+                                 pet.weight.toString().contains(_searchQuery);
+                        }).toList();
+                        return filteredPets.isNotEmpty || ownerName.contains(_searchQuery);
+                      }).toList();
 
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ListTile(
-                          leading: const CircleAvatar(
-                            child: Icon(Icons.person),
-                          ),
-                          title: Text(ownerName, style: const TextStyle(fontWeight: FontWeight.bold)),
-                        ),
-                        ...pets.map((pet) => Card(
-                          color: Colors.amber.shade200,
-                          margin: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ListTile(
-                                  leading: CircleAvatar(
-                                    backgroundColor: Colors.white,
-                                    child: Image.asset(PetTypeImage.getImagePath(pet.type_pets)),
-                                  ),
-                                  title: Text('Name: ${pet.name}', style: const TextStyle(fontWeight: FontWeight.bold)),
+                      // จัดเรียงสัตว์เลี้ยงที่ตรงกับการค้นหาขึ้นด้านบน
+                      filteredOwnerPetsMap.sort((a, b) {
+                        final aContainsQuery = a.value.any((pet) =>
+                            pet.name.toLowerCase().contains(_searchQuery) ||
+                            pet.type_pets.toLowerCase().contains(_searchQuery) ||
+                            pet.breed.toLowerCase().contains(_searchQuery));
+                        
+                        final bContainsQuery = b.value.any((pet) =>
+                            pet.name.toLowerCase().contains(_searchQuery) ||
+                            pet.type_pets.toLowerCase().contains(_searchQuery) ||
+                            pet.breed.toLowerCase().contains(_searchQuery));
+                        
+                        // แปลง bool เป็น int (true = 1, false = 0) แล้วนำมาเปรียบเทียบ
+                        return bContainsQuery ? 1 : 0 - (aContainsQuery ? 1 : 0);
+                      });
+
+                      return ListView(
+                        children: [
+                          ...filteredOwnerPetsMap.map((entry) {
+                            final ownerName = entry.key;
+                            final pets = entry.value;
+
+                            return Container(
+                              margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 30),
+                              decoration: AppStyles.userContainerDecoration,
+                              child: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const SizedBox(height: 10),
+                                    const CircleAvatar(
+                                      radius: 40,
+                                      child: Icon(
+                                        Icons.person,
+                                        size: 50,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      ownerName,
+                                      style: AppStyles.userNameTextStyle,
+                                    ),
+                                    Column(
+                                      children: pets.map((pet) {
+                                        return Card(
+                                          margin: const EdgeInsets.symmetric(vertical: 8),
+                                          child: Container(
+                                            decoration: AppStyles.petCardDecoration,
+                                            constraints: const BoxConstraints(
+                                              maxWidth: 300,
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(8.0),
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      CircleAvatar(
+                                                        radius: 30,
+                                                        backgroundColor: Colors.white,
+                                                        child: Image.asset(
+                                                          PetTypeImage.getImagePath(pet.type_pets),
+                                                          fit: BoxFit.contain,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(width: 20),
+                                                      Text(
+                                                        pet.name,
+                                                        style: TextStyle(
+                                                          fontSize: 20,
+                                                          fontWeight: FontWeight.bold,
+                                                          color: Colors.grey[800],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  const SizedBox(height: 8),
+                                                  _buildPetInfoRowWithBorder('typepets', pet.type_pets),
+                                                  _buildPetInfoRowWithBorder('sex', pet.sex),
+                                                  _buildPetInfoRowWithBorder('breed', pet.breed),
+                                                  _buildPetInfoRowWithBorder('birthdate', pet.birth_date),
+                                                  _buildPetInfoRowWithBorder('weight', '${pet.weight}kg'),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }).toList(),
+                                    ),
+                                  ],
                                 ),
-                                Text('Type: ${pet.type_pets}'),
-                                Text('Sex: ${pet.sex}'),
-                                Text('Breed: ${pet.breed}'),
-                                Text('Birthdate: ${pet.birth_date}'),
-                                Text('Weight: ${pet.weight}kg'),
-                              ],
-                            ),
-                          ),
-                        )),
-                      ],
-                    );
-                  }).toList(),
-                );
-              } else if (state is PetErrorState) {
-                return Center(child: Text('Error: ${state.message}'));
-              } else {
-                return const Center(child: Text('No pets found.'));
-              }
-            },
+                              ),
+                            );
+                          }),
+                        ],
+                      );
+                    } else if (state is PetErrorState) {
+                      return Center(child: Text('Error: ${state.message}'));
+                    } else {
+                      return const Center(child: Text('No pets found.'));
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            context.read<PetProfileBloc>().add(FetchPetsEvent());
-          },
-          child: const Icon(Icons.refresh),
+      ),
+    );
+  }
+
+  // ฟังก์ชันสำหรับสร้างแถวข้อมูลสัตว์เลี้ยงแต่ละบรรทัด
+  Widget _buildPetInfoRowWithBorder(String label, String value) {
+    return Padding(
+      padding: AppStyles.petInfoMargin,
+      child: Container(
+        decoration: AppStyles.petInfoBoxDecoration,
+        padding: AppStyles.petInfoPadding,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '$label : ',
+              style: AppStyles.petLabelTextStyle,
+            ),
+            Text(
+              value,
+              style: AppStyles.petValueTextStyle,
+            ),
+          ],
         ),
       ),
     );

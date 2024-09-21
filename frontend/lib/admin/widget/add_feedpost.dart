@@ -55,7 +55,7 @@ class _FeedPostWidgetState extends State<FeedPostWidget> {
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text('New Feed', style: TextStyle(fontSize: 22, color: Colors.white)),
+        title: const Text('Feed Post', style: TextStyle(fontSize: 22, color: Colors.white)),
         backgroundColor: const Color.fromARGB(255, 38, 111, 202), 
         centerTitle: true,
         toolbarHeight: 70,
@@ -71,7 +71,7 @@ class _FeedPostWidgetState extends State<FeedPostWidget> {
                 Container(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Feed Post',
+                    'New Feed',
                     style: TextStyle(
                       fontSize: 40,
                       fontWeight: FontWeight.bold,
