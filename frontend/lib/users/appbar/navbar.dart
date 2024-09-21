@@ -21,7 +21,7 @@ class Navbar extends StatelessWidget implements PreferredSizeWidget {
               icon: const Icon(Icons.notifications, size: 32, color: Colors.white), 
               onPressed: () {
                 // Navigate to notifications page
-                Navigator.pushNamed(context, '/');
+                Navigator.pushNamed(context, '/notificationUser');
               },
             ),
             Positioned(

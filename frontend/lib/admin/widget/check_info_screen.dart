@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:frontend/admin/appbar/navbar.dart';
 
+import 'package:frontend/admin/bloc/user.dart';
+
 import 'package:frontend/admin/appbar/slidebar.dart';
+import 'package:frontend/admin/event/user.dart';
 import 'package:frontend/admin/style/check_info_stye.dart'; 
 
 class AdminCheckInfoScreen extends StatelessWidget {
@@ -49,12 +53,13 @@ class AdminCheckInfoScreen extends StatelessWidget {
   }
 
 
-  Widget _buildInfoCard(BuildContext context, String title, IconData icon, Color color) {
+Widget _buildInfoCard(BuildContext context, String title, IconData icon, Color color) {
   return GestureDetector(
     onTap: () async {
       if (title == 'check all user') {
-   
-        await Navigator.of(context).pushNamed('/checkAllUsersScreen'); 
+     
+        BlocProvider.of<UserBloc>(context).add(LoadUserPets());
+        await Navigator.of(context).pushNamed('/checkAllUsersScreen');
       } else if (title == 'check all user by name') {
    
       } else if (title == 'check owner of pets') {

@@ -23,6 +23,7 @@ import 'package:frontend/users/repositories/signup_repository.dart';
 import 'package:frontend/users/widget_screen/create_pet_screen.dart';
 import 'package:frontend/users/widget_screen/feed_screen.dart';
 import 'package:frontend/users/widget_screen/login_screen.dart';
+import 'package:frontend/users/widget_screen/notification.dart';
 import 'package:frontend/users/widget_screen/pet_screen.dart';
 import 'package:frontend/users/widget_screen/profile.dart';
 import 'package:frontend/users/widget_screen/signup_screen.dart';
@@ -87,6 +88,7 @@ class MyApp extends StatelessWidget {
           '/checkinfo': (context) => const AdminCheckInfoScreen(),
           '/petsprofile': (context) => const PetProfileScreen(),
           '/checkAllUsersScreen': (context) => CheckAllUsersScreen(),
+          '/notificationUser': (context) => const NotificationUser(),
         },
       ),
     );
