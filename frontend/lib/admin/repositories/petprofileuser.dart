@@ -1,12 +1,12 @@
 import 'dart:convert';
-import 'package:frontend/admin/models/petprofile.dart';
+import 'package:frontend/admin/models/petprofileuser.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-class PetProfileRepository {
+class PetProfileUserRepository {
   final String apiUrl = 'http://10.0.2.2:8000/pets/all-pets-admin';
 
-  Future<List<PetProfileModel>> fetchPets() async {
+  Future<List<PetProfileUserModel>> fetchPets() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token') ?? '';
@@ -21,7 +21,7 @@ class PetProfileRepository {
 
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body);
-        return data.map((pet) => PetProfileModel.fromJson(pet)).toList();
+        return data.map((pet) => PetProfileUserModel.fromJson(pet)).toList();
       } else {
         throw Exception('Failed to load pets');
       }
@@ -30,7 +30,7 @@ class PetProfileRepository {
     }
   }
 
-  Future<void> createPet(PetProfileModel petData) async {
+  Future<void> createPet(PetProfileUserModel petData) async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token') ?? '';

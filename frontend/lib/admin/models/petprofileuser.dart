@@ -1,4 +1,4 @@
-class PetProfileModel {
+class PetProfileUserModel {
   final String name;
   final String type_pets;
   final String sex;
@@ -7,7 +7,7 @@ class PetProfileModel {
   final double weight;
   final String owner_name;
 
-  PetProfileModel({
+  PetProfileUserModel({
     required this.name,
     required this.type_pets,
     required this.sex,
@@ -17,8 +17,8 @@ class PetProfileModel {
     required this.owner_name,
   });
 
-  factory PetProfileModel.fromJson(Map<String, dynamic> json) {
-    return PetProfileModel(
+  factory PetProfileUserModel.fromJson(Map<String, dynamic> json) {
+    return PetProfileUserModel(
       name: json['name'],
       type_pets: json['type_pets'],
       sex: json['sex'],

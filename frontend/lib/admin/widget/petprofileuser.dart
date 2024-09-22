@@ -1,28 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/admin/bloc/petprofile.dart';
-import 'package:frontend/admin/event/petprofile.dart';
-import 'package:frontend/admin/models/petprofile.dart';
-import 'package:frontend/admin/repositories/petprofile.dart';
-import 'package:frontend/admin/state/petprofile.dart';
+import 'package:frontend/admin/bloc/petprofileuser.dart';
+import 'package:frontend/admin/event/petprofileuser.dart';
+import 'package:frontend/admin/models/petprofileuser.dart';
+import 'package:frontend/admin/repositories/petprofileuser.dart';
+import 'package:frontend/admin/state/petprofileuser.dart';
 import '../style/petprofile_style.dart';
 import '../appbar/search_bar.dart';
 
-class PetProfileScreen extends StatefulWidget {
-  const PetProfileScreen({super.key});
+class PetProfileUserScreen extends StatefulWidget {
+  const PetProfileUserScreen({super.key});
 
   @override
   _PetProfileScreenState createState() => _PetProfileScreenState();
 }
 
-class _PetProfileScreenState extends State<PetProfileScreen> {
+class _PetProfileScreenState extends State<PetProfileUserScreen> {
   String _searchQuery = ''; // ตัวแปรสำหรับเก็บค่าการค้นหา
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          PetProfileBloc(PetProfileRepository())..add(FetchPetsEvent()),
+          PetProfileUserBloc(PetProfileUserRepository())..add(FetchPetsEvent()),
       child: Scaffold(
         appBar: AppBar(
           iconTheme: const IconThemeData(color: Colors.white),
@@ -59,17 +59,17 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
                 },
               ),
               Expanded(
-                child: BlocBuilder<PetProfileBloc, PetProfileState>(
+                child: BlocBuilder<PetProfileUserBloc, PetProfileUserState>(
                   builder: (context, state) {
-                    if (state is PetLoadingState) {
+                    if (state is PetLoadingUserState) {
                       return const Center(child: CircularProgressIndicator());
-                    } else if (state is PetLoadedState) {
+                    } else if (state is PetLoadedUserState) {
                       if (state.pets.isEmpty) {
                         return const Center(child: Text('No pets available.'));
                       }
 
                       // Group pets by owner
-                      final Map<String, List<PetProfileModel>> ownerPetsMap = {};
+                      final Map<String, List<PetProfileUserModel>> ownerPetsMap = {};
                       for (var pet in state.pets) {
                         ownerPetsMap.putIfAbsent(pet.owner_name, () => []).add(pet);
                       }
@@ -187,7 +187,7 @@ class _PetProfileScreenState extends State<PetProfileScreen> {
                           }),
                         ],
                       );
-                    } else if (state is PetErrorState) {
+                    } else if (state is PetErrorUserState) {
                       return Center(child: Text('Error: ${state.message}'));
                     } else {
                       return const Center(child: Text('No pets found.'));
