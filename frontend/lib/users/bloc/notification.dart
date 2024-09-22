@@ -19,5 +19,16 @@ class NotificationUserBloc extends Bloc<NotificationUserEvent, NotificationUserS
         emit(NotificationUserError(error.toString()));
       }
     });
+
+    on<DeleteNotificationUser>((event, emit) async {
+      try {
+        await notificationRepository.deleteNotification(event.notificationId); // ลบการแจ้งเตือน
+        // โหลดการแจ้งเตือนใหม่หลังจากลบเสร็จ
+        final notifications = await notificationRepository.fetchNotificationsUser();
+        emit(NotificationLoaded(notifications));
+      } catch (error) {
+        emit(NotificationUserError(error.toString()));
+      }
+    });
   }
 }

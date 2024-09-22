@@ -34,4 +34,26 @@ class NotificationUserRepository {
       throw Exception(errorData['detail'] ?? 'Failed to load notifications');
     }
   }
+
+  // ฟังก์ชันสำหรับลบการแจ้งเตือน
+  Future<void> deleteNotification(int notificationId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    if (token == null) {
+      throw Exception('Token not found, user not logged in');
+    }
+
+    final response = await http.delete(
+      Uri.parse('$apiUrl/Notification/$notificationId/'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to delete notification');
+    }
+  }
 }
