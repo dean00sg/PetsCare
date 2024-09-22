@@ -6,6 +6,12 @@ class NotificationStyles {
     fontWeight: FontWeight.bold,
     color: Colors.white,
   );
+  static const TextStyle headerStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+    color: Colors.white,
+  );
+
 
   static const TextStyle subtitleStyle = TextStyle(
     fontSize: 12,

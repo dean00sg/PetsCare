@@ -107,17 +107,7 @@ class NotificationScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
-                                children: [
-                                  const Spacer(),
-                                  IconButton(
-                                    icon: const Icon(Icons.close, color: Colors.white),
-                                    onPressed: () {
-                                      BlocProvider.of<NotificationUserBloc>(context).add(DeleteNotificationUser(notification.notiId));
-                                    },
-                                  ),
-                                ],
-                              ),
+                              
                               Row(
                                 children: [
                                   const CircleAvatar(
@@ -131,16 +121,18 @@ class NotificationScreen extends StatelessWidget {
                                     style: NotificationStyles.titleStyle, 
                                   ),
                                   const Spacer(),
-                                  Text(
-                                    formatDateTime(notification.recordDatetime),
-                                    style: const TextStyle(color: Colors.white70),
+                                  IconButton(
+                                    icon: const Icon(Icons.close, color: Colors.white),
+                                    onPressed: () {
+                                      BlocProvider.of<NotificationUserBloc>(context).add(DeleteNotificationUser(notification.notiId));
+                                    },
                                   ),
                                 ],
                               ),
                               const SizedBox(height: 10),
                               Text(
                                 'By: ${notification.createBy}',
-                                style: NotificationStyles.subtitleStyle, // ใช้สไตล์ซับไตล์
+                                style: NotificationStyles.subtitleStyle, 
                               ),
                               const SizedBox(height: 8),
                               Text(
@@ -154,10 +146,25 @@ class NotificationScreen extends StatelessWidget {
                               ),
                               const SizedBox(height: 10),
                               Text(
+                                notification.header,
+                                style: NotificationStyles.headerStyle, 
+                              ),
+                            
+                              const SizedBox(height: 5),
+                              Text(
                                 notification.detail,
-                                style: NotificationStyles.detailStyle, // ใช้สไตล์รายละเอียด
+                                style: NotificationStyles.detailStyle,
                               ),
                               const SizedBox(height: 10),
+                              Row(
+                                children: [
+                                  const Spacer(), 
+                                  Text(
+                                    formatDateTime(notification.recordDatetime),
+                                    style: const TextStyle(color: Colors.white70),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                         ),
