@@ -13,6 +13,6 @@ class PetTypeImage {
   };
 
   static String getImagePath(String type) {
-    return petTypeToImage[type] ?? 'lib/images/default_pet_icon.png'; // Default image in case of unmatched type
+    return petTypeToImage[type] ?? 'lib/images/default_pet_icon.png'; 
   }
 }

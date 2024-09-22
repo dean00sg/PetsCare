@@ -13,13 +13,15 @@ import 'package:frontend/admin/widget/check_info_screen.dart';
 import 'package:frontend/admin/widget/add_feedpost.dart'; // Correct imports
 import 'package:frontend/admin/widget/feed_admin.dart';
 import 'package:frontend/admin/widget/notification_main.dart';
-import 'package:frontend/admin/widget/petprofile.dart';
+import 'package:frontend/admin/widget/petprofileuser.dart';
 import 'package:frontend/admin/widget/profile.dart';
 import 'package:frontend/users/bloc/create_pet_bloc.dart';
 import 'package:frontend/users/bloc/login_bloc.dart';
+import 'package:frontend/users/bloc/petprofile.dart';
 import 'package:frontend/users/bloc/profile_bloc.dart';
 import 'package:frontend/users/bloc/signup_bloc.dart';
 import 'package:frontend/users/repositories/login_repository.dart';
+import 'package:frontend/users/repositories/petprofile.dart';
 import 'package:frontend/users/repositories/pets_repository.dart';
 import 'package:frontend/users/repositories/profile_repository.dart';
 import 'package:frontend/users/repositories/signup_repository.dart';
@@ -28,6 +30,7 @@ import 'package:frontend/users/widget_screen/feed_screen.dart';
 import 'package:frontend/users/widget_screen/login_screen.dart';
 import 'package:frontend/users/widget_screen/notification.dart';
 import 'package:frontend/users/widget_screen/pet_screen.dart';
+import 'package:frontend/users/widget_screen/petprofile.dart';
 import 'package:frontend/users/widget_screen/profile.dart';
 import 'package:frontend/users/widget_screen/signup_screen.dart';
 
@@ -71,6 +74,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => AdminCheckInfoBloc(),
         ),
+        BlocProvider(
+          create: (context) => PetProfileBloc(PetProfileRepository()),
+        ),
       ],
       child: MaterialApp(
         title: 'Pet Care',
@@ -91,10 +97,11 @@ class MyApp extends StatelessWidget {
           '/createpetsmain': (context) => const PetSMaincreen(),
           '/createpets': (context) => const CreatePetScreen(),
           '/checkinfo': (context) => const AdminCheckInfoScreen(),
-          '/petsprofile': (context) => const PetProfileScreen(),
+          '/petsprofileuser': (context) => const PetProfileUserScreen(),
           '/checkAllUsersScreen': (context) => CheckAllUsersScreen(),
           '/notificationUser': (context) => const NotificationUser(),
           '/addnotificationUser': (context) => const AddNotificationScreen(),
+          '/petsprofile': (context) => const PetProfileScreen(),
         },
       ),
     );

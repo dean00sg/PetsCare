@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/users/appbar/navbar.dart';
 import 'package:frontend/users/appbar/slidebar.dart';
-import 'package:frontend/users/bloc/pet_bloc.dart';
-import 'package:frontend/users/event/pet_event.dart';
-import 'package:frontend/users/state/pet_state.dart';
+import 'package:frontend/users/bloc/petslidebar_bloc.dart';
+import 'package:frontend/users/event/petvslidebar_event.dart';
+import 'package:frontend/users/state/petslidebar_state.dart';
 import 'package:frontend/users/styles/pet_style.dart';
 
 class PetSMaincreen extends StatelessWidget {

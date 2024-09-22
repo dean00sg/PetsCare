@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:frontend/users/models/pet_models.dart';
+import 'package:frontend/users/models/petslidebar_models.dart';
 
 abstract class PetEvent extends Equatable {
   const PetEvent();

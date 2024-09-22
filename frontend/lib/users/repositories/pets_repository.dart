@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:frontend/users/models/pet_models.dart';
+import 'package:frontend/users/models/petslidebar_models.dart';
 import 'package:frontend/users/models/create_pet_model.dart';
 
 class CreatePetRepository {
   final String apiUrl = 'http://10.0.2.2:8000/pets/'; 
 
-  // POST: Create a new pet
+
   Future<void> createPet(PetModel petData) async {
     try {
       final prefs = await SharedPreferences.getInstance();
