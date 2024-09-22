@@ -94,17 +94,53 @@ async def get_pets(
             birth_date=pet.birth_date,
             weight=pet.weight,
             user_id=pet.user_id,
-            owner_name=f"{user.first_name} {user.last_name}"  # Owner's full name
+            owner_name=f"{user.first_name} {user.last_name}"  
         )
         for pet in pets
     ]
+from fastapi import Query
+
+@router.get("/byname", response_model=PetResponse) 
+async def get_pets(
+    session: Session = Depends(get_session),
+    current_username: str = Depends(get_current_user),
+    pet_name: str = Query(None)  
+):
+    user = session.query(UserProfile).filter(UserProfile.email == current_username).first()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    query = session.query(Pet).filter(Pet.user_id == user.user_id)
+    
+    if pet_name:
+        query = query.filter(Pet.name == pet_name)
+
+    pet = query.first() 
+
+    if not pet:
+        raise HTTPException(status_code=404, detail="No pet found for this user")
+
+    return PetResponse(
+        status="Success",
+        pets_id=pet.pets_id,
+        name=pet.name,
+        type_pets=pet.type_pets,
+        sex=pet.sex,
+        breed=pet.breed,
+        birth_date=pet.birth_date,
+        weight=pet.weight,
+        user_id=pet.user_id,
+        owner_name=f"{user.first_name} {user.last_name}"  
+    )
+
 
 @router.get("/all-pets-admin", response_model=list[PetResponse])
 async def get_all_pets_admin(
     session: Session = Depends(get_session),
-    role: str = Depends(get_current_user_role)  # Ensure the current user has an appropriate role
+    role: str = Depends(get_current_user_role) 
 ):
-    # Check if the user is an admin
+  
     if role != "admin":
         raise HTTPException(status_code=403, detail="Access forbidden: Admins only")
     
@@ -130,7 +166,7 @@ async def get_all_pets_admin(
                 birth_date=pet.birth_date,
                 weight=pet.weight,
                 user_id=pet.user_id,
-                owner_name=f"{user.first_name} {user.last_name}"  # Owner's full name
+                owner_name=f"{user.first_name} {user.last_name}" 
             )
         )
 
