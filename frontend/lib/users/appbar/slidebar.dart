@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/users/models/pet_models.dart';
+import 'package:frontend/users/models/petslidebar_models.dart';
 import 'package:frontend/users/repositories/pets_repository.dart';
 
 class Sidebar extends StatefulWidget {
@@ -16,12 +16,14 @@ class _SidebarState extends State<Sidebar> {
   @override
   void initState() {
     super.initState();
-    futurePets = petRepository.fetchPets(); // Fetch pets on initialization
+    futurePets = petRepository.fetchPets();
   }
 
   @override
   Widget build(BuildContext context) {
+
     final currentRoute = ModalRoute.of(context)?.settings.name;
+
     return Drawer(
       child: Container(
         color: Colors.white,
@@ -94,8 +96,6 @@ class _SidebarState extends State<Sidebar> {
               ),
             ),
             const SizedBox(height: 15),
-
-            // MY PETS Container with ExpansionTile
             FutureBuilder<List<Pet>>(
               future: futurePets,
               builder: (context, snapshot) {
@@ -131,25 +131,30 @@ class _SidebarState extends State<Sidebar> {
                     iconColor: Colors.white,
                     collapsedIconColor: Colors.white,
                     children: pets.map((pet) {
-                      return Container(
-                        margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-                        decoration: BoxDecoration(
-                          color: Colors.brown[50], 
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Row(
-                          children: [
-                            Image.asset(
-                              pet.imagePath,
-                              width: 50,
-                              height: 50,
-                            ),
-                            const SizedBox(width: 10),
-                            Text(
-                              pet.name,
-                              style: const TextStyle(color: Colors.brown, fontSize: 18),
-                            ),
-                          ],
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(context, '/petsprofile', arguments: pet.name);
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                          decoration: BoxDecoration(
+                            color: Colors.brown[50],
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Row(
+                            children: [
+                              Image.asset(
+                                pet.imagePath,
+                                width: 50,
+                                height: 50,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                pet.name,
+                                style: const TextStyle(color: Colors.brown, fontSize: 18),
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     }).toList(),
