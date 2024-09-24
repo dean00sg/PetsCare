@@ -43,7 +43,7 @@ class HealthrecordMainWidget extends StatelessWidget {
                       icon: Icons.note_add,
                       color: const Color.fromARGB(255, 9, 196, 159),
                       onTap: () {
-                        Navigator.of(context).pushNamed('/addfeedpost');
+                        Navigator.of(context).pushNamed('/addhealthrec');
                       },
                     ),
                     _buildHealthrecordMainCard(

@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/admin/bloc/add_feedpost.dart'; // Ensure correct import
+import 'package:frontend/admin/bloc/add_healthrec.dart';
 import 'package:frontend/admin/bloc/add_notification.dart';
 import 'package:frontend/admin/bloc/user.dart';
 import 'package:frontend/admin/repositories/add_feedpost.dart'; // Ensure correct import
 import 'package:frontend/admin/bloc/check_info_bloc.dart';
 import 'package:frontend/admin/repositories/add_notification.dart';
 import 'package:frontend/admin/repositories/user_repository.dart';
+import 'package:frontend/admin/widget/add_healthrec.dart';
 import 'package:frontend/admin/widget/add_notification.dart';
 import 'package:frontend/admin/widget/check_alluser.dart';
 import 'package:frontend/admin/widget/check_healthrec.dart';
@@ -84,6 +86,10 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => HealthRecordBloc(HealthRecordRepository()),
         ),
+        BlocProvider(
+          create: (context) => AddHealthRecordBloc(HealthRecordRepository()),
+          child: const AddHealthRecordForm(),
+        )
       ],
       child: MaterialApp(
         title: 'Pet Care',
@@ -111,6 +117,7 @@ class MyApp extends StatelessWidget {
           '/petsprofile': (context) => const PetProfileScreen(),
           '/healthrecordmain': (context) => const HealthrecordMainWidget(),
           '/checkhealthrec': (context) => const HealthRecordScreen(),
+          '/addhealthrec': (context) => const AddHealthRecordForm(),
         },
       ),
     );

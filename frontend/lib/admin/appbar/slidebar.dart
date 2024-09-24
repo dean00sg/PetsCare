@@ -124,7 +124,7 @@ class Sidebar extends StatelessWidget {
               child: Column(
                 children: [
                   ListTile(
-                    title: const Text('Add Healh Record', style: TextStyle(color: Colors.white)),
+                    title: const Text('Add Health Record', style: TextStyle(color: Colors.white)),
                     onTap: () {
                       Navigator.pushNamed(context, '/healthrecordmain');
                     },

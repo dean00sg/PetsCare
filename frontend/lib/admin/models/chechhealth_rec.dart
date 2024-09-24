@@ -63,7 +63,29 @@ class HealthRecord {
       weightStartMonths: json['weight_start_months'],
       weightEndMonths: json['weight_end_months'],
       description: json['description'] ?? '',
-      recordDate: DateTime.parse(json['record_date']),
+      recordDate: DateTime.now(),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'HR_id': HR_id,
+      'header': header,
+      'pet_type': petType,
+      'age': {
+        'years': age.years,
+        'months': age.months,
+        'days': age.days,
+      },
+      'to_age': {
+        'years': toAge.years,
+        'months': toAge.months,
+        'days': toAge.days,
+      },
+      'weight_start_months': weightStartMonths,
+      'weight_end_months': weightEndMonths,
+      'description': description,
+      'record_date': recordDate.toIso8601String(),
+    };
   }
 }
