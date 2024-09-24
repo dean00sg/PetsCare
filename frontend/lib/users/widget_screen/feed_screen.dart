@@ -63,50 +63,57 @@ class FeedScreen extends StatelessWidget {
 
 
                     final FeedPost post = state.feedPosts[index - 1];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: Colors.brown, 
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Updated header text color to white
-                              Text(
-                                post.header,
-                                style: const TextStyle(
-                                  fontSize: 18, 
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,  
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            color: Colors.brown, 
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  post.header,
+                                  style: const TextStyle(
+                                    fontSize: 18, 
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,  
+                                  ),
+                                  textAlign: TextAlign.center,
                                 ),
-                                textAlign: TextAlign.center,
-                              ),
-                              const SizedBox(height: 8),
-                              if (post.imageUrl != null)
-                                Image.network(
-                                  post.imageUrl!,
-                                  fit: BoxFit.cover,
-                                  height: 200, // Adjust height as needed
-                                  width: double.infinity, // Make image full width
+                                const SizedBox(height: 8),
+                                // Correct conditional rendering for image loading
+                                if (post.imageUrl != null && post.imageUrl!.isNotEmpty) ...[
+                                  Image.network(
+                                    post.imageUrl!,
+                                    fit: BoxFit.cover,
+                                    height: 200, 
+                                    width: double.infinity, 
+                                    errorBuilder: (BuildContext context, Object error, StackTrace? stackTrace) {
+                                      return const Text(
+                                        'Image failed to load.',
+                                        style: TextStyle(color: Colors.white),
+                                      );
+                                    },
+                                  ),
+                                  const SizedBox(height: 8), // Add spacing after the image
+                                ],
+                                // Updated description text color to white
+                                Text(
+                                  post.description ?? 'No description available',
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              const SizedBox(height: 8),
-                              // Updated description text color to white
-                              Text(
-                                post.description ?? 'No description available',
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white,  // Description text is now white
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                    );
+                      );
                   },
                 ),
               );

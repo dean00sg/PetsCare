@@ -37,6 +37,7 @@ class NotificationScreen extends StatelessWidget {
     String searchQuery = '';
 
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text('Notification', style: TextStyle(fontSize: 22, color: Colors.white)),
