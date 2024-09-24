@@ -21,6 +21,8 @@ class UserProfile {
     );
   }
 
+  get imageUrl => null;
+
   // Method to convert UserProfile to JSON
   Map<String, dynamic> toJson() {
     return {
