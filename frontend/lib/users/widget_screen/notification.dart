@@ -158,6 +158,21 @@ class NotificationScreen extends StatelessWidget {
                                       notification.header,
                                       style: NotificationStyles.headerStyle,
                                     ),
+
+
+                                    //imageUrl
+                                    if (notification.file.isNotEmpty) ...[
+                                      const SizedBox(height: 10),
+                                      Image.network(
+                                        notification.file,
+                                        fit: BoxFit.cover, // Fit the image
+                                        errorBuilder: (context, error, stackTrace) {
+                                          return const Text('Image not available');
+                                        },
+                                      ),
+                                    ],
+
+
                                     const SizedBox(height: 5),
                                     Text(
                                       notification.detail,
