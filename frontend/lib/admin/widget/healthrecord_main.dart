@@ -52,7 +52,7 @@ class HealthrecordMainWidget extends StatelessWidget {
                       icon: Icons.search,
                       color: Colors.teal,
                       onTap: () {
-                        Navigator.of(context).pushNamed('/addnotificationUser');
+                        Navigator.of(context).pushNamed('/checkhealthrec');
                       },
                     ),
                   ],

@@ -8,6 +8,7 @@ import 'package:frontend/admin/bloc/check_info_bloc.dart';
 import 'package:frontend/admin/repositories/add_notification.dart';
 import 'package:frontend/admin/repositories/user_repository.dart';
 import 'package:frontend/admin/widget/add_notification.dart';
+import 'package:frontend/admin/widget/chechhealth_rec.dart';
 import 'package:frontend/admin/widget/check_alluser.dart';
 import 'package:frontend/admin/widget/check_info_screen.dart';
 import 'package:frontend/admin/widget/add_feedpost.dart'; // Correct imports
@@ -16,11 +17,13 @@ import 'package:frontend/admin/widget/healthrecord_main.dart';
 import 'package:frontend/admin/widget/notification_main.dart';
 import 'package:frontend/admin/widget/petprofileuser.dart';
 import 'package:frontend/admin/widget/profile.dart';
+import 'package:frontend/admin/bloc/chechhealth_rec.dart';
 import 'package:frontend/users/bloc/create_pet_bloc.dart';
 import 'package:frontend/users/bloc/login_bloc.dart';
 import 'package:frontend/users/bloc/petprofile.dart';
 import 'package:frontend/users/bloc/profile_bloc.dart';
 import 'package:frontend/users/bloc/signup_bloc.dart';
+import 'package:frontend/admin/repositories/chechhealth_rec.dart';
 import 'package:frontend/users/repositories/login_repository.dart';
 import 'package:frontend/users/repositories/petprofile.dart';
 import 'package:frontend/users/repositories/pets_repository.dart';
@@ -78,6 +81,9 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => PetProfileBloc(PetProfileRepository()),
         ),
+        BlocProvider(
+          create: (context) => HealthRecordBloc(HealthRecordRepository()),
+        ),
       ],
       child: MaterialApp(
         title: 'Pet Care',
@@ -104,6 +110,7 @@ class MyApp extends StatelessWidget {
           '/addnotificationUser': (context) => const AddNotificationScreen(),
           '/petsprofile': (context) => const PetProfileScreen(),
           '/healthrecordmain': (context) => const HealthrecordMainWidget(),
+          '/checkhealthrec': (context) => const HealthRecordScreen(),
         },
       ),
     );
