@@ -130,7 +130,6 @@ class SignupScreen extends StatelessWidget {
                       BlocConsumer<SignupBloc, SignupState>(
                         listener: (context, state) {
                           if (state is SignupSuccess) {
-                            // เมื่อ signup สำเร็จ นำทางไปยังหน้า login
                             Navigator.pushReplacementNamed(context, '/login');
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
