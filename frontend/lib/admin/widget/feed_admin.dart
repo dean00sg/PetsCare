@@ -67,7 +67,7 @@ class FeedadminScreen extends StatelessWidget {
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: Colors.brown, 
+                            color: const Color.fromARGB(255, 38, 111, 202),
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),

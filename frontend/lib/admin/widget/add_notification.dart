@@ -249,7 +249,7 @@ void _submitNotification(BuildContext context) {
               const Padding(
                 padding: EdgeInsets.only(left: 10.0),
                 child: Text(
-                  "Add Notification",
+                  "Sent Notification",
                   style: TextStyle(
                       fontSize: 40,
                       fontWeight: FontWeight.bold,
