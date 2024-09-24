@@ -12,6 +12,7 @@ import 'package:frontend/admin/widget/check_alluser.dart';
 import 'package:frontend/admin/widget/check_info_screen.dart';
 import 'package:frontend/admin/widget/add_feedpost.dart'; // Correct imports
 import 'package:frontend/admin/widget/feed_admin.dart';
+import 'package:frontend/admin/widget/healthrecord_main.dart';
 import 'package:frontend/admin/widget/notification_main.dart';
 import 'package:frontend/admin/widget/petprofileuser.dart';
 import 'package:frontend/admin/widget/profile.dart';
@@ -102,6 +103,7 @@ class MyApp extends StatelessWidget {
           '/notificationUser': (context) => const NotificationUser(),
           '/addnotificationUser': (context) => const AddNotificationScreen(),
           '/petsprofile': (context) => const PetProfileScreen(),
+          '/healthrecordmain': (context) => const HealthrecordMainWidget(),
         },
       ),
     );

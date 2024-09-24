@@ -43,7 +43,7 @@ class Sidebar extends StatelessWidget {
               child: Column(
                 children: [
                   ListTile(
-                    title: const Text('HOME', style: TextStyle(color: Colors.white)),
+                    title: const Text('Home', style: TextStyle(color: Colors.white)),
                     onTap: () {
                       Navigator.pushNamed(context, '/feedadmin');
                     },
@@ -70,7 +70,7 @@ class Sidebar extends StatelessWidget {
               child: Column(
                 children: [
                   ListTile(
-                    title: const Text('CHECK INFO', style: TextStyle(color: Colors.white)),
+                    title: const Text('Check Info', style: TextStyle(color: Colors.white)),
                     onTap: () {
                       Navigator.pushNamed(context, '/checkinfo');
                     },
@@ -97,9 +97,36 @@ class Sidebar extends StatelessWidget {
               child: Column(
                 children: [
                   ListTile(
-                    title: const Text('ADD NOTIFICATION', style: TextStyle(color: Colors.white)),
+                    title: const Text('Add Notifications', style: TextStyle(color: Colors.white)),
                     onTap: () {
                       Navigator.pushNamed(context, '/notifications');
+                    },
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 15),
+            if (currentRoute != '/healthrecordmain') 
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8.0),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 38, 111, 202),
+                borderRadius: BorderRadius.circular(4),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 3),
+                  ),
+                ], 
+              ),
+              child: Column(
+                children: [
+                  ListTile(
+                    title: const Text('Add Healh Record', style: TextStyle(color: Colors.white)),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/healthrecordmain');
                     },
                   ),
                 ],
