@@ -8,8 +8,8 @@ import 'package:frontend/admin/bloc/check_info_bloc.dart';
 import 'package:frontend/admin/repositories/add_notification.dart';
 import 'package:frontend/admin/repositories/user_repository.dart';
 import 'package:frontend/admin/widget/add_notification.dart';
-import 'package:frontend/admin/widget/chechhealth_rec.dart';
 import 'package:frontend/admin/widget/check_alluser.dart';
+import 'package:frontend/admin/widget/check_healthrec.dart';
 import 'package:frontend/admin/widget/check_info_screen.dart';
 import 'package:frontend/admin/widget/add_feedpost.dart'; // Correct imports
 import 'package:frontend/admin/widget/feed_admin.dart';

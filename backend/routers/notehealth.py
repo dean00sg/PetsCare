@@ -17,6 +17,7 @@ def create_health_record(
 ):
     # Create new health record
     new_health_record = ModelHealthRecord(
+        header = health_record.header,
         pet_type=health_record.pet_type,
         age_years=health_record.age.years,
         age_months=health_record.age.months,
@@ -40,6 +41,7 @@ def create_health_record(
         HR_id=new_health_record.HR_id,
         action_byname=username,
         action_datetime=datetime.now().replace(microsecond=0),
+        header = health_record.header,
         pet_type=new_health_record.pet_type,
         to_pet_type=None,
         age_years=new_health_record.age_years,
@@ -63,6 +65,7 @@ def create_health_record(
 
     return HealthRecordResponse(
         HR_id=new_health_record.HR_id,
+        header = health_record.header,
         pet_type=new_health_record.pet_type,
         age=Age(
             years=new_health_record.age_years,
@@ -96,6 +99,7 @@ def get_health_record(
     return HealthRecordResponse(
         HR_id=result.HR_id,
         pet_type=result.pet_type,
+        header = result.header,
         age=Age(
             years=result.age_years,
             months=result.age_months,
@@ -129,6 +133,7 @@ def get_all_health_records(
     return [
         HealthRecordResponse(
             HR_id=record.HR_id,
+            header = record.header,
             pet_type=record.pet_type,
             age=Age(
                 years=record.age_years,
@@ -166,34 +171,36 @@ def update_health_record(
     old_health_record = result
     updated_data = record_update.dict(exclude_unset=True)
     
+    # Update the header
+    if "header" in updated_data:
+        old_health_record.header = updated_data["header"]
+
     # Extract age data if present
     age_data = updated_data.pop("age", None)
     if age_data:
-        updated_data["age_years"] = age_data.get("years")
-        updated_data["age_months"] = age_data.get("months")
-        updated_data["age_days"] = age_data.get("days")
+        old_health_record.age_years = age_data.get("years")
+        old_health_record.age_months = age_data.get("months")
+        old_health_record.age_days = age_data.get("days")
 
     to_age_data = updated_data.pop("to_age", None)
     if to_age_data:
-        updated_data["to_age_years"] = to_age_data.get("years")
-        updated_data["to_age_months"] = to_age_data.get("months")
-        updated_data["to_age_days"] = to_age_data.get("days")
+        old_health_record.to_age_years = to_age_data.get("years")
+        old_health_record.to_age_months = to_age_data.get("months")
+        old_health_record.to_age_days = to_age_data.get("days")
 
-    updated_data["record_date"] = datetime.now().replace(microsecond=0)
-
-    for key, value in updated_data.items():
-        setattr(old_health_record, key, value)
+    old_health_record.record_date = datetime.now().replace(microsecond=0)
 
     session.add(old_health_record)
     session.commit()
     session.refresh(old_health_record)
 
-    # Create log entry
+    # Create log entry for the update
     log_entry = LogHealthRecord(
         action_name="update",
         HR_id=old_health_record.HR_id,
         action_byname=username,
         action_datetime=datetime.now().replace(microsecond=0),
+        header=old_health_record.header,
         pet_type=old_health_record.pet_type,
         to_pet_type=None,
         age_years=old_health_record.age_years,
@@ -217,6 +224,7 @@ def update_health_record(
 
     return HealthRecordResponse(
         HR_id=old_health_record.HR_id,
+        header=old_health_record.header,
         pet_type=old_health_record.pet_type,
         age=Age(
             years=old_health_record.age_years,
@@ -233,3 +241,42 @@ def update_health_record(
         record_date=old_health_record.record_date.replace(microsecond=0),
         description=old_health_record.description
     )
+
+
+@router.delete("/{health_id}/health", response_model=dict)
+def delete_health_record(
+    health_id: int,
+    session: Session = Depends(get_session),
+    username: str = Depends(get_current_user),
+    role: str = Depends(get_current_user_role)
+):
+    stmt = select(ModelHealthRecord).where(ModelHealthRecord.HR_id == health_id)
+    result = session.execute(stmt).scalars().first()
+
+    if result is None:
+        raise HTTPException(status_code=404, detail="Health record not found")
+    
+    # Log the deletion
+    log_entry = LogHealthRecord(
+        action_name="delete",
+        HR_id=result.HR_id,
+        action_byname=username,
+        action_datetime=datetime.now().replace(microsecond=0),
+        header=result.header,
+        pet_type=result.pet_type,
+        age_years=result.age_years,
+        age_months=result.age_months,
+        age_days=result.age_days,
+        weight_start_months=result.weight_start_months,
+        weight_end_months=result.weight_end_months,
+        record_date=result.record_date,
+        description=result.description
+    )
+    
+    session.add(log_entry)
+    
+    # Delete the health record
+    session.delete(result)
+    session.commit()
+
+    return {"detail": "Health record deleted successfully"}

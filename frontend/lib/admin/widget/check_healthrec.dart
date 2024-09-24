@@ -27,9 +27,18 @@ class HealthRecordScreen extends StatelessWidget {
                   final record = state.healthRecords[index];
                   return Card(
                     child: ListTile(
-                      title: Text('${record.petType} - ${record.age.months}m to ${record.toAge.months}m'),
-                      subtitle: Text(record.description),
-                      trailing: Text('${record.recordDate}'),
+                      title: Text(record.header), 
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Pet Type: ${record.petType}'), 
+                          Text('Age: ${record.age.months} months to ${record.toAge.months} months'),
+                          Text('Weight Start: ${record.weightStartMonths} months'),
+                          Text('Weight End: ${record.weightEndMonths} months'),
+                          Text('Description: ${record.description}'),
+                          Text('Record Date: ${record.recordDate.toString()}'),
+                        ],
+                      ),
                     ),
                   );
                 },

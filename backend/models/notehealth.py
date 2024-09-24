@@ -11,6 +11,7 @@ class HealthRecord(Base):
     __tablename__ = 'health_records'
 
     HR_id = Column(Integer, primary_key=True, index=True)
+    header = Column(String, nullable=True)
     pet_type = Column(String, nullable=True)
     age_years = Column(Integer, nullable=True)
     age_months = Column(Integer, nullable=True)
@@ -32,6 +33,8 @@ class LogHealthRecord(Base):
     HR_id = Column(Integer, nullable=True)
     action_byname = Column(String, nullable=True)
     action_datetime = Column(DateTime, nullable=True, default=lambda: datetime.now().replace(microsecond=0))
+    header = Column(String, nullable=True)
+    to_header = Column(String, nullable=True)
     pet_type = Column(String, nullable=True)
     to_pet_type = Column(String, nullable=True)
     age_years = Column(Integer, nullable=True)
@@ -70,6 +73,7 @@ class ToAge(BaseModel):
 
 
 class CreateHealthRecord(BaseModel):
+    header :str
     pet_type: str
     age: Age
     to_age: ToAge
@@ -83,6 +87,7 @@ class CreateHealthRecord(BaseModel):
 
 class HealthRecordResponse(BaseModel):
     HR_id: int
+    header : str
     pet_type: str
     age: Age
     to_age: ToAge

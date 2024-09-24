@@ -32,6 +32,7 @@ class ToAge {
 
 class HealthRecord {
   final int HR_id;
+  final String header;
   final String petType;
   final Age age;
   final ToAge toAge;
@@ -42,6 +43,7 @@ class HealthRecord {
 
   HealthRecord({
     required this.HR_id,
+    required this.header,
     required this.petType,
     required this.age,
     required this.toAge,
@@ -54,6 +56,7 @@ class HealthRecord {
   factory HealthRecord.fromJson(Map<String, dynamic> json) {
     return HealthRecord(
       HR_id: json['HR_id'],
+      header: json['header'],
       petType: json['pet_type'],
       age: Age.fromJson(json['age']),
       toAge: ToAge.fromJson(json['to_age']),
