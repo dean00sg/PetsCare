@@ -15,7 +15,7 @@ class FeedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const Navbar(), 
+      appBar: const NavbarUser(), 
       drawer: const Sidebar(), 
       body: BlocProvider(
         create: (context) => FeedBloc(feedRepository: FeedRepository(apiUrl: 'http://10.0.2.2:8000'))..add(FetchFeedData()),

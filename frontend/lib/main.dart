@@ -89,7 +89,12 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => AddHealthRecordBloc(HealthRecordRepository()),
           child: const AddHealthRecordForm(),
-        )
+        ),
+        // BlocProvider(
+        //   create: (context) => NotificationUserBloc(
+        //     notificationRepository: NotificationUserRepository(apiUrl: 'http://10.0.2.2:8000'),
+        //   ),
+        // ),
       ],
       child: MaterialApp(
         title: 'Pet Care',

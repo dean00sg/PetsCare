@@ -14,7 +14,7 @@ class PetSMaincreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: const Navbar(), 
+      appBar: const NavbarUser(), 
       drawer: const Sidebar(), 
       body: BlocProvider(
         create: (context) => PetBloc()..add(LoadPets()),

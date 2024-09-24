@@ -17,7 +17,10 @@ class NotificationUser extends StatelessWidget {
       create: (context) => NotificationUserBloc(
         notificationRepository: NotificationUserRepository(apiUrl: 'http://10.0.2.2:8000'),
       )..add(LoadNotificationsUser()),
-      child: const NotificationScreen(),
+      child: const Scaffold(
+ 
+        body: NotificationScreen(),
+      ),
     );
   }
 }
@@ -34,7 +37,7 @@ class NotificationScreen extends StatelessWidget {
     String searchQuery = '';
 
     return Scaffold(
-      appBar:AppBar(
+      appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
         title: const Text('Notification', style: TextStyle(fontSize: 22, color: Colors.white)),
         backgroundColor: Colors.brown,
@@ -63,13 +66,7 @@ class NotificationScreen extends StatelessWidget {
                   child: IconButton(
                     icon: const Icon(Icons.delete, color: Colors.white),
                     onPressed: () {
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => DeletedNotifications(
-                      //       deletedNotifications: [], 
-                      //     ),
-                      //   ),
-                      // );
+                      // Action for delete button
                     },
                   ),
                 ),
@@ -77,7 +74,7 @@ class NotificationScreen extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: BlocBuilder<NotificationUserBloc, NotificationUserState>( 
+            child: BlocBuilder<NotificationUserBloc, NotificationUserState>(
               builder: (context, state) {
                 if (state is NotificationLoading) {
                   return const Center(child: CircularProgressIndicator());
@@ -91,85 +88,99 @@ class NotificationScreen extends StatelessWidget {
                     return isInTimeRange && matchesSearchQuery;
                   }).toList();
 
-                  if (filteredNotifications.isEmpty) {
+                  // จำนวนการ์ดที่กรอง
+                  final notificationCount = filteredNotifications.length;
+
+                  if (notificationCount == 0) {
                     return const Center(child: Text('No Notifications'));
                   }
 
-                  return ListView.builder(
-                    itemCount: filteredNotifications.length,
-                    itemBuilder: (context, index) {
-                      final notification = filteredNotifications[index];
-                      return Card(
-                        margin: const EdgeInsets.symmetric(vertical: 14, horizontal: 25),
-                        color: Colors.brown[400],
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              
-                              Row(
-                                children: [
-                                  const CircleAvatar(
-                                    backgroundColor: Colors.white,
-                                    radius: 20,
-                                    child: Icon(Icons.person, color: Colors.grey),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Text(
-                                    notification.createname,
-                                    style: NotificationStyles.titleStyle, 
-                                  ),
-                                  const Spacer(),
-                                  IconButton(
-                                    icon: const Icon(Icons.close, color: Colors.white),
-                                    onPressed: () {
-                                      BlocProvider.of<NotificationUserBloc>(context).add(DeleteNotificationUser(notification.notiId));
-                                    },
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                'By: ${notification.createBy}',
-                                style: NotificationStyles.subtitleStyle, 
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                'To: ${notification.toUser}',
-                                style: NotificationStyles.subtitleStyle,
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                'Dear ${notification.userName}', 
-                                style: NotificationStyles.titleStyle,
-                              ),
-                              const SizedBox(height: 10),
-                              Text(
-                                notification.header,
-                                style: NotificationStyles.headerStyle, 
-                              ),
-                            
-                              const SizedBox(height: 5),
-                              Text(
-                                notification.detail,
-                                style: NotificationStyles.detailStyle,
-                              ),
-                              const SizedBox(height: 10),
-                              Row(
-                                children: [
-                                  const Spacer(), 
-                                  Text(
-                                    formatDateTime(notification.recordDatetime),
-                                    style: const TextStyle(color: Colors.white70),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          '$notificationCount Notifications',
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
-                      );
-                    },
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: notificationCount,
+                          itemBuilder: (context, index) {
+                            final notification = filteredNotifications[index];
+                            return Card(
+                              margin: const EdgeInsets.symmetric(vertical: 14, horizontal: 25),
+                              color: Colors.brown[400],
+                              child: Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const CircleAvatar(
+                                          backgroundColor: Colors.white,
+                                          radius: 20,
+                                          child: Icon(Icons.person, color: Colors.grey),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Text(
+                                          notification.createname,
+                                          style: NotificationStyles.titleStyle,
+                                        ),
+                                        const Spacer(),
+                                        IconButton(
+                                          icon: const Icon(Icons.close, color: Colors.white),
+                                          onPressed: () {
+                                            BlocProvider.of<NotificationUserBloc>(context).add(DeleteNotificationUser(notification.notiId));
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      'By: ${notification.createBy}',
+                                      style: NotificationStyles.subtitleStyle,
+                                    ),
+                                    const SizedBox(height: 8),
+                                    Text(
+                                      'To: ${notification.toUser}',
+                                      style: NotificationStyles.subtitleStyle,
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      'Dear ${notification.userName}',
+                                      style: NotificationStyles.titleStyle,
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      notification.header,
+                                      style: NotificationStyles.headerStyle,
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Text(
+                                      notification.detail,
+                                      style: NotificationStyles.detailStyle,
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Row(
+                                      children: [
+                                        const Spacer(),
+                                        Text(
+                                          formatDateTime(notification.recordDatetime),
+                                          style: const TextStyle(color: Colors.white70),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   );
                 } else if (state is NotificationUserError) {
                   return Center(child: Text(state.message));
