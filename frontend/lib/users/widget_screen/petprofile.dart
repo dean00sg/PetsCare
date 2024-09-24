@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/users/bloc/petprofile.dart';
-
 import 'package:frontend/users/event/petprofile.dart';
+import 'package:frontend/users/models/petprofile.dart';
 import 'package:frontend/users/state/petprofile.dart';
+import 'package:frontend/users/styles/petprofile_style.dart';
 
 class PetProfileScreen extends StatelessWidget {
   const PetProfileScreen({Key? key}) : super(key: key);
@@ -16,7 +17,11 @@ class PetProfileScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Pet Profile: $petName'),
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: Text(petName, style: const TextStyle(fontSize: 22, color: Colors.white)),
+        backgroundColor: PetProfileStyles.appBarBackgroundColor,
+        centerTitle: true,
+        toolbarHeight: 70,
       ),
       body: BlocBuilder<PetProfileBloc, PetProfileState>(
         builder: (context, state) {
@@ -26,19 +31,58 @@ class PetProfileScreen extends StatelessWidget {
             return Center(child: Text('Error: ${state.error}'));
           } else if (state is PetProfileLoaded) {
             final pet = state.petProfile;
+            final petAge = calculateAge(DateTime.parse(pet.birthDate));
+            final imagePath = PetTypeImage.getImagePath(pet.typePets);
             return Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Name: ${pet.name}', style: const TextStyle(fontSize: 22)),
-                  Text('Type: ${pet.typePets}', style: const TextStyle(fontSize: 18)),
-                  Text('Sex: ${pet.sex}', style: const TextStyle(fontSize: 18)),
-                  Text('Breed: ${pet.breed}', style: const TextStyle(fontSize: 18)),
-                  Text('Birth Date: ${pet.birthDate}', style: const TextStyle(fontSize: 18)),
-                  Text('Weight: ${pet.weight} kg', style: const TextStyle(fontSize: 18)),
-                  Text('Owner: ${pet.ownerName}', style: const TextStyle(fontSize: 18)),
-                ],
+              child: Container(
+                height: 200,
+                padding: const EdgeInsets.all(16.0),
+                decoration: PetProfileStyles.containerBoxDecoration,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    CircleAvatar(
+                      radius: 40,
+                      backgroundColor: Colors.white,
+                      backgroundImage: AssetImage(imagePath),
+                    ),
+                    const SizedBox(width: 16),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                pet.name,
+                                style: PetProfileStyles.petNameTextStyle,
+                              ),
+                              const Spacer(),
+                              IconButton(
+                                icon: PetProfileStyles.editIcon,
+                                iconSize: PetProfileStyles.iconSize,
+                                onPressed: () {
+                                  // เพิ่มฟังก์ชันแก้ไข
+                                },
+                              ),
+                            ],
+                          ),
+                          Text('${pet.typePets}, ${pet.sex}', style: PetProfileStyles.petInfoTextStyle),
+                          const SizedBox(height: 5),
+                          Text(
+                            '${pet.birthDate}, Age: ${petAge['years']} Y ${petAge['months']} M ${petAge['days']} D',
+                            style: PetProfileStyles.petInfoTextStyle,
+                          ),
+                          const SizedBox(height: 5),
+                          Text('Weight: ${pet.weight} kg', style: PetProfileStyles.petInfoTextStyle),
+                          const SizedBox(height: 5),
+                          Text('BREED : ${pet.breed}', style: PetProfileStyles.petInfoTextStyle),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           } else {
@@ -47,5 +91,24 @@ class PetProfileScreen extends StatelessWidget {
         },
       ),
     );
+  }
+
+  // ฟังก์ชันคำนวณอายุ
+  Map<String, int> calculateAge(DateTime birthDate) {
+    DateTime today = DateTime.now();
+    int years = today.year - birthDate.year;
+    int months = today.month - birthDate.month;
+    int days = today.day - birthDate.day;
+
+    if (days < 0) {
+      months -= 1;
+      days += DateTime(today.year, today.month, 0).day;
+    }
+    if (months < 0) {
+      years -= 1;
+      months += 12;
+    }
+
+    return {'years': years, 'months': months, 'days': days};
   }
 }
