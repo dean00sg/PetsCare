@@ -80,10 +80,11 @@ class _AddNotificationScreenState extends State<AddNotificationScreen> {
       _startDate = null;
       _endDate = null;
       _toUser = null;
-  });
+    });
 
-  BlocProvider.of<AddNotificationBloc>(context).add(LoadUsersForNotification());
-}
+    BlocProvider.of<AddNotificationBloc>(context)
+        .add(LoadUsersForNotification());
+  }
 
   // ฟังก์ชันแสดง pop-up เมื่อกดปุ่ม Save
   void _showSaveDialog(BuildContext context) {
@@ -112,6 +113,7 @@ class _AddNotificationScreenState extends State<AddNotificationScreen> {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
+
                 // ใช้ RichText เพื่อจัดแสดง header
                 RichText(
                   text: TextSpan(
@@ -165,7 +167,6 @@ class _AddNotificationScreenState extends State<AddNotificationScreen> {
                         ),
                       ),
                       onPressed: () {
-                        //Navigator.of(context).pop(); // ปิด pop-up
                         _submitNotification(
                             context); // ส่งข้อมูลหลังจากกดปุ่ม Sent
                       },
@@ -185,32 +186,31 @@ class _AddNotificationScreenState extends State<AddNotificationScreen> {
   }
 
   // ฟังก์ชันบันทึกข้อมูลหลังจากกด Sent
-void _submitNotification(BuildContext context) {
-  if (_toUser != null &&
-      _headerController.text.isNotEmpty &&
-      _startDate != null &&
-      _endDate != null &&
-      _imageUrlController.text.isNotEmpty) {
-    //ทำการบันทึกข้อมูล
-    context.read<AddNotificationBloc>().add(
-          AddNotificationSubmitted(
-            header: _headerController.text,
-            toUser: _toUser!,
-            startNoti: _startDate!,
-            endNoti: _endDate!,
-            file: _imageUrlController.text,
-            detail: _detailController.text,
-          ),
-        );
+  void _submitNotification(BuildContext context) {
+    if (_toUser != null &&
+        _headerController.text.isNotEmpty &&
+        _startDate != null &&
+        _endDate != null &&
+        _imageUrlController.text.isNotEmpty) {
+      //ทำการบันทึกข้อมูล
+      context.read<AddNotificationBloc>().add(
+            AddNotificationSubmitted(
+              header: _headerController.text,
+              toUser: _toUser!,
+              startNoti: _startDate!,
+              endNoti: _endDate!,
+              file: _imageUrlController.text,
+              detail: _detailController.text,
+            ),
+          );
 
-    _resetForm(); // Reset the form, including the 'To User' field
-  } else {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Please fill out all fields')),
-    );
+      _resetForm(); //รีเว็ตข้อมูลในฟอร์ม
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill out all fields')),
+      );
+    }
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -246,14 +246,14 @@ void _submitNotification(BuildContext context) {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.only(left: 10.0),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
                 child: Text(
                   "Sent Notification",
                   style: TextStyle(
                       fontSize: 40,
                       fontWeight: FontWeight.bold,
-                      color: Colors.black),
+                      color: Colors.blueGrey[900]),
                 ),
               ),
               const SizedBox(height: 16),
@@ -266,6 +266,7 @@ void _submitNotification(BuildContext context) {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    //Set Admin Profile
                     BlocBuilder<ProfileBloc, ProfileState>(
                       builder: (context, state) {
                         if (state is ProfileLoaded) {
@@ -315,6 +316,7 @@ void _submitNotification(BuildContext context) {
                         }
                       },
                     ),
+                    //ข้อมูลสำหรับกรอกฟอร์ม
                     const SizedBox(height: 16),
                     const Text("To User:",
                         style: TextStyle(color: Colors.white)),
@@ -435,7 +437,7 @@ void _submitNotification(BuildContext context) {
                       width: double.infinity,
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.amber,
+                          backgroundColor: Colors.cyan[400],
                           padding: const EdgeInsets.symmetric(vertical: 15),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -444,8 +446,11 @@ void _submitNotification(BuildContext context) {
                         onPressed: () {
                           _showSaveDialog(context); // แสดง pop-up เมื่อกด Save
                         },
-                        child:
-                            const Text("Save", style: TextStyle(fontSize: 18)),
+                        child: const Text("Save",
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.white,
+                            )),
                       ),
                     ),
                   ],
