@@ -14,7 +14,7 @@ class PetVacRepository {
       final token = prefs.getString('token') ?? '';
 
       final response = await http.get(
-        Uri.parse('$apiUrl/pets_vac/get_all'), 
+        Uri.parse('$apiUrl/pets_vac/get_all'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
@@ -29,6 +29,24 @@ class PetVacRepository {
       }
     } catch (error) {
       throw Exception('Failed to connect to the server: $error');
+    }
+  }
+
+  Future<void> createPetVacProfile(AddPetVacProfile profile) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token') ?? '';
+
+    final response = await http.post(
+      Uri.parse('$apiUrl/pets_vac/pet_vac_profile/'),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(profile.toJson()),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to create pet vaccination profile');
     }
   }
 }

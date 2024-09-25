@@ -42,7 +42,7 @@ class VaccinationMainWidget extends StatelessWidget {
                       icon: Icons.vaccines,
                       color: Colors.blue,
                       onTap: () {
-                        Navigator.of(context).pushNamed('/addVaccinePets'); // Use the actual route
+                        Navigator.of(context).pushNamed('/addvaccination'); // Use the actual route
                       },
                     ),
                     _buildVaccinationMainCard(

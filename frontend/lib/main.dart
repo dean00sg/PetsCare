@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/admin/bloc/add_feedpost.dart'; // Ensure correct import
 import 'package:frontend/admin/bloc/add_healthrec.dart';
 import 'package:frontend/admin/bloc/add_notification.dart';
+import 'package:frontend/admin/bloc/add_vaccination.dart';
 import 'package:frontend/admin/bloc/user.dart';
 import 'package:frontend/admin/bloc/vaccination.dart';
 import 'package:frontend/admin/repositories/add_feedpost.dart'; // Ensure correct import
@@ -12,6 +13,7 @@ import 'package:frontend/admin/repositories/user_repository.dart';
 import 'package:frontend/admin/repositories/vaccination.dart';
 import 'package:frontend/admin/widget/add_healthrec.dart';
 import 'package:frontend/admin/widget/add_notification.dart';
+import 'package:frontend/admin/widget/add_vaccination.dart';
 import 'package:frontend/admin/widget/check_alluser.dart';
 import 'package:frontend/admin/widget/check_healthrec.dart';
 import 'package:frontend/admin/widget/check_info_screen.dart';
@@ -96,8 +98,14 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => PetVacBloc(
-            petVacRepository: PetVacRepository(apiUrl: 'http://10.0.2.2:8000'), // Ensure correct repository
+            petVacRepository: PetVacRepository(apiUrl: 'http://10.0.2.2:8000'), 
           ),
+        ),
+        BlocProvider(
+          create: (context) => AddVaccinationBloc(
+            PetVacRepository(apiUrl: 'http://10.0.2.2:8000'), 
+          ),
+          child: const AddVaccinationScreen(),
         ),
       ],
       child: MaterialApp(
@@ -129,6 +137,8 @@ class MyApp extends StatelessWidget {
           '/checkhealthrec': (context) => const HealthRecordScreen(),
           '/addhealthrec': (context) => const AddHealthRecordForm(),
           '/checkvaccination': (context) => const PetVacProfilesScreen(),
+          '/addvaccination': (context) => const AddVaccinationScreen(),
+
         },
       ),
     );
