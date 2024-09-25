@@ -5,6 +5,7 @@ import 'package:frontend/users/event/petprofile.dart';
 import 'package:frontend/users/models/petprofile.dart';
 import 'package:frontend/users/state/petprofile.dart';
 import 'package:frontend/users/styles/petprofile_style.dart';
+import 'package:frontend/users/widget_screen/editpetprofile_screen.dart';
 
 class PetProfileScreen extends StatelessWidget {
   const PetProfileScreen({Key? key}) : super(key: key);
@@ -63,7 +64,12 @@ class PetProfileScreen extends StatelessWidget {
                                 icon: PetProfileStyles.editIcon,
                                 iconSize: PetProfileStyles.iconSize,
                                 onPressed: () {
-                                  // เพิ่มฟังก์ชันแก้ไข
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => EditPetProfileScreen(petProfile: pet),
+                                    ),
+                                  );
                                 },
                               ),
                             ],

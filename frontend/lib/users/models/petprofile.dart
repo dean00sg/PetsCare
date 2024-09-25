@@ -37,7 +37,23 @@ class PetProfile {
       ownerName: json['owner_name'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'status': status,
+      'pets_id': petsId,
+      'name': name,
+      'type_pets': typePets,
+      'sex': sex,
+      'breed': breed,
+      'birth_date': birthDate,
+      'weight': weight,
+      'user_id': userId,
+      'owner_name': ownerName,
+    };
+  }
 }
+
 
 class PetTypeImage {
   static const Map<String, String> petTypeToImage = {
@@ -50,5 +66,5 @@ class PetTypeImage {
   static String getImagePath(String type) {
     return petTypeToImage[type] ?? 'lib/images/default_pet_icon.png'; 
   }
-}
 
+}
