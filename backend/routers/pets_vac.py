@@ -38,7 +38,8 @@ def create_pet_vac_profile(
         startdatevac=profile_data.startdatevac,
         location=profile_data.location,
         remark=profile_data.remark,
-        user_id=owner.user_id
+        user_id=owner.user_id,
+        note_by=username
     )
 
     db.add(new_profile)
@@ -58,7 +59,7 @@ def create_pet_vac_profile(
         startdatevac=new_profile.startdatevac,
         pet_name=new_profile.pet_name,
         owner_name=new_profile.owner_name,
-        user_id=new_profile.user_id
+        user_id=new_profile.user_id,
     )
 
     db.add(log_entry)
@@ -73,7 +74,8 @@ def create_pet_vac_profile(
         location=new_profile.location,
         remark=new_profile.remark,
         pet_name=new_profile.pet_name,
-        owner_name=new_profile.owner_name
+        owner_name=new_profile.owner_name,
+        note_by=new_profile.note_by
     )
 
 
@@ -93,7 +95,8 @@ def get_pet_vac_profile(pet_name: str, db: Session = Depends(get_session)):
         location=profile.location,
         remark=profile.remark,
         pet_name=profile.pet_name,
-        owner_name=profile.owner_name
+        owner_name=profile.owner_name,
+        note_by=profile.note_by
     )
 
 
@@ -246,7 +249,8 @@ async def get_all_pet_vac_profiles(
             location=profile.location,
             remark=profile.remark,
             pet_name=profile.pet_name,
-            owner_name=profile.owner_name
+            owner_name=profile.owner_name,
+            note_by=profile.note_by
         )
         for profile in profiles
     ]

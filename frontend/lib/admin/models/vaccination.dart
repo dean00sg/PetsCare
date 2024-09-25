@@ -7,6 +7,7 @@ class PetVacProfile {
   final String remark;
   final String petName;
   final String ownerName;
+  final String note_by;
 
   PetVacProfile({
     required this.vacId,
@@ -17,6 +18,7 @@ class PetVacProfile {
     required this.remark,
     required this.petName,
     required this.ownerName,
+    required this.note_by,
   });
 
   factory PetVacProfile.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,7 @@ class PetVacProfile {
       remark: json['remark'],
       petName: json['pet_name'],
       ownerName: json['owner_name'],
+      note_by: json['note_by'],
     );
   }
 
@@ -54,6 +57,8 @@ class AddPetVacProfile {
   final String remark;
   final String petName;
   final String ownerName;
+  final String note_by;
+
 
   AddPetVacProfile({
     required this.dose,
@@ -63,6 +68,7 @@ class AddPetVacProfile {
     required this.remark,
     required this.petName,
     required this.ownerName,
+    required this.note_by,
   });
 
   Map<String, dynamic> toJson() {
@@ -74,6 +80,8 @@ class AddPetVacProfile {
       'startdatevac': startDateVac.toIso8601String().split('T').first, // Formatting date only
       'location': location,
       'remark': remark,
+      'note_by': note_by,
+
     };
   }
 }

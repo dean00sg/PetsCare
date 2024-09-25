@@ -6,6 +6,7 @@ import 'package:frontend/admin/models/vaccination.dart';
 import 'package:frontend/admin/repositories/petprofileuser.dart';
 import 'package:frontend/admin/state/add_vaccination.dart';
 import 'package:frontend/admin/models/petprofileuser.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddVaccinationScreen extends StatefulWidget {
   const AddVaccinationScreen({super.key});
@@ -28,20 +29,30 @@ class _AddVaccinationScreenState extends State<AddVaccinationScreen> {
 
   String? selectedOwner;
   String? selectedPet;
+  String? username; // Variable to hold the logged-in username
 
   @override
   void initState() {
     super.initState();
     _loadPetProfiles();
+    _loadUsername(); // Load username when initializing the screen
   }
 
   Future<void> _loadPetProfiles() async {
     PetProfileUserRepository repository = PetProfileUserRepository();
     List<PetProfileUserModel> profiles = await repository.fetchPets();
-    
+
     setState(() {
       petProfiles = profiles;
       ownerNames = profiles.map((pet) => pet.owner_name).toSet().toList(); // Get unique owner names
+    });
+  }
+
+  Future<void> _loadUsername() async {
+    // Load username from SharedPreferences
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      username = prefs.getString('username') ?? ''; // Assuming 'username' is stored here
     });
   }
 
@@ -155,7 +166,7 @@ class _AddVaccinationScreenState extends State<AddVaccinationScreen> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  if (selectedOwner != null && selectedPet != null && selectedDate != null) {
+                  if (selectedOwner != null && selectedPet != null && selectedDate != null && username != null) {
                     final profile = AddPetVacProfile(
                       dose: int.parse(doseController.text),
                       vacName: vacNameController.text,
@@ -164,6 +175,7 @@ class _AddVaccinationScreenState extends State<AddVaccinationScreen> {
                       remark: remarkController.text,
                       petName: selectedPet!,
                       ownerName: selectedOwner!,
+                      note_by: username!, // Use the logged-in username for note_by
                     );
 
                     // Dispatch the event to the bloc

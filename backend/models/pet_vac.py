@@ -12,6 +12,7 @@ class PetVacProfile(Base):
     __tablename__ = 'PetVacProfile'
 
     vac_id = Column(Integer, primary_key=True, index=True)
+    note_by=Column(String, nullable=False)
     dose = Column(Integer, nullable=False)
     vac_name = Column(String, nullable=False)
     startdatevac = Column(Date, nullable=False)
@@ -20,6 +21,7 @@ class PetVacProfile(Base):
     pet_name = Column(String, nullable=False)  
     owner_name = Column(String, nullable=False)
     user_id = Column(Integer, ForeignKey('Userprofiles.user_id'), nullable=False)
+
     
 
 
@@ -62,6 +64,8 @@ class PetVacProfileResponse(BaseModel):
     remark: str
     pet_name: str
     owner_name: str
+    note_by:str
+
 
     class Config:
         orm_mode = True
@@ -74,6 +78,7 @@ class CreatePetVacProfile(BaseModel):
     startdatevac: date
     location: str
     remark: str
+
 
     class Config:
         orm_mode = True

@@ -31,9 +31,23 @@ class _PetVacProfilesScreenState extends State<PetVacProfilesScreen> {
             itemCount: state.profiles.length,
             itemBuilder: (context, index) {
               final profile = state.profiles[index];
+
+              // Displaying detailed information from the vaccination profile
               return ListTile(
                 title: Text(profile.vacName),
-                subtitle: Text('Dose: ${profile.dose}, Pet: ${profile.petName}'),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Dose: ${profile.dose}'),
+                    Text('Pet Name: ${profile.petName}'),
+                    Text('Owner: ${profile.ownerName}'),
+                    Text('Vaccination Date: ${profile.startDateVac}'),
+                    Text('Location: ${profile.location}'),
+                    Text('Remarks: ${profile.remark}'),
+                    Text('Note by: ${profile.note_by}'),
+                  ],
+                ),
+                isThreeLine: true,
               );
             },
           );
