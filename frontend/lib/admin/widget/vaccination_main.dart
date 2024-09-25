@@ -51,7 +51,7 @@ class VaccinationMainWidget extends StatelessWidget {
                       icon: Icons.search,
                       color: const Color.fromARGB(255, 239, 30, 114),
                       onTap: () {
-                        Navigator.of(context).pushNamed('/checkVaccination'); // Use the actual route
+                        Navigator.of(context).pushNamed('/checkvaccination'); // Use the actual route
                       },
                     ),
                   ],

@@ -4,10 +4,12 @@ import 'package:frontend/admin/bloc/add_feedpost.dart'; // Ensure correct import
 import 'package:frontend/admin/bloc/add_healthrec.dart';
 import 'package:frontend/admin/bloc/add_notification.dart';
 import 'package:frontend/admin/bloc/user.dart';
+import 'package:frontend/admin/bloc/vaccination.dart';
 import 'package:frontend/admin/repositories/add_feedpost.dart'; // Ensure correct import
 import 'package:frontend/admin/bloc/check_info_bloc.dart';
 import 'package:frontend/admin/repositories/add_notification.dart';
 import 'package:frontend/admin/repositories/user_repository.dart';
+import 'package:frontend/admin/repositories/vaccination.dart';
 import 'package:frontend/admin/widget/add_healthrec.dart';
 import 'package:frontend/admin/widget/add_notification.dart';
 import 'package:frontend/admin/widget/check_alluser.dart';
@@ -20,6 +22,7 @@ import 'package:frontend/admin/widget/notification_main.dart';
 import 'package:frontend/admin/widget/petprofileuser.dart';
 import 'package:frontend/admin/widget/profile.dart';
 import 'package:frontend/admin/bloc/chechhealth_rec.dart';
+import 'package:frontend/admin/widget/vaccination.dart';
 import 'package:frontend/admin/widget/vaccination_main.dart';
 import 'package:frontend/users/bloc/create_pet_bloc.dart';
 import 'package:frontend/users/bloc/login_bloc.dart';
@@ -91,11 +94,11 @@ class MyApp extends StatelessWidget {
           create: (context) => AddHealthRecordBloc(HealthRecordRepository()),
           child: const AddHealthRecordForm(),
         ),
-        // BlocProvider(
-        //   create: (context) => NotificationUserBloc(
-        //     notificationRepository: NotificationUserRepository(apiUrl: 'http://10.0.2.2:8000'),
-        //   ),
-        // ),
+        BlocProvider(
+          create: (context) => PetVacBloc(
+            petVacRepository: PetVacRepository(apiUrl: 'http://10.0.2.2:8000'), // Ensure correct repository
+          ),
+        ),
       ],
       child: MaterialApp(
         title: 'Pet Care',
@@ -125,6 +128,7 @@ class MyApp extends StatelessWidget {
           '/vaccinationmain': (context) => const VaccinationMainWidget(),
           '/checkhealthrec': (context) => const HealthRecordScreen(),
           '/addhealthrec': (context) => const AddHealthRecordForm(),
+          '/checkvaccination': (context) => const PetVacProfilesScreen(),
         },
       ),
     );

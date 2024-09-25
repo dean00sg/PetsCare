@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from models.pet_vac import PetVacProfile, CreatePetVacProfile, PetVacProfileResponse, LogPetVacProfile, UpdatePetVacProfile
 from models.user import UserProfile
 from models.pet import Pet
-from deps import get_current_user, get_session
+from deps import get_current_user, get_current_user_role, get_session
 from datetime import datetime
 
 router = APIRouter(tags=["Pets Vaccine"])
@@ -220,3 +220,30 @@ def delete_pet_vac_profile(
         pet_name=profile.pet_name,
         owner_name=profile.owner_name
     )
+
+
+
+@router.get("/get_all", response_model=list[PetVacProfileResponse])
+async def get_all_pet_vac_profiles(
+    db: Session = Depends(get_session),
+    current_user_role: str = Depends(get_current_user_role)
+):
+    profiles = db.query(PetVacProfile).all()  # Retrieve all profiles
+
+    if not profiles:
+        raise HTTPException(status_code=404, detail="No vaccine profiles found")
+
+    return [
+        PetVacProfileResponse(
+            status="success",
+            vac_id=profile.vac_id,
+            dose=profile.dose,
+            vac_name=profile.vac_name,
+            startdatevac=profile.startdatevac,
+            location=profile.location,
+            remark=profile.remark,
+            pet_name=profile.pet_name,
+            owner_name=profile.owner_name
+        )
+        for profile in profiles
+    ]
