@@ -1,207 +1,222 @@
-from datetime import datetime
-from typing import List
-from fastapi import APIRouter, HTTPException, Depends, Query
+from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from models.pet import Pet
-from models.pet_vac import PetVacProfile, LogPetVacProfile, CreatePetVacProfile, PetVacProfileResponse
-from deps import get_current_user, get_session
+from models.pet_vac import PetVacProfile, CreatePetVacProfile, PetVacProfileResponse, LogPetVacProfile, UpdatePetVacProfile
 from models.user import UserProfile
+from models.pet import Pet
+from deps import get_current_user, get_session
+from datetime import datetime
 
 router = APIRouter(tags=["Pets Vaccine"])
 
-def get_user_profile(username: str, session: Session) -> UserProfile:
-    user_profile = session.query(UserProfile).filter(UserProfile.email == username).first()
-    if user_profile is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    return user_profile
 
-
-@router.post("/", response_model=PetVacProfileResponse)
-def create_pet_vac(
-    pet_vac: CreatePetVacProfile, 
-    pet_name: str = Query(..., description="Name of the pet to vaccinate"),
-    current_user: str = Depends(get_current_user), 
-    session: Session = Depends(get_session)
+@router.post("/pet_vac_profile/", response_model=PetVacProfileResponse)
+def create_pet_vac_profile(
+    pet_name: str,
+    owner_name: str,
+    profile_data: CreatePetVacProfile,
+    db: Session = Depends(get_session),
+    username: str = Depends(get_current_user)
 ):
-    user_profile = get_user_profile(current_user, session)  
+    owner = db.query(UserProfile).filter(UserProfile.first_name + " " + UserProfile.last_name == owner_name).first()
 
-    pet_profile = session.query(Pet).filter(Pet.name == pet_name, Pet.user_id == user_profile.user_id).first()
-    if pet_profile is None:
-        raise HTTPException(status_code=404, detail="Pet not found or does not belong to this user")
+    if not owner:
+        raise HTTPException(status_code=404, detail="Owner not found")
 
- 
-    startdatevac = pet_vac.startdatevac.replace(microsecond=0)
+    pet = db.query(Pet).filter(Pet.name == pet_name, Pet.user_id == owner.user_id).first()
 
-    new_pet_vac = PetVacProfile(
-        pet_name=pet_profile.name,
-        owner_name=user_profile.first_name,
-        vac_name=pet_vac.vac_name,
-        startdatevac=startdatevac,
-        drugname=pet_vac.drugname,
-        user_id=user_profile.user_id  
+    if not pet:
+        raise HTTPException(status_code=404, detail="Pet not found")
+
+    new_profile = PetVacProfile(
+        pet_name=pet_name,
+        owner_name=owner_name,
+        dose=profile_data.dose,
+        vac_name=profile_data.vac_name,
+        startdatevac=profile_data.startdatevac,
+        location=profile_data.location,
+        remark=profile_data.remark,
+        user_id=owner.user_id
     )
-    
-    session.add(new_pet_vac)
-    session.commit()
-    session.refresh(new_pet_vac)
+
+    db.add(new_profile)
+    db.commit()
+    db.refresh(new_profile)
 
     log_entry = LogPetVacProfile(
         action_name="insert",
-        action_datetime=datetime.now().replace(microsecond=0), 
-        vac_id=new_pet_vac.vac_id,
-        vac_name=new_pet_vac.vac_name,
-        startdatevac=new_pet_vac.startdatevac,
-        drugname=new_pet_vac.drugname,
-        pet_name=new_pet_vac.pet_name,
-        user_id=user_profile.user_id,  
-        owner_name=user_profile.first_name
+        action_by=username,  # Added action_by here
+        action_datetime=datetime.now().replace(microsecond=0),
+        vac_id=new_profile.vac_id,
+        dose=new_profile.dose,
+        vac_name=new_profile.vac_name,
+        location=new_profile.location,
+        remark=new_profile.remark,
+        startdatevac=new_profile.startdatevac,
+        pet_name=new_profile.pet_name,
+        owner_name=new_profile.owner_name,
+        user_id=new_profile.user_id
     )
 
-    session.add(log_entry)
-    session.commit()
+    db.add(log_entry)
+    db.commit()
 
     return PetVacProfileResponse(
-        status="Created Success",
-        vac_id=new_pet_vac.vac_id,
-        vac_name=new_pet_vac.vac_name,
-        startdatevac=new_pet_vac.startdatevac,
-        drugname=new_pet_vac.drugname,
-        pet_name=new_pet_vac.pet_name,
-        owner_name=new_pet_vac.owner_name
+        status="success",
+        vac_id=new_profile.vac_id,
+        dose=new_profile.dose,
+        vac_name=new_profile.vac_name,
+        startdatevac=new_profile.startdatevac,
+        location=new_profile.location,
+        remark=new_profile.remark,
+        pet_name=new_profile.pet_name,
+        owner_name=new_profile.owner_name
     )
 
 
-@router.get("/{pet_name}/vaccines", response_model=List[PetVacProfileResponse])
-def get_pet_vaccines(
+
+@router.get("/pet_vac_profile/{pet_name}", response_model=PetVacProfileResponse)
+def get_pet_vac_profile(pet_name: str, db: Session = Depends(get_session)):
+    profile = db.query(PetVacProfile).filter(PetVacProfile.pet_name == pet_name).first()
+
+    if not profile:
+        raise HTTPException(status_code=404, detail="Vaccine profile not found")
+
+    return PetVacProfileResponse(
+        status="success",
+        vac_id=profile.vac_id,
+        dose=profile.dose,
+        vac_name=profile.vac_name,
+        startdatevac=profile.startdatevac,
+        location=profile.location,
+        remark=profile.remark,
+        pet_name=profile.pet_name,
+        owner_name=profile.owner_name
+    )
+
+
+@router.put("/pet_vac_profile/{pet_name}/{dose}", response_model=PetVacProfileResponse)
+def update_pet_vac_profile(
     pet_name: str,
-    current_user: str = Depends(get_current_user),  
-    session: Session = Depends(get_session)
+    dose: str,  # Add dose as a path parameter
+    profile_data: UpdatePetVacProfile,
+    db: Session = Depends(get_session),
+    username: str = Depends(get_current_user)  # Get the username of the current user
 ):
-    user_profile = get_user_profile(current_user, session)  
-
-    pet_profile = session.query(Pet).filter(Pet.name == pet_name, Pet.user_id == user_profile.user_id).first()
-    if pet_profile is None:
-        raise HTTPException(status_code=404, detail="Pet not found or does not belong to this user")
-    
-    pet_vaccines = session.query(PetVacProfile).filter(PetVacProfile.pet_name == pet_profile.name).all()
-    
-    if not pet_vaccines:
-        raise HTTPException(status_code=404, detail="No vaccination records found for this pet")
-    
-    return [
-        PetVacProfileResponse(
-            vac_id=vac.vac_id,
-            vac_name=vac.vac_name,
-            startdatevac=vac.startdatevac,
-            drugname=vac.drugname,
-            pet_name=vac.pet_name,
-            owner_name=vac.owner_name,
-            status="Fetched Success"
-        ) for vac in pet_vaccines
-    ]
-
-@router.put("/{pet_name}", response_model=PetVacProfileResponse)
-def update_pet_vac(
-    pet_name: str, 
-    pet_vac_update: CreatePetVacProfile, 
-    current_user: str = Depends(get_current_user), 
-    session: Session = Depends(get_session)
-):
-    user_profile = get_user_profile(current_user, session)  
-
-
-    pet_vac = session.query(PetVacProfile).filter(
+    # Query the profile using both pet_name and dose
+    profile = db.query(PetVacProfile).filter(
         PetVacProfile.pet_name == pet_name,
-        PetVacProfile.user_id == user_profile.user_id
+        PetVacProfile.dose == dose  # Filter by dose
     ).first()
 
-    if pet_vac is None:
-        raise HTTPException(status_code=404, detail="Pet vaccine profile not found")
+    if not profile:
+        raise HTTPException(status_code=404, detail="Vaccine profile not found")
 
+    # Store old profile data for logging
+    old_profile = {
+        "dose": profile.dose,
+        "vac_name": profile.vac_name,
+        "location": profile.location,
+        "remark": profile.remark,
+        "startdatevac": profile.startdatevac
+    }
 
-    pet_profile = session.query(Pet).filter(Pet.name == pet_name, Pet.user_id == user_profile.user_id).first()
-    if pet_profile is None:
-        raise HTTPException(status_code=404, detail="Pet not found or does not belong to this user")
+    # Update profile with new data if provided
+    if profile_data.dose is not None:
+        profile.dose = profile_data.dose
+    if profile_data.vac_name is not None:
+        profile.vac_name = profile_data.vac_name
+    if profile_data.startdatevac is not None:
+        profile.startdatevac = profile_data.startdatevac
+    if profile_data.location is not None:
+        profile.location = profile_data.location
+    if profile_data.remark is not None:
+        profile.remark = profile_data.remark
 
- 
-    startdatevac = pet_vac_update.startdatevac.replace(microsecond=0) if pet_vac_update.startdatevac else pet_vac.startdatevac
+    db.commit()
+    db.refresh(profile)
 
-   
+    # Log the update
     log_entry = LogPetVacProfile(
         action_name="update",
-        vac_id=pet_vac.vac_id,
-        vac_name=pet_vac.vac_name,
-        to_vac_name=pet_vac_update.vac_name,
-        startdatevac=pet_vac.startdatevac,
-        to_startdatevac=startdatevac,
-        pet_name=pet_vac.pet_name,
-        owner_name=pet_vac.owner_name,
-        user_id=user_profile.user_id,
-        drugname=pet_vac.drugname,
-        to_drugname=pet_vac_update.drugname
+        action_by=username,  # Added action_by here
+        action_datetime=datetime.now().replace(microsecond=0),
+        vac_id=profile.vac_id,
+        dose=old_profile["dose"],
+        vac_name=old_profile["vac_name"],
+        location=old_profile["location"],
+        remark=old_profile["remark"],
+        startdatevac=old_profile["startdatevac"],
+        to_dose=profile.dose,
+        to_vac_name=profile.vac_name,
+        to_location=profile.location,
+        to_remark=profile.remark,
+        to_startdatevac=profile.startdatevac,
+        pet_name=profile.pet_name,
+        owner_name=profile.owner_name,
+        user_id=profile.user_id
     )
 
-   
-    for key, value in pet_vac_update.dict(exclude_unset=True).items():
-        if key == "startdatevac":
-            value = startdatevac
-        setattr(pet_vac, key, value)
+    db.add(log_entry)
+    db.commit()
 
-    session.add(pet_vac)
-    session.add(log_entry)
-    session.commit()
-    session.refresh(pet_vac)
-    
     return PetVacProfileResponse(
-        status="Updated Success",
-        vac_id=pet_vac.vac_id,
-        vac_name=pet_vac.vac_name,
-        startdatevac=pet_vac.startdatevac,
-        drugname=pet_vac.drugname,
-        pet_name=pet_vac.pet_name,
-        owner_name=pet_vac.owner_name
+        status="success",
+        vac_id=profile.vac_id,
+        dose=profile.dose,
+        vac_name=profile.vac_name,
+        startdatevac=profile.startdatevac,
+        location=profile.location,
+        remark=profile.remark,
+        pet_name=profile.pet_name,
+        owner_name=profile.owner_name
     )
 
 
-@router.delete("/", response_model=PetVacProfileResponse)
-def delete_pet_vac(
-    pet_name: str = Query(..., description="Name of the pet to delete vaccine record"),
-    current_user: str = Depends(get_current_user), 
-    session: Session = Depends(get_session)
+
+@router.delete("/pet_vac_profile/{pet_name}", response_model=PetVacProfileResponse)
+def delete_pet_vac_profile(
+    pet_name: str,
+    dose: str,  # Add dose as a parameter
+    db: Session = Depends(get_session),
+    username: str = Depends(get_current_user)  # Get the username of the current user
 ):
-    user_profile = get_user_profile(current_user, session) 
+    # Query the profile using both pet_name and dose
+    profile = db.query(PetVacProfile).filter(
+        PetVacProfile.pet_name == pet_name,
+        PetVacProfile.dose == dose  # Filter by dose
+    ).first()
 
-   
-    pet_profile = session.query(Pet).filter(Pet.name == pet_name, Pet.user_id == user_profile.user_id).first()
-    if pet_profile is None:
-        raise HTTPException(status_code=404, detail="Pet not found or does not belong to this user")
+    if not profile:
+        raise HTTPException(status_code=404, detail="Vaccine profile not found")
 
-    
-    pet_vac = session.query(PetVacProfile).filter(PetVacProfile.pet_name == pet_name, PetVacProfile.user_id == user_profile.user_id).first()
-    if pet_vac is None:
-        raise HTTPException(status_code=404, detail="Pet vaccine record not found")
-
+    # Log the delete action
     log_entry = LogPetVacProfile(
         action_name="delete",
-        vac_id=pet_vac.vac_id,
-        vac_name=pet_vac.vac_name,
-        startdatevac=pet_vac.startdatevac,
-        pet_name=pet_vac.pet_name,
-        owner_name=pet_vac.owner_name,
-        user_id=user_profile.user_id,
-        drugname=pet_vac.drugname
+        action_by=username,  # Added action_by here
+        action_datetime=datetime.now().replace(microsecond=0),
+        vac_id=profile.vac_id,
+        dose=profile.dose,
+        vac_name=profile.vac_name,
+        location=profile.location,
+        remark=profile.remark,
+        startdatevac=profile.startdatevac,
+        pet_name=profile.pet_name,
+        owner_name=profile.owner_name,
+        user_id=profile.user_id
     )
 
-    session.delete(pet_vac)
-    session.add(log_entry)
-    session.commit()
+    db.add(log_entry)
+    db.delete(profile)
+    db.commit()
 
     return PetVacProfileResponse(
-        status="Deleted Success",
-        vac_id=pet_vac.vac_id,
-        vac_name=pet_vac.vac_name,
-        startdatevac=pet_vac.startdatevac,
-        drugname=pet_vac.drugname,
-        pet_name=pet_vac.pet_name,
-        owner_name=pet_vac.owner_name
+        status="success",
+        vac_id=profile.vac_id,
+        dose=profile.dose,
+        vac_name=profile.vac_name,
+        startdatevac=profile.startdatevac,
+        location=profile.location,
+        remark=profile.remark,
+        pet_name=profile.pet_name,
+        owner_name=profile.owner_name
     )

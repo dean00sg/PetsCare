@@ -31,7 +31,7 @@ async def create_pet(
         breed=pet.breed,
         birth_date=pet.birth_date,
         weight=pet.weight,
-        owner_name=user.first_name,
+        owner_name=f"{user.first_name} {user.last_name}",
         user_id=user.user_id  
     )
 
