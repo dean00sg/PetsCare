@@ -1,7 +1,7 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Optional, List
 from pydantic import BaseModel, Field
-from sqlalchemy import JSON, Column, Float, ForeignKey
+from sqlalchemy import JSON, Column, Date, Float, ForeignKey
 from sqlalchemy import Column, DateTime, Integer, String
 from sqlalchemy.orm import relationship
 from models.pet import PetProfile
@@ -14,7 +14,7 @@ class PetVacProfile(Base):
     vac_id = Column(Integer, primary_key=True, index=True)
     dose = Column(Integer, nullable=False)
     vac_name = Column(String, nullable=False)
-    startdatevac = Column(DateTime, nullable=False)
+    startdatevac = Column(Date, nullable=False)
     location = Column(String, nullable=False)
     remark = Column(String, nullable=False)
     pet_name = Column(String, nullable=False)  
@@ -44,8 +44,8 @@ class LogPetVacProfile(Base):
     remark = Column(String, nullable=False)
     to_remark = Column(String, nullable=True)
 
-    startdatevac = Column(DateTime, nullable=False,default=lambda: datetime.now().replace(microsecond=0))
-    to_startdatevac = Column(DateTime, nullable=True,default=lambda: datetime.now().replace(microsecond=0))
+    startdatevac = Column(Date,nullable=False)
+    to_startdatevac = Column(Date,nullable=True)
 
     pet_name = Column(String, nullable=False)
     user_id = Column(Integer, nullable=False)
@@ -57,7 +57,7 @@ class PetVacProfileResponse(BaseModel):
     vac_id: int
     dose: int
     vac_name: str
-    startdatevac: datetime
+    startdatevac: date
     location: str
     remark: str
     pet_name: str
@@ -67,9 +67,11 @@ class PetVacProfileResponse(BaseModel):
         orm_mode = True
 
 class CreatePetVacProfile(BaseModel):
+    owner_name: str
+    pet_name: str
     dose: int
     vac_name: str
-    startdatevac: datetime
+    startdatevac: date
     location: str
     remark: str
 
@@ -79,7 +81,7 @@ class CreatePetVacProfile(BaseModel):
 class UpdatePetVacProfile(BaseModel):
     dose: Optional[int] = None
     vac_name: Optional[str] = None
-    startdatevac: Optional[datetime] = None
+    startdatevac: Optional[date] = None
     location: Optional[str] = None
     remark: Optional[str] = None
 

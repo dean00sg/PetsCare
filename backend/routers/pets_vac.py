@@ -11,25 +11,28 @@ router = APIRouter(tags=["Pets Vaccine"])
 
 @router.post("/pet_vac_profile/", response_model=PetVacProfileResponse)
 def create_pet_vac_profile(
-    pet_name: str,
-    owner_name: str,
     profile_data: CreatePetVacProfile,
     db: Session = Depends(get_session),
     username: str = Depends(get_current_user)
 ):
-    owner = db.query(UserProfile).filter(UserProfile.first_name + " " + UserProfile.last_name == owner_name).first()
+    # Fetch owner using the provided owner_name
+    owner = db.query(UserProfile).filter(
+        UserProfile.first_name + " " + UserProfile.last_name == profile_data.owner_name
+    ).first()
 
     if not owner:
         raise HTTPException(status_code=404, detail="Owner not found")
 
-    pet = db.query(Pet).filter(Pet.name == pet_name, Pet.user_id == owner.user_id).first()
+    # Fetch pet using the provided pet_name
+    pet = db.query(Pet).filter(Pet.name == profile_data.pet_name, Pet.user_id == owner.user_id).first()
 
     if not pet:
         raise HTTPException(status_code=404, detail="Pet not found")
 
+    # Create a new PetVacProfile instance
     new_profile = PetVacProfile(
-        pet_name=pet_name,
-        owner_name=owner_name,
+        pet_name=profile_data.pet_name,
+        owner_name=profile_data.owner_name,
         dose=profile_data.dose,
         vac_name=profile_data.vac_name,
         startdatevac=profile_data.startdatevac,
@@ -42,9 +45,10 @@ def create_pet_vac_profile(
     db.commit()
     db.refresh(new_profile)
 
+    # Log the action
     log_entry = LogPetVacProfile(
         action_name="insert",
-        action_by=username,  # Added action_by here
+        action_by=username,
         action_datetime=datetime.now().replace(microsecond=0),
         vac_id=new_profile.vac_id,
         dose=new_profile.dose,
@@ -71,7 +75,6 @@ def create_pet_vac_profile(
         pet_name=new_profile.pet_name,
         owner_name=new_profile.owner_name
     )
-
 
 
 @router.get("/pet_vac_profile/{pet_name}", response_model=PetVacProfileResponse)
