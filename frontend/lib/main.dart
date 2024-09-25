@@ -20,6 +20,7 @@ import 'package:frontend/admin/widget/notification_main.dart';
 import 'package:frontend/admin/widget/petprofileuser.dart';
 import 'package:frontend/admin/widget/profile.dart';
 import 'package:frontend/admin/bloc/chechhealth_rec.dart';
+import 'package:frontend/admin/widget/vaccination_main.dart';
 import 'package:frontend/users/bloc/create_pet_bloc.dart';
 import 'package:frontend/users/bloc/login_bloc.dart';
 import 'package:frontend/users/bloc/petprofile.dart';
@@ -121,6 +122,7 @@ class MyApp extends StatelessWidget {
           '/addnotificationUser': (context) => const AddNotificationScreen(),
           '/petsprofile': (context) => const PetProfileScreen(),
           '/healthrecordmain': (context) => const HealthrecordMainWidget(),
+          '/vaccinationmain': (context) => const VaccinationMainWidget(),
           '/checkhealthrec': (context) => const HealthRecordScreen(),
           '/addhealthrec': (context) => const AddHealthRecordForm(),
         },
