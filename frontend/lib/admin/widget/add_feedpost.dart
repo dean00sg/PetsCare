@@ -105,10 +105,10 @@ class _FeedPostWidgetState extends State<FeedPostWidget> {
                               children: [
                                 Container(
                                   padding: const EdgeInsets.all(
-                                      12.0), // ลด padding เพื่อให้กล่องกระชับขึ้น
+                                      12.0), 
                                   margin: const EdgeInsets.only(
                                       bottom:
-                                          15), // ลด margin ด้านล่างให้กล่องใกล้กับ Header มากขึ้น
+                                          15), 
                                   decoration: BoxDecoration(
                                     color: Colors.amber,
                                     borderRadius: BorderRadius.circular(10),
@@ -166,7 +166,7 @@ class _FeedPostWidgetState extends State<FeedPostWidget> {
                                       Text('Feed post added successfully')),
                             );
                             Navigator.pushNamed(context,
-                                '/feedadmin'); // Navigate to '/feedadmin' after success
+                                '/feedadmin');
                           } else if (state is FeedFailure) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
