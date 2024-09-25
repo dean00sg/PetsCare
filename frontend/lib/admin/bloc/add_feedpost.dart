@@ -1,4 +1,3 @@
-// bloc/add_feedpost.dart
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/admin/event/add_feedpost.dart';
 import 'package:frontend/admin/repositories/add_feedpost.dart';
