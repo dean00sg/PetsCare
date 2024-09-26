@@ -20,6 +20,7 @@ import 'package:frontend/admin/widget/check_info_screen.dart';
 import 'package:frontend/admin/widget/add_feedpost.dart'; // Correct imports
 import 'package:frontend/admin/widget/feed_admin.dart';
 import 'package:frontend/admin/widget/healthrecord_main.dart';
+import 'package:frontend/admin/widget/historyrec_main.dart';
 import 'package:frontend/admin/widget/notification_main.dart';
 import 'package:frontend/admin/widget/petprofileuser.dart';
 import 'package:frontend/admin/widget/profile.dart';
@@ -138,6 +139,7 @@ class MyApp extends StatelessWidget {
           '/addhealthrec': (context) => const AddHealthRecordForm(),
           '/checkvaccination': (context) => const PetVacProfilesScreen(),
           '/addvaccination': (context) => const AddVaccinationScreen(),
+          '/historyrecmain': (context) => const HistoryRecMainWidget(),
 
         },
       ),

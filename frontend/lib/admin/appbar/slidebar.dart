@@ -159,6 +159,33 @@ class Sidebar extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(height: 15),
+            if (currentRoute != '/historyrecmain') 
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 8.0),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(255, 9, 154, 132),
+                borderRadius: BorderRadius.circular(4),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 2,
+                    blurRadius: 5,
+                    offset: const Offset(0, 3),
+                  ),
+                ], 
+              ),
+              child: Column(
+                children: [
+                  ListTile(
+                    title: const Text('Histry Record', style: TextStyle(color: Colors.white)),
+                    onTap: () {
+                      Navigator.pushNamed(context, '/historyrecmain');
+                    },
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),
