@@ -52,7 +52,7 @@ class HistoryRecMainWidget extends StatelessWidget {
                       icon: Icons.search,
                       color: const Color.fromARGB(255, 9, 154, 132),
                       onTap: () {
-                        Navigator.of(context).pushNamed('/checkvaccination'); // Use the actual route
+                        Navigator.of(context).pushNamed('/checkhistoryrec'); // Use the actual route
                       },
                     ),
                   ],

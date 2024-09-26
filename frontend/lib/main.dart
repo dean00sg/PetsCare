@@ -4,11 +4,13 @@ import 'package:frontend/admin/bloc/add_feedpost.dart'; // Ensure correct import
 import 'package:frontend/admin/bloc/add_healthrec.dart';
 import 'package:frontend/admin/bloc/add_notification.dart';
 import 'package:frontend/admin/bloc/add_vaccination.dart';
+import 'package:frontend/admin/bloc/check_historyrec.dart';
 import 'package:frontend/admin/bloc/user.dart';
 import 'package:frontend/admin/bloc/vaccination.dart';
 import 'package:frontend/admin/repositories/add_feedpost.dart'; // Ensure correct import
 import 'package:frontend/admin/bloc/check_info_bloc.dart';
 import 'package:frontend/admin/repositories/add_notification.dart';
+import 'package:frontend/admin/repositories/historyrec.dart';
 import 'package:frontend/admin/repositories/user_repository.dart';
 import 'package:frontend/admin/repositories/vaccination.dart';
 import 'package:frontend/admin/widget/add_healthrec.dart';
@@ -16,6 +18,7 @@ import 'package:frontend/admin/widget/add_notification.dart';
 import 'package:frontend/admin/widget/add_vaccination.dart';
 import 'package:frontend/admin/widget/check_alluser.dart';
 import 'package:frontend/admin/widget/check_healthrec.dart';
+import 'package:frontend/admin/widget/check_historyrec.dart';
 import 'package:frontend/admin/widget/check_info_screen.dart';
 import 'package:frontend/admin/widget/add_feedpost.dart'; // Correct imports
 import 'package:frontend/admin/widget/feed_admin.dart';
@@ -108,6 +111,11 @@ class MyApp extends StatelessWidget {
           ),
           child: const AddVaccinationScreen(),
         ),
+        BlocProvider(
+          create: (context) => HistoryBloc(
+            repository: HistoryRepository(apiUrl: 'http://10.0.2.2:8000'),
+          ),
+        ),
       ],
       child: MaterialApp(
         title: 'Pet Care',
@@ -140,6 +148,8 @@ class MyApp extends StatelessWidget {
           '/checkvaccination': (context) => const PetVacProfilesScreen(),
           '/addvaccination': (context) => const AddVaccinationScreen(),
           '/historyrecmain': (context) => const HistoryRecMainWidget(),
+          '/checkhistoryrec': (context) => const HistoryScreen(),
+
 
         },
       ),

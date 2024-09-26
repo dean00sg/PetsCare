@@ -58,7 +58,7 @@ def create_history_record(
         note_name=new_record.note_name
     )
 
-@router.get("/history_rec/", response_model=list[HistoryRecResponse])
+@router.get("/history_rec/get_all", response_model=list[HistoryRecResponse])
 def get_all_history_records(
     db: Session = Depends(get_session),
     username: str = Depends(get_current_user)
