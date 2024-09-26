@@ -7,6 +7,7 @@ from .authen_user import router as auth_router
 from .feedpost import router as feed_router
 from .profile import router as profile_router
 from .notification import router as noti_router
+from .history_rec import router as historyrec_router
 
 def init_router(app: FastAPI):
     app.include_router(auth_router, prefix="/authentication")
@@ -17,3 +18,4 @@ def init_router(app: FastAPI):
     app.include_router(feed_router, prefix="/feedpost")
     app.include_router(profile_router, prefix="/profile")
     app.include_router(noti_router, prefix="/Notification")
+    app.include_router(historyrec_router, prefix="/History Records")
