@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/admin/bloc/add_feedpost.dart'; // Ensure correct import
 import 'package:frontend/admin/bloc/add_healthrec.dart';
+import 'package:frontend/admin/bloc/add_historyrec.dart';
 import 'package:frontend/admin/bloc/add_notification.dart';
 import 'package:frontend/admin/bloc/add_vaccination.dart';
 import 'package:frontend/admin/bloc/check_historyrec.dart';
@@ -14,6 +15,7 @@ import 'package:frontend/admin/repositories/historyrec.dart';
 import 'package:frontend/admin/repositories/user_repository.dart';
 import 'package:frontend/admin/repositories/vaccination.dart';
 import 'package:frontend/admin/widget/add_healthrec.dart';
+import 'package:frontend/admin/widget/add_historyrec.dart';
 import 'package:frontend/admin/widget/add_notification.dart';
 import 'package:frontend/admin/widget/add_vaccination.dart';
 import 'package:frontend/admin/widget/check_alluser.dart';
@@ -116,6 +118,12 @@ class MyApp extends StatelessWidget {
             repository: HistoryRepository(apiUrl: 'http://10.0.2.2:8000'),
           ),
         ),
+        BlocProvider(
+        create: (context) => AddHistoryRecBloc(
+          repository: HistoryRepository(apiUrl: 'http://10.0.2.2:8000'),
+        ),
+        child: const AddHistoryRecScreen(),
+      ),
       ],
       child: MaterialApp(
         title: 'Pet Care',
@@ -149,6 +157,7 @@ class MyApp extends StatelessWidget {
           '/addvaccination': (context) => const AddVaccinationScreen(),
           '/historyrecmain': (context) => const HistoryRecMainWidget(),
           '/checkhistoryrec': (context) => const HistoryScreen(),
+          '/addhistoryrec': (context) => const AddHistoryRecScreen(),
 
 
         },

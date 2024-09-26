@@ -35,3 +35,41 @@ class HistoryRecord {
     );
   }
 }
+
+class AddHistoryRec {
+  final String header;
+  final String symptoms;
+  final String diagnose;
+  final String remark;
+  final String petName;
+  final String ownerName;
+
+  AddHistoryRec({
+    required this.header,
+    required this.symptoms,
+    required this.diagnose,
+    required this.remark,
+    required this.petName,
+    required this.ownerName,
+  });
+
+  Map<String, dynamic> toJson() => {
+        "header": header,
+        "Symptoms": symptoms,
+        "Diagnose": diagnose,
+        "Remark": remark,
+        "pet_name": petName,
+        "owner_name": ownerName,
+      };
+
+  factory AddHistoryRec.fromJson(Map<String, dynamic> json) {
+    return AddHistoryRec(
+      header: json['header'],
+      symptoms: json['Symptoms'],
+      diagnose: json['Diagnose'],
+      remark: json['Remark'],
+      petName: json['pet_name'],
+      ownerName: json['owner_name'],
+    );
+  }
+}

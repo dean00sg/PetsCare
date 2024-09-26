@@ -43,7 +43,7 @@ class HistoryRecMainWidget extends StatelessWidget {
                       icon: Icons.note_add,
                       color: Colors.blue,
                       onTap: () {
-                        Navigator.of(context).pushNamed('/addvaccination'); // Use the actual route
+                        Navigator.of(context).pushNamed('/addhistoryrec'); // Use the actual route
                       },
                     ),
                     _buildHistoryRecMainCard(

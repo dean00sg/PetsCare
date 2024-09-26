@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:frontend/admin/models/check_historyrec.dart';
+import 'package:frontend/admin/models/historyrec.dart';
 
 abstract class HistoryState extends Equatable {
   @override

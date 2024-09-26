@@ -34,7 +34,7 @@ class HistoryScreen extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Header: ${record.header}", style: TextStyle(fontWeight: FontWeight.bold)),
+                          Text("Header: ${record.header}", style: const TextStyle(fontWeight: FontWeight.bold)),
                           const SizedBox(height: 8),
                           Text("Record Date: ${record.recordDatetime.toLocal()}"),
                           const SizedBox(height: 8),

@@ -31,9 +31,6 @@ class CreateHistoryRec(BaseModel):
     pet_name: str
     owner_name: str
 
-    
-
-
 class HistoryRecResponse(BaseModel):
     hr_id: int
     header: str
