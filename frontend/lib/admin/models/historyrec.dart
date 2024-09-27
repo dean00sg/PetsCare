@@ -60,6 +60,7 @@ class AddHistoryRec {
         "Remark": remark,
         "pet_name": petName,
         "owner_name": ownerName,
+        // ไม่รวม record_datetime
       };
 
   factory AddHistoryRec.fromJson(Map<String, dynamic> json) {
@@ -73,3 +74,4 @@ class AddHistoryRec {
     );
   }
 }
+

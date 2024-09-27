@@ -2,8 +2,6 @@ import 'package:equatable/equatable.dart';
 import 'package:frontend/admin/models/historyrec.dart';
 
 abstract class AddHistoryRecEvent extends Equatable {
-  const AddHistoryRecEvent();
-
   @override
   List<Object?> get props => [];
 }
@@ -11,7 +9,7 @@ abstract class AddHistoryRecEvent extends Equatable {
 class SubmitHistoryRecForm extends AddHistoryRecEvent {
   final AddHistoryRec record;
 
-  const SubmitHistoryRecForm(this.record);
+  SubmitHistoryRecForm(this.record);
 
   @override
   List<Object?> get props => [record];

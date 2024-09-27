@@ -31,6 +31,7 @@ def create_history_record(
 
     new_record = HistoryRec(
         header=record_data.header,
+        record_datetime=datetime.now().replace(microsecond=0),
         Symptoms=record_data.Symptoms,
         Diagnose=record_data.Diagnose,
         Remark=record_data.Remark,

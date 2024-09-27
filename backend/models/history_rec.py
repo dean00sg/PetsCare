@@ -11,7 +11,7 @@ class HistoryRec(Base):
 
     hr_id = Column(Integer, primary_key=True, index=True)
     header = Column(String,nullable=True)
-    record_datetime = Column(DateTime, default=lambda: datetime.now().replace(microsecond=0))
+    record_datetime =  Column(DateTime, default=lambda: datetime.now().replace(microsecond=0))
     Symptoms = Column(String,nullable=True)
     Diagnose =Column(String, nullable=False)
     Remark = Column(String,nullable=True)

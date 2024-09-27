@@ -119,12 +119,12 @@ class MyApp extends StatelessWidget {
           ),
         ),
         BlocProvider(
-        create: (context) => AddHistoryRecBloc(
-          repository: HistoryRepository(apiUrl: 'http://10.0.2.2:8000'),
+          create: (context) => AddHistoryRecBloc(
+            HistoryRepository(apiUrl: 'http://10.0.2.2:8000'), // Pass the repository
+          ),
+          child: const AddHistoryRecScreen(), // Wrap with BlocProvider
         ),
-        child: const AddHistoryRecScreen(),
-      ),
-      
+                
       ],
       child: MaterialApp(
         title: 'Pet Care',

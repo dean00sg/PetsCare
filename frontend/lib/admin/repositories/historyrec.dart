@@ -8,48 +8,54 @@ class HistoryRepository {
 
   HistoryRepository({required this.apiUrl});
 
-  Future<List<HistoryRecord>> fetchHistoryRecords() async {
+  // Method to create a history record
+  Future<void> createHistoryRecord(AddHistoryRec record) async {
     try {
+      // Retrieve the token from SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token') ?? '';
 
-      final response = await http.get(
-        Uri.parse('$apiUrl/History Records/history_rec/get_all'),
+      // Making the POST request
+      final response = await http.post(
+        Uri.parse('$apiUrl/History Records/history_rec/'), // Ensure the correct endpoint
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
+        body: json.encode(record.toJson()), // Convert the record to JSON
       );
 
-      if (response.statusCode == 200) {
-        List<dynamic> data = json.decode(response.body);
-        return data.map((json) => HistoryRecord.fromJson(json)).toList();
+      // Check if the request was successful
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        print("History record created successfully");
       } else {
-        throw Exception('Failed to load history records');
+        throw Exception('Failed to create history record: ${response.body}');
       }
     } catch (error) {
       throw Exception('Failed to connect to the server: $error');
     }
   }
 
-  Future<AddHistoryRec> createHistoryRecord(AddHistoryRec newRecord) async {
+  // Method to fetch all history records
+  Future<List<HistoryRecord>> fetchHistoryRecords() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token') ?? '';
 
-      final response = await http.post(
-        Uri.parse('$apiUrl/History Records/history_rec/'),
+      final response = await http.get(
+        Uri.parse('$apiUrl/history_rec/get_all'), // Ensure the correct endpoint
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
-        body: json.encode(newRecord.toJson()),
       );
 
-      if (response.statusCode == 201) {
-        return AddHistoryRec.fromJson(json.decode(response.body));
+      // Check if the request was successful
+      if (response.statusCode == 200) {
+        List<dynamic> data = json.decode(response.body);
+        return data.map((json) => HistoryRecord.fromJson(json)).toList();
       } else {
-        throw Exception('Failed to create history record: ${response.body}');
+        throw Exception('Failed to load history records: ${response.body}');
       }
     } catch (error) {
       throw Exception('Failed to connect to the server: $error');
