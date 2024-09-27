@@ -36,26 +36,24 @@ class HistoryRepository {
     }
   }
 
-  // Method to fetch all history records
   Future<List<HistoryRecord>> fetchHistoryRecords() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token') ?? '';
 
       final response = await http.get(
-        Uri.parse('$apiUrl/history_rec/get_all'), // Ensure the correct endpoint
+        Uri.parse('$apiUrl/History Records/history_rec/get_all'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
       );
 
-      // Check if the request was successful
       if (response.statusCode == 200) {
         List<dynamic> data = json.decode(response.body);
         return data.map((json) => HistoryRecord.fromJson(json)).toList();
       } else {
-        throw Exception('Failed to load history records: ${response.body}');
+        throw Exception('Failed to load history records');
       }
     } catch (error) {
       throw Exception('Failed to connect to the server: $error');
