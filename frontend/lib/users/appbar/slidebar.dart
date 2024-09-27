@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/users/models/petslidebar_models.dart';
-import 'package:frontend/users/repositories/pets_repository.dart';
+import 'package:frontend/users/repositories/petsgetall.dart';
 
 class Sidebar extends StatefulWidget {
   const Sidebar({super.key});

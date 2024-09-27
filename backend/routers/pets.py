@@ -167,9 +167,9 @@ async def get_all_pets_admin(
 
     return pet_responses
 
-@router.put("/{pet_name}", response_model=PetResponse)
+@router.put("/{pet_id}", response_model=PetResponse)
 async def update_pet(
-    pet_name: str, 
+    pet_id: int,  # Change pet_name to pet_id
     pet_update: PetUpdate, 
     session: Session = Depends(get_session),
     current_username: str = Depends(get_current_user)
@@ -178,7 +178,8 @@ async def update_pet(
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    pet = session.query(Pet).filter(Pet.name == pet_name, Pet.user_id == user.user_id).first()
+    # Retrieve the pet by its ID and the user's ID
+    pet = session.query(Pet).filter(Pet.pets_id == pet_id, Pet.user_id == user.user_id).first()
     if pet is None:
         raise HTTPException(status_code=404, detail="Pet not found")
 
@@ -196,8 +197,8 @@ async def update_pet(
         owner_name=pet.owner_name
     )
     session.add(log_entry)
-    session.commit() 
 
+    # Update the pet's attributes if provided in the request
     if pet_update.name is not None:
         pet.name = pet_update.name
     if pet_update.birth_date is not None:
@@ -220,7 +221,6 @@ async def update_pet(
         user_id=pet.user_id,
         owner_name=pet.owner_name
     )
-
 
 @router.delete("/{pet_name}")
 async def delete_pet(

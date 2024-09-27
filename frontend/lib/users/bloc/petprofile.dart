@@ -9,7 +9,6 @@ class PetProfileBloc extends Bloc<PetProfileEvent, PetProfileState> {
   PetProfileBloc(this.petProfileRepository) : super(PetProfileInitial()) {
     on<LoadPetProfile>((event, emit) async {
       emit(PetProfileLoading());
-
       try {
         final petProfile = await petProfileRepository.fetchPetByName(event.petsId);
         emit(PetProfileLoaded(petProfile));
@@ -18,9 +17,17 @@ class PetProfileBloc extends Bloc<PetProfileEvent, PetProfileState> {
       }
     });
 
-    on<UpdatePetProfile>((event, emit) {
-      // Handle update logic here if needed
-      emit(PetProfileUpdated());
+    on<UpdatePetProfile>((event, emit) async {
+      emit(PetProfileLoading());
+      try {
+        await petProfileRepository.updatePetProfile(event.petProfile.petsId.toString(), event.petProfile);
+        emit(PetProfileUpdated());
+        
+        final updatedProfile = await petProfileRepository.fetchPetByName(event.petProfile.petsId.toString());
+        emit(PetProfileLoaded(updatedProfile));
+      } catch (error) {
+        emit(PetProfileError(error.toString()));
+      }
     });
   }
 }

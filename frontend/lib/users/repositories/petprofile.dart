@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PetProfileRepository {
-  final String apiUrl = 'http://10.0.2.2:8000/pets/byid'; 
+  final String apiUrl = 'http://10.0.2.2:8000/pets/byid';
 
   Future<PetProfile> fetchPetByName(String petsId) async {
     try {
@@ -27,6 +27,32 @@ class PetProfileRepository {
       }
     } catch (e) {
       throw Exception('Error fetching pet profile: $e');
+    }
+  }
+
+  Future<void> updatePetProfile(String petsId, PetProfile petProfile) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token') ?? '';
+
+      final response = await http.put(
+        Uri.parse('http://10.0.2.2:8000/pets/$petsId'),
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode({
+          'name': petProfile.name,
+          'birth_date': petProfile.birthDate,
+          'weight': petProfile.weight,
+        }),
+      );
+
+      if (response.statusCode != 200) {
+        throw Exception('Failed to update pet profile');
+      }
+    } catch (e) {
+      throw Exception('Error updating pet profile: $e');
     }
   }
 }

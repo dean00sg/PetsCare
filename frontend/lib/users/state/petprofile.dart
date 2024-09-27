@@ -12,10 +12,10 @@ class PetProfileLoaded extends PetProfileState {
   PetProfileLoaded(this.petProfile);
 }
 
-class PetProfileUpdated extends PetProfileState {}
-
 class PetProfileError extends PetProfileState {
   final String error;
 
   PetProfileError(this.error);
 }
+
+class PetProfileUpdated extends PetProfileState {}

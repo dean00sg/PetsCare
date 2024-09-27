@@ -9,7 +9,7 @@ class LoadPetProfile extends PetProfileEvent {
 }
 
 class UpdatePetProfile extends PetProfileEvent {
-  final PetProfile updatedProfile;
+  final PetProfile petProfile;
 
-  UpdatePetProfile(this.updatedProfile);
+  UpdatePetProfile(this.petProfile);
 }
