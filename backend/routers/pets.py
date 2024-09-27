@@ -100,23 +100,18 @@ async def get_pets(
     ]
 from fastapi import Query
 
-@router.get("/byname", response_model=PetResponse) 
-async def get_pets(
+@router.get("/byid", response_model=PetResponse)
+async def get_pet_by_id(
+    pet_id: int,  # Add pet_id as a required query parameter
     session: Session = Depends(get_session),
-    current_username: str = Depends(get_current_user),
-    pet_name: str = Query(None)  
+    current_username: str = Depends(get_current_user)
 ):
     user = session.query(UserProfile).filter(UserProfile.email == current_username).first()
 
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    query = session.query(Pet).filter(Pet.user_id == user.user_id)
-    
-    if pet_name:
-        query = query.filter(Pet.name == pet_name)
-
-    pet = query.first() 
+    pet = session.query(Pet).filter(Pet.user_id == user.user_id, Pet.pets_id == pet_id).first()
 
     if not pet:
         raise HTTPException(status_code=404, detail="No pet found for this user")
@@ -131,7 +126,7 @@ async def get_pets(
         birth_date=pet.birth_date,
         weight=pet.weight,
         user_id=pet.user_id,
-        owner_name=f"{user.first_name} {user.last_name}"  
+        owner_name=f"{user.first_name} {user.last_name}"
     )
 
 

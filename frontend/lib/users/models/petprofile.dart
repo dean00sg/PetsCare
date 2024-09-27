@@ -54,7 +54,6 @@ class PetProfile {
   }
 }
 
-
 class PetTypeImage {
   static const Map<String, String> petTypeToImage = {
     'Cat': 'lib/images/cat_icon.png',
@@ -64,7 +63,6 @@ class PetTypeImage {
   };
 
   static String getImagePath(String type) {
-    return petTypeToImage[type] ?? 'lib/images/default_pet_icon.png'; 
+    return petTypeToImage[type] ?? 'lib/images/default_pet_icon.png';
   }
-
 }

@@ -3,9 +3,9 @@ import 'package:frontend/users/models/petprofile.dart';
 abstract class PetProfileEvent {}
 
 class LoadPetProfile extends PetProfileEvent {
-  final String petName;
+  final String petsId;
 
-  LoadPetProfile(this.petName);
+  LoadPetProfile(this.petsId);
 }
 
 class UpdatePetProfile extends PetProfileEvent {

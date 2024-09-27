@@ -12,11 +12,12 @@ class PetBloc extends Bloc<PetEvent, PetState> {
   void _onLoadPets(LoadPets event, Emitter<PetState> emit) async {
     emit(PetLoading());
     try {
+      // สร้างรายการสัตว์เลี้ยงที่มี petsId
       final List<Pet> pets = [
-        Pet(name: 'Cat', imagePath: 'lib/images/cat_icon.png'),
-        Pet(name: 'Dog', imagePath: 'lib/images/dog_icon.png'),
-        Pet(name: 'Rabbit', imagePath: 'lib/images/rabbit_icon.png'),
-        Pet(name: 'Fish', imagePath: 'lib/images/fish_icon.png'),
+        Pet(petsId: 1, name: 'Cat', imagePath: 'lib/images/cat_icon.png'),
+        Pet(petsId: 2, name: 'Dog', imagePath: 'lib/images/dog_icon.png'),
+        Pet(petsId: 3, name: 'Rabbit', imagePath: 'lib/images/rabbit_icon.png'),
+        Pet(petsId: 4, name: 'Fish', imagePath: 'lib/images/fish_icon.png'),
       ];
       emit(PetLoaded(pets));
     } catch (e) {
@@ -25,6 +26,6 @@ class PetBloc extends Bloc<PetEvent, PetState> {
   }
 
   void _onSelectPet(SelectPet event, Emitter<PetState> emit) {
-    emit(PetSelected(event.pet));
+    emit(PetSelected(event.pet)); // ส่ง pet ที่ถูกเลือกไปยัง state
   }
 }

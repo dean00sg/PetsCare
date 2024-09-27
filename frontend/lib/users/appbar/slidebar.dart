@@ -21,7 +21,6 @@ class _SidebarState extends State<Sidebar> {
 
   @override
   Widget build(BuildContext context) {
-
     final currentRoute = ModalRoute.of(context)?.settings.name;
 
     return Drawer(
@@ -30,143 +29,123 @@ class _SidebarState extends State<Sidebar> {
         child: ListView(
           children: <Widget>[
             const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.brown,
-              ),
+              decoration: BoxDecoration(color: Colors.brown),
               child: Text(
                 'Menu',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 24),
               ),
             ),
             const SizedBox(height: 25),
-            if (currentRoute != '/feed') 
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              decoration: BoxDecoration(
-                color: Colors.brown, 
-                borderRadius: BorderRadius.circular(4),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                    offset: const Offset(0, 3),
-                  ),
-                ], 
-              ),
-              child: Column(
-                children: [
-                  ListTile(
-                    title: const Text('HOME', style: TextStyle(color: Colors.white)),
-                    onTap: () {
-                      Navigator.pushNamed(context, '/feed');
-                    },
-                  ),
-                ],
-              ),
+            _buildDrawerItem(
+              title: 'HOME',
+              route: '/feed',
+              isCurrentRoute: currentRoute == '/feed',
             ),
             const SizedBox(height: 15),
-            if (currentRoute != '/createpetsmain')
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 8.0),
-              decoration: BoxDecoration(
-                color: Colors.brown, 
-                borderRadius: BorderRadius.circular(4),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 2,
-                    blurRadius: 5,
-                    offset: const Offset(0, 3),
-                  ),
-                ], 
-              ),
-              child: Column(
-                children: [
-                  ListTile(
-                    title: const Text('NEW PETS', style: TextStyle(color: Colors.white)),
-                    onTap: () {
-                      Navigator.pushNamed(context, '/createpetsmain');
-                    },
-                  ),
-                ],
-              ),
+            _buildDrawerItem(
+              title: 'NEW PETS',
+              route: '/createpetsmain',
+              isCurrentRoute: currentRoute == '/createpetsmain',
             ),
             const SizedBox(height: 15),
-            FutureBuilder<List<Pet>>(
-              future: futurePets,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                // else if (snapshot.hasError) {
-                //   return Text('Error: ${snapshot.error}');
-                // }
-                else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No pets found', style: TextStyle(color: Colors.brown)));
-                }
-
-                final pets = snapshot.data!;
-
-                return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 8.0),
-                  decoration: BoxDecoration(
-                    color: Colors.brown,
-                    borderRadius: BorderRadius.circular(4),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 2,
-                        blurRadius: 5,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: ExpansionTile(
-                    title: const Text(
-                      'MY PETS',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    iconColor: Colors.white,
-                    collapsedIconColor: Colors.white,
-                    children: pets.map((pet) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.pushNamed(context, '/petsprofile', arguments: pet.name);
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
-                          decoration: BoxDecoration(
-                            color: Colors.brown[50],
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: Row(
-                            children: [
-                              Image.asset(
-                                pet.imagePath,
-                                width: 50,
-                                height: 50,
-                              ),
-                              const SizedBox(width: 10),
-                              Text(
-                                pet.name,
-                                style: const TextStyle(color: Colors.brown, fontSize: 18),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                );
-              },
-            ),
+            _buildPetsExpansionTile(),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildDrawerItem({required String title, required String route, required bool isCurrentRoute}) {
+    return Visibility(
+      visible: !isCurrentRoute,
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 10),
+        decoration: BoxDecoration(
+          color: Colors.brown,
+          borderRadius: BorderRadius.circular(4),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: ListTile(
+          title: Text(title, style: const TextStyle(color: Colors.white)),
+          onTap: () {
+            Navigator.pushNamed(context, route);
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPetsExpansionTile() {
+    return FutureBuilder<List<Pet>>(
+      future: futurePets,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}', style: const TextStyle(color: Colors.brown)));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No pets found', style: TextStyle(color: Colors.brown)));
+        }
+
+        final pets = snapshot.data!;
+        return Container(
+          margin: const EdgeInsets.symmetric(horizontal: 8.0),
+          decoration: BoxDecoration(
+            color: Colors.brown,
+            borderRadius: BorderRadius.circular(4),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 2,
+                blurRadius: 5,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: ExpansionTile(
+            title: const Text('MY PETS', style: TextStyle(color: Colors.white)),
+            iconColor: Colors.white,
+            collapsedIconColor: Colors.white,
+            children: pets.map((pet) {
+              return GestureDetector(
+                onTap: () {
+                  Navigator.pushNamed(context, '/petsprofile', arguments: {
+                    'petsId': pet.petsId,
+                  });
+                },
+                child: Container(
+                  margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                  decoration: BoxDecoration(
+                    color: Colors.brown[50],
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        pet.imagePath,
+                        width: 50,
+                        height: 50,
+                      ),
+                      const SizedBox(width: 10),
+                      Text(
+                        pet.name,
+                        style: const TextStyle(color: Colors.brown, fontSize: 18),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+        );
+      },
     );
   }
 }

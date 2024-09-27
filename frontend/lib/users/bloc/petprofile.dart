@@ -11,22 +11,16 @@ class PetProfileBloc extends Bloc<PetProfileEvent, PetProfileState> {
       emit(PetProfileLoading());
 
       try {
-        final petProfile = await petProfileRepository.fetchPetByName(event.petName);
+        final petProfile = await petProfileRepository.fetchPetByName(event.petsId);
         emit(PetProfileLoaded(petProfile));
       } catch (error) {
         emit(PetProfileError(error.toString()));
       }
     });
 
-    on<UpdatePetProfile>((event, emit) async {
-      emit(PetProfileLoading());
-
-      try {
-        await petProfileRepository.updatePetProfile(event.updatedProfile);
-        emit(PetProfileLoaded(event.updatedProfile)); // รีโหลดข้อมูลโปรไฟล์หลังจากอัปเดต
-      } catch (error) {
-        emit(PetProfileError(error.toString()));
-      }
+    on<UpdatePetProfile>((event, emit) {
+      // Handle update logic here if needed
+      emit(PetProfileUpdated());
     });
   }
 }

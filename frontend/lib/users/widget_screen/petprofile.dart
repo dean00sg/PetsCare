@@ -12,14 +12,15 @@ class PetProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final petName = ModalRoute.of(context)?.settings.arguments as String;
+    final arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
+    final petsId = arguments['petsId'] as int;
 
-    context.read<PetProfileBloc>().add(LoadPetProfile(petName));
+    context.read<PetProfileBloc>().add(LoadPetProfile(petsId.toString())); 
 
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
-        title: Text(petName, style: const TextStyle(fontSize: 22, color: Colors.white)),
+        title: const Text('Pet Profile', style: TextStyle(fontSize: 22, color: Colors.white)),
         backgroundColor: PetProfileStyles.appBarBackgroundColor,
         centerTitle: true,
         toolbarHeight: 70,
@@ -83,7 +84,7 @@ class PetProfileScreen extends StatelessWidget {
                           const SizedBox(height: 5),
                           Text('Weight: ${pet.weight} kg', style: PetProfileStyles.petInfoTextStyle),
                           const SizedBox(height: 5),
-                          Text('BREED : ${pet.breed}', style: PetProfileStyles.petInfoTextStyle),
+                          Text('BREED: ${pet.breed}', style: PetProfileStyles.petInfoTextStyle),
                         ],
                       ),
                     ),
@@ -99,7 +100,6 @@ class PetProfileScreen extends StatelessWidget {
     );
   }
 
-  // ฟังก์ชันคำนวณอายุ
   Map<String, int> calculateAge(DateTime birthDate) {
     DateTime today = DateTime.now();
     int years = today.year - birthDate.year;

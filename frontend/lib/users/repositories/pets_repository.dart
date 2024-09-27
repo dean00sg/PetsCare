@@ -59,6 +59,7 @@ class CreatePetRepository {
 
         return data.map((pet) {
           return Pet(
+            petsId: pet['pets_id'], // Get petsId from the API response
             name: pet['name'],
             imagePath: PetTypeImage.getImagePath(pet['type_pets']), // Map type to image
           );

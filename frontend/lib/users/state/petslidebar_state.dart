@@ -27,7 +27,7 @@ class PetSelected extends PetState {
   const PetSelected(this.selectedPet);
 
   @override
-  List<Object> get props => [selectedPet];
+  List<Object> get props => [selectedPet.petsId]; // Include petsId in props
 }
 
 class PetError extends PetState {

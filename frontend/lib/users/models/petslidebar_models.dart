@@ -1,8 +1,9 @@
 class Pet {
+  final int petsId;
   final String name;
   final String imagePath;
 
-  Pet({required this.name, required this.imagePath});
+  Pet({required this.petsId,required this.name, required this.imagePath});
 }
 class PetTypeImage {
   static const Map<String, String> petTypeToImage = {
