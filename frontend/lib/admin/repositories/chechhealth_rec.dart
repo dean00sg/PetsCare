@@ -30,27 +30,30 @@ class HealthRecordRepository {
     }
   }
 
-  Future<HealthRecord> addHealthRecord(HealthRecord healthRecord) async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString('token');
+  Future<void> addHealthRecord(HealthRecord healthRecord) async {
+    try {
+      // Retrieve the token from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token') ?? '';
 
-    if (token == null) {
-      throw Exception('Token not found, user not logged in');
-    }
+      // Making the POST request
+      final response = await http.post(
+        Uri.parse('$apiUrl/notehealth/'), // Ensure the correct endpoint
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode(healthRecord.toJson()), // Convert the healthRecord to JSON
+      );
 
-    final response = await http.post(
-      Uri.parse('$apiUrl/notehealth/'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode(healthRecord.toJson()),
-    );
-
-    if (response.statusCode == 201) {
-      return HealthRecord.fromJson(json.decode(response.body));
-    } else {
-      throw Exception('Failed to create health record. Server response: ${response.body}');
+      // Check if the request was successful
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        print("Health record created successfully");
+      } else {
+        throw Exception('Failed to create health record: ${response.body}');
+      }
+    } catch (error) {
+      throw Exception('Failed to connect to the server: $error');
     }
   }
 

@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:frontend/admin/models/chechhealth_rec.dart';
 
 abstract class AddHealthRecordState extends Equatable {
   const AddHealthRecordState();
@@ -13,12 +12,9 @@ class HealthRecordInitial extends AddHealthRecordState {}
 class HealthRecordSubmitting extends AddHealthRecordState {}
 
 class HealthRecordSubmitted extends AddHealthRecordState {
-  final HealthRecord healthRecord;
-
-  const HealthRecordSubmitted(this.healthRecord);
-
+  // No longer need to store HealthRecord in the success state
   @override
-  List<Object> get props => [healthRecord];
+  List<Object> get props => [];
 }
 
 class HealthRecordError extends AddHealthRecordState {
