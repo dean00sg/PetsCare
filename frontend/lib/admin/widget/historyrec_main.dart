@@ -91,7 +91,6 @@ class HistoryRecMainWidget extends StatelessWidget {
               title,
               style: const TextStyle(
                 color: Colors.white,
-                fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
             ),
