@@ -49,4 +49,6 @@ class PetVacRepository {
       throw Exception('Failed to create pet vaccination profile');
     }
   }
+
+  fetchPetById(String petsId) {}
 }

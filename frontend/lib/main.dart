@@ -38,11 +38,13 @@ import 'package:frontend/users/bloc/petprofile.dart';
 import 'package:frontend/users/bloc/profile_bloc.dart';
 import 'package:frontend/users/bloc/signup_bloc.dart';
 import 'package:frontend/admin/repositories/chechhealth_rec.dart';
+import 'package:frontend/users/bloc/vaccination_pet.dart';
 import 'package:frontend/users/repositories/login_repository.dart';
 import 'package:frontend/users/repositories/petprofile.dart';
 import 'package:frontend/users/repositories/petsgetall.dart';
 import 'package:frontend/users/repositories/profile_repository.dart';
 import 'package:frontend/users/repositories/signup_repository.dart';
+import 'package:frontend/users/repositories/vaccination_pet.dart';
 import 'package:frontend/users/widget_screen/create_pet_screen.dart';
 import 'package:frontend/users/widget_screen/feed_screen.dart';
 import 'package:frontend/users/widget_screen/login_screen.dart';
@@ -51,6 +53,7 @@ import 'package:frontend/users/widget_screen/pet_screen.dart';
 import 'package:frontend/users/widget_screen/petprofile.dart';
 import 'package:frontend/users/widget_screen/profile.dart';
 import 'package:frontend/users/widget_screen/signup_screen.dart';
+import 'package:frontend/users/widget_screen/vaccination_pet.dart';
 
 
 void main() {
@@ -124,6 +127,9 @@ class MyApp extends StatelessWidget {
           ),
           child: const AddHistoryRecScreen(), // Wrap with BlocProvider
         ),
+        BlocProvider<PetVacUserBloc>(
+          create: (context) => PetVacUserBloc(PetVacUserRepository()),
+        ),
                 
       ],
       child: MaterialApp(
@@ -158,8 +164,10 @@ class MyApp extends StatelessWidget {
           '/checkvaccination': (context) => const PetVacProfilesScreen(),
           '/addvaccination': (context) => const AddVaccinationScreen(),
           '/historyrecmain': (context) => const HistoryRecMainWidget(),
-          '/checkhistoryrec': (context) => const HistoryScreen(),
+          '/checkhistoryrec':(context) => const HistoryScreen(),
           '/addhistoryrec': (context) => const AddHistoryRecScreen(),
+          '/vaccinepet': (context) => const VaccinePetsScreen(),
+          
 
 
         },
