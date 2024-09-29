@@ -5,11 +5,13 @@ class HealthStyles {
   static const TextStyle headerTextStyle = TextStyle(
     fontSize: 20,
     color: Colors.white,
+    fontWeight: FontWeight.bold,
   );
 
   static const TextStyle healthTitleTextStyle = TextStyle(
     fontSize: 18,
     color: Colors.white,
+    fontWeight: FontWeight.bold,
   );
 
   static const TextStyle healthInfoTextStyle = TextStyle(
