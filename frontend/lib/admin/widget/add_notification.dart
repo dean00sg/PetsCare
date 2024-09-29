@@ -6,6 +6,7 @@ import 'package:frontend/admin/state/add_notification.dart';
 import 'package:frontend/users/bloc/profile_bloc.dart';
 import 'package:frontend/users/state/profile_state.dart';
 import 'package:intl/intl.dart';
+import 'package:frontend/admin/style/add_notification_style.dart'; // นำเข้าสไตล์ใหม่
 
 class AddNotificationScreen extends StatefulWidget {
   const AddNotificationScreen({super.key});
@@ -102,7 +103,7 @@ class _AddNotificationScreenState extends State<AddNotificationScreen> {
             borderRadius: BorderRadius.circular(10.0),
           ),
           child: Container(
-            width: 300, // ปรับขนาดของ pop-up
+            width: 300, //ปรับขนาดของ pop-up
             padding: const EdgeInsets.all(16.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
@@ -113,8 +114,7 @@ class _AddNotificationScreenState extends State<AddNotificationScreen> {
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
-
-                // ใช้ RichText เพื่อจัดแสดง header
+                //ใช้ RichText เพื่อจัดแสดง header
                 RichText(
                   text: TextSpan(
                     children: [
@@ -137,7 +137,7 @@ class _AddNotificationScreenState extends State<AddNotificationScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // ปุ่ม Cancel
+                    //ปุ่ม Cancel
                     TextButton(
                       style: TextButton.styleFrom(
                         backgroundColor: Colors.grey,
@@ -156,7 +156,7 @@ class _AddNotificationScreenState extends State<AddNotificationScreen> {
                       ),
                     ),
                     const SizedBox(width: 10),
-                    // ปุ่ม Sent
+                    //ปุ่ม Sent
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.amber,
@@ -168,7 +168,7 @@ class _AddNotificationScreenState extends State<AddNotificationScreen> {
                       ),
                       onPressed: () {
                         _submitNotification(
-                            context); // ส่งข้อมูลหลังจากกดปุ่ม Sent
+                            context); //ส่งข้อมูลหลังจากกดปุ่ม Sent
                       },
                       child: const Text(
                         'Sent',
@@ -185,7 +185,7 @@ class _AddNotificationScreenState extends State<AddNotificationScreen> {
     );
   }
 
-  // ฟังก์ชันบันทึกข้อมูลหลังจากกด Sent
+  //ฟังก์ชันบันทึกข้อมูลหลังจากกด Sent
   void _submitNotification(BuildContext context) {
     if (_toUser != null &&
         _headerController.text.isNotEmpty &&
@@ -204,7 +204,7 @@ class _AddNotificationScreenState extends State<AddNotificationScreen> {
             ),
           );
 
-      _resetForm(); //รีเว็ตข้อมูลในฟอร์ม
+      _resetForm(); //รีเซ็ตข้อมูลในฟอร์ม
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please fill out all fields')),
@@ -217,9 +217,8 @@ class _AddNotificationScreenState extends State<AddNotificationScreen> {
     return Scaffold(
       appBar: AppBar(
         iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text("Notification",
-            style: TextStyle(fontSize: 22, color: Colors.white)),
-        backgroundColor: const Color.fromARGB(255, 38, 111, 202),
+        title: const Text("Notification", style: appBarTitleTextStyle),
+        backgroundColor: primaryColor,
         centerTitle: true,
         toolbarHeight: 70,
         leading: IconButton(
@@ -230,7 +229,7 @@ class _AddNotificationScreenState extends State<AddNotificationScreen> {
       body: BlocListener<AddNotificationBloc, AddNotificationState>(
         listener: (context, state) {
           if (state is AddNotificationSuccess) {
-            // ปิด pop-up เมื่อส่งข้อมูลสำเร็จ
+            //ปิด pop-up เมื่อส่งข้อมูลสำเร็จ
             Navigator.of(context).pop();
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Notification sent successfully!')),
@@ -246,21 +245,18 @@ class _AddNotificationScreenState extends State<AddNotificationScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0),
+              const Padding(
+                padding: EdgeInsets.only(left: 10.0),
                 child: Text(
                   "Sent Notification",
-                  style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blueGrey[900]),
+                  style: headerTextStyle,
                 ),
               ),
               const SizedBox(height: 16),
               Container(
                 padding: const EdgeInsets.all(16.0),
                 decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 38, 111, 202),
+                  color: primaryColor,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Column(
@@ -358,42 +354,22 @@ class _AddNotificationScreenState extends State<AddNotificationScreen> {
                         style: TextStyle(color: Colors.white)),
                     TextField(
                       controller: _headerController,
-                      decoration: const InputDecoration(
-                        filled: true,
-                        fillColor: Color(0xFFDDF3FF),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                      ),
+                      decoration: inputDecoration,
                     ),
                     const SizedBox(height: 16),
                     const Text("Image URL:",
                         style: TextStyle(color: Colors.white)),
                     TextField(
                       controller: _imageUrlController,
-                      decoration: const InputDecoration(
-                        filled: true,
-                        fillColor: Color(0xFFDDF3FF),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                      ),
+                      decoration: inputDecoration,
                     ),
                     const SizedBox(height: 16),
                     const Text("Start DateTime:",
                         style: TextStyle(color: Colors.white)),
                     TextField(
                       controller: _startDateController,
-                      decoration: const InputDecoration(
-                        filled: true,
-                        fillColor: Color(0xFFDDF3FF),
-                        suffixIcon: Icon(Icons.calendar_today),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
+                      decoration: inputDecoration.copyWith(
+                        suffixIcon: const Icon(Icons.calendar_today),
                       ),
                       readOnly: true,
                       onTap: () => _selectDateTime(
@@ -405,14 +381,8 @@ class _AddNotificationScreenState extends State<AddNotificationScreen> {
                         style: TextStyle(color: Colors.white)),
                     TextField(
                       controller: _endDateController,
-                      decoration: const InputDecoration(
-                        filled: true,
-                        fillColor: Color(0xFFDDF3FF),
-                        suffixIcon: Icon(Icons.calendar_today),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
+                      decoration: inputDecoration.copyWith(
+                        suffixIcon: const Icon(Icons.calendar_today),
                       ),
                       readOnly: true,
                       onTap: () => _selectDateTime(context, _endDateController,
@@ -423,34 +393,19 @@ class _AddNotificationScreenState extends State<AddNotificationScreen> {
                         style: TextStyle(color: Colors.white)),
                     TextField(
                       controller: _detailController,
-                      decoration: const InputDecoration(
-                        filled: true,
-                        fillColor: Color(0xFFDDF3FF),
-                        border: OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.all(Radius.circular(10)),
-                        ),
-                      ),
+                      decoration: inputDecoration,
                     ),
                     const SizedBox(height: 16),
                     SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.cyan[400],
-                          padding: const EdgeInsets.symmetric(vertical: 15),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
+                        style: elevatedButtonStyle,
                         onPressed: () {
-                          _showSaveDialog(context); // แสดง pop-up เมื่อกด Save
+                          _showSaveDialog(context); //แสดง pop-up เมื่อกด Save
                         },
                         child: const Text("Save",
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
-                            )),
+                            style:
+                                TextStyle(fontSize: 18, color: Colors.white)),
                       ),
                     ),
                   ],
