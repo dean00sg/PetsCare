@@ -5,7 +5,6 @@ class HealthStyles {
   static const TextStyle headerTextStyle = TextStyle(
     fontSize: 20,
     color: Colors.white,
-    fontWeight: FontWeight.bold,
   );
 
   static const TextStyle healthTitleTextStyle = TextStyle(

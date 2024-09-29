@@ -118,10 +118,21 @@ class HealthRecordScreen extends StatelessWidget {
                                             ],
                                           ),
                                           const SizedBox(height: 16),
-                                          Text(
-                                            'Header: ${record.header}',
-                                            style: HealthStyles.headerTextStyle,
+                                          Text.rich(
+                                            TextSpan(
+                                              children: [
+                                                TextSpan(
+                                                  text: 'Header: ',
+                                                  style: HealthStyles.headerTextStyle.copyWith(fontWeight: FontWeight.bold),
+                                                ),
+                                                TextSpan(
+                                                  text: record.header,
+                                                  style: HealthStyles.headerTextStyle,
+                                                ),
+                                              ],
+                                            ),
                                           ),
+
                                           const SizedBox(height: 10),
                                           const Text(
                                             'Age:',
