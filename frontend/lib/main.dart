@@ -30,7 +30,7 @@ import 'package:frontend/admin/widget/notification_main.dart';
 import 'package:frontend/admin/widget/petprofileuser.dart';
 import 'package:frontend/admin/widget/profile.dart';
 import 'package:frontend/admin/bloc/chechhealth_rec.dart';
-import 'package:frontend/admin/widget/vaccination.dart';
+import 'package:frontend/admin/widget/check_vaccination.dart';
 import 'package:frontend/admin/widget/vaccination_main.dart';
 import 'package:frontend/users/bloc/create_pet_bloc.dart';
 import 'package:frontend/users/bloc/login_bloc.dart';
@@ -128,6 +128,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'Pet Care',
+        debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primarySwatch: Colors.blue,
           visualDensity: VisualDensity.adaptivePlatformDensity,

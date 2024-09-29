@@ -42,7 +42,7 @@ class VaccinationMainWidget extends StatelessWidget {
                       icon: Icons.vaccines,
                       color: Colors.blue,
                       onTap: () {
-                        Navigator.of(context).pushNamed('/addvaccination'); // Use the actual route
+                        Navigator.of(context).pushNamed('/addvaccination');
                       },
                     ),
                     _buildVaccinationMainCard(
@@ -51,7 +51,7 @@ class VaccinationMainWidget extends StatelessWidget {
                       icon: Icons.search,
                       color: const Color.fromARGB(255, 239, 30, 114),
                       onTap: () {
-                        Navigator.of(context).pushNamed('/checkvaccination'); // Use the actual route
+                        Navigator.of(context).pushNamed('/checkvaccination');
                       },
                     ),
                   ],
@@ -65,13 +65,17 @@ class VaccinationMainWidget extends StatelessWidget {
   }
 
   Widget _buildVaccinationMainCard(BuildContext context,
-      {required String title, required IconData icon, required Color color, required VoidCallback onTap}) {
+      {required String title,
+      required IconData icon,
+      required Color color,
+      required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
           color: color,
-          borderRadius: BorderRadius.circular(10), // Added border radius for better UI
+          borderRadius:
+              BorderRadius.circular(10), // Added border radius for better UI
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.5),
@@ -90,7 +94,6 @@ class VaccinationMainWidget extends StatelessWidget {
               title,
               style: const TextStyle(
                 color: Colors.white,
-                fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
             ),
