@@ -116,7 +116,7 @@ class _PetVacProfilesScreenState extends State<PetVacProfilesScreen> {
                         profile.vacName.toLowerCase().contains(searchTerm) ||
                         profile.location.toLowerCase().contains(searchTerm) ||
                         profile.remark.toLowerCase().contains(searchTerm) ||
-                        profile.note_by.toLowerCase().contains(searchTerm);
+                        profile.noteBy.toLowerCase().contains(searchTerm);
                   }).toList();
 
                   if (filteredProfiles.isEmpty) {
@@ -258,7 +258,7 @@ class _PetVacProfilesScreenState extends State<PetVacProfilesScreen> {
                                                             width: 5),
                                                         Flexible(
                                                           child: Text(
-                                                            'Note by: ${vaccineProfile.note_by}',
+                                                            'Note by: ${vaccineProfile.noteBy}',
                                                             style:
                                                                 noteByTextStyle,
                                                             overflow:

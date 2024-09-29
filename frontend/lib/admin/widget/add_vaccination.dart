@@ -36,6 +36,7 @@ class _AddVaccinationScreenState extends State<AddVaccinationScreen> {
   String? selectedPet;
   String? username;
 
+
   @override
   void initState() {
     super.initState();
@@ -68,6 +69,7 @@ class _AddVaccinationScreenState extends State<AddVaccinationScreen> {
           .map((pet) => pet.name)
           .toList();
       selectedPet = null; 
+     
     });
   }
 
@@ -298,7 +300,10 @@ class _AddVaccinationScreenState extends State<AddVaccinationScreen> {
                                           selectedPet != null &&
                                           selectedDate != null &&
                                           username != null) {
+                                            final selectedPetProfile = petProfiles
+                                          .firstWhere((pet) => pet.name == selectedPet);
                                         final profile = AddPetVacProfile(
+                                          petsId: selectedPetProfile.petsId,
                                           dose: int.parse(doseController.text),
                                           vacName: vacNameController.text,
                                           startDateVac: selectedDate!,
@@ -306,7 +311,7 @@ class _AddVaccinationScreenState extends State<AddVaccinationScreen> {
                                           remark: remarkController.text,
                                           petName: selectedPet!,
                                           ownerName: selectedOwner!,
-                                          note_by: username!,
+                                          noteBy: username!,
                                         );
 
                                         // Dispatch the event to the bloc
