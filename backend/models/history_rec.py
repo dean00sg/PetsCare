@@ -10,9 +10,9 @@ class HistoryRec(Base):
     __tablename__ = 'HistoryRec'
 
     hr_id = Column(Integer, primary_key=True, index=True)
-    header = Column(String,nullable=True)
+    header = Column(String,nullable=False)
     record_datetime =  Column(DateTime, default=lambda: datetime.now().replace(microsecond=0))
-    Symptoms = Column(String,nullable=True)
+    Symptoms = Column(String,nullable=False)
     Diagnose =Column(String, nullable=False)
     Remark = Column(String,nullable=True)
     pet_name = Column(String, nullable=False)  

@@ -14,32 +14,32 @@ def create_history_record(
     role: str = Depends(get_current_user_role),
     username: str = Depends(get_current_user)
 ):
-  
+    # Check if owner exists
     owner = db.query(UserProfile).filter(
-        UserProfile.first_name + " " + UserProfile.last_name == record_data.owner_name
+        (UserProfile.first_name + " " + UserProfile.last_name) == record_data.owner_name
     ).first()
 
     if not owner:
         raise HTTPException(status_code=404, detail="Owner not found")
 
-
+    # Fetch the user profile for the note_by
     user_profile = db.query(UserProfile).filter(UserProfile.email == username).first()
 
     if not user_profile:
         raise HTTPException(status_code=404, detail="User profile not found")
 
-
+    # Create new history record
     new_record = HistoryRec(
         header=record_data.header,
         record_datetime=datetime.now().replace(microsecond=0),
         Symptoms=record_data.Symptoms,
         Diagnose=record_data.Diagnose,
-        Remark=record_data.Remark,
+        Remark=record_data.Remark,  # Optional
         pet_name=record_data.pet_name,
         owner_name=record_data.owner_name,
         user_id=owner.user_id,
-        note_by=username, 
-        note_name=f"{user_profile.first_name} {user_profile.last_name}"  
+        note_by=username,  # Set the current user's username
+        note_name=f"{user_profile.first_name} {user_profile.last_name}"  # Full name of the user
     )
 
     db.add(new_record)

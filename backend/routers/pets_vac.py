@@ -23,14 +23,15 @@ def create_pet_vac_profile(
     if not owner:
         raise HTTPException(status_code=404, detail="Owner not found")
 
-    # Fetch pet using the provided pet_name
-    pet = db.query(Pet).filter(Pet.name == profile_data.pet_name, Pet.user_id == owner.user_id).first()
+    # Fetch pet using the provided pet_id
+    pet = db.query(Pet).filter(Pet.pets_id == profile_data.pets_id, Pet.user_id == owner.user_id).first()
 
     if not pet:
         raise HTTPException(status_code=404, detail="Pet not found")
 
     # Create a new PetVacProfile instance
     new_profile = PetVacProfile(
+        pets_id=profile_data.pets_id,
         pet_name=profile_data.pet_name,
         owner_name=profile_data.owner_name,
         dose=profile_data.dose,
@@ -73,15 +74,16 @@ def create_pet_vac_profile(
         startdatevac=new_profile.startdatevac,
         location=new_profile.location,
         remark=new_profile.remark,
+        pets_id=new_profile.pets_id,  # Return pet_id in the response
         pet_name=new_profile.pet_name,
         owner_name=new_profile.owner_name,
         note_by=new_profile.note_by
     )
 
 
-@router.get("/pet_vac_profile/{pet_name}", response_model=PetVacProfileResponse)
-def get_pet_vac_profile(pet_name: str, db: Session = Depends(get_session)):
-    profile = db.query(PetVacProfile).filter(PetVacProfile.pet_name == pet_name).first()
+@router.get("/pet_vac_profile/{pets_id}", response_model=PetVacProfileResponse)
+def get_pet_vac_profile(pets_id: int, db: Session = Depends(get_session)):
+    profile = db.query(PetVacProfile).filter(PetVacProfile.pets_id == pets_id).first()
 
     if not profile:
         raise HTTPException(status_code=404, detail="Vaccine profile not found")
@@ -94,24 +96,25 @@ def get_pet_vac_profile(pet_name: str, db: Session = Depends(get_session)):
         startdatevac=profile.startdatevac,
         location=profile.location,
         remark=profile.remark,
+        pets_id=profile.pets_id,
         pet_name=profile.pet_name,
         owner_name=profile.owner_name,
         note_by=profile.note_by
     )
 
 
-@router.put("/pet_vac_profile/{pet_name}/{dose}", response_model=PetVacProfileResponse)
+@router.put("/pet_vac_profile/{pets_id}/{dose}", response_model=PetVacProfileResponse)
 def update_pet_vac_profile(
-    pet_name: str,
-    dose: str,  # Add dose as a path parameter
+    pets_id: int,
+    dose: int,
     profile_data: UpdatePetVacProfile,
     db: Session = Depends(get_session),
-    username: str = Depends(get_current_user)  # Get the username of the current user
+    username: str = Depends(get_current_user)
 ):
-    # Query the profile using both pet_name and dose
+    # Query the profile using both pets_id and dose
     profile = db.query(PetVacProfile).filter(
-        PetVacProfile.pet_name == pet_name,
-        PetVacProfile.dose == dose  # Filter by dose
+        PetVacProfile.pets_id == pets_id,
+        PetVacProfile.dose == dose
     ).first()
 
     if not profile:
@@ -144,7 +147,7 @@ def update_pet_vac_profile(
     # Log the update
     log_entry = LogPetVacProfile(
         action_name="update",
-        action_by=username,  # Added action_by here
+        action_by=username,
         action_datetime=datetime.now().replace(microsecond=0),
         vac_id=profile.vac_id,
         dose=old_profile["dose"],
@@ -173,23 +176,23 @@ def update_pet_vac_profile(
         startdatevac=profile.startdatevac,
         location=profile.location,
         remark=profile.remark,
+        pets_id=profile.pets_id,
         pet_name=profile.pet_name,
         owner_name=profile.owner_name
     )
 
 
-
-@router.delete("/pet_vac_profile/{pet_name}", response_model=PetVacProfileResponse)
+@router.delete("/pet_vac_profile/{pets_id}/{dose}", response_model=PetVacProfileResponse)
 def delete_pet_vac_profile(
-    pet_name: str,
-    dose: str,  # Add dose as a parameter
+    pets_id: int,
+    dose: int,
     db: Session = Depends(get_session),
-    username: str = Depends(get_current_user)  # Get the username of the current user
+    username: str = Depends(get_current_user)
 ):
-    # Query the profile using both pet_name and dose
+    # Query the profile using both pets_id and dose
     profile = db.query(PetVacProfile).filter(
-        PetVacProfile.pet_name == pet_name,
-        PetVacProfile.dose == dose  # Filter by dose
+        PetVacProfile.pets_id == pets_id,
+        PetVacProfile.dose == dose
     ).first()
 
     if not profile:
@@ -198,7 +201,7 @@ def delete_pet_vac_profile(
     # Log the delete action
     log_entry = LogPetVacProfile(
         action_name="delete",
-        action_by=username,  # Added action_by here
+        action_by=username,
         action_datetime=datetime.now().replace(microsecond=0),
         vac_id=profile.vac_id,
         dose=profile.dose,
@@ -223,10 +226,11 @@ def delete_pet_vac_profile(
         startdatevac=profile.startdatevac,
         location=profile.location,
         remark=profile.remark,
+        pets_id=profile.pets_id,
         pet_name=profile.pet_name,
-        owner_name=profile.owner_name
+        owner_name=profile.owner_name,
+        note_by=profile.note_by
     )
-
 
 
 @router.get("/get_all", response_model=list[PetVacProfileResponse])
@@ -248,9 +252,9 @@ async def get_all_pet_vac_profiles(
             startdatevac=profile.startdatevac,
             location=profile.location,
             remark=profile.remark,
+            pets_id=profile.pets_id,
             pet_name=profile.pet_name,
             owner_name=profile.owner_name,
             note_by=profile.note_by
-        )
-        for profile in profiles
+        ) for profile in profiles
     ]

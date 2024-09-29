@@ -18,6 +18,7 @@ class PetVacProfile(Base):
     startdatevac = Column(Date, nullable=False)
     location = Column(String, nullable=False)
     remark = Column(String, nullable=False)
+    pets_id = Column(Integer, ForeignKey('Pets.pets_id'), nullable=False) 
     pet_name = Column(String, nullable=False)  
     owner_name = Column(String, nullable=False)
     user_id = Column(Integer, ForeignKey('Userprofiles.user_id'), nullable=False)
@@ -62,6 +63,7 @@ class PetVacProfileResponse(BaseModel):
     startdatevac: date
     location: str
     remark: str
+    pets_id: int
     pet_name: str
     owner_name: str
     note_by:str
@@ -73,6 +75,7 @@ class PetVacProfileResponse(BaseModel):
 class CreatePetVacProfile(BaseModel):
     owner_name: str
     pet_name: str
+    pets_id: int
     dose: int
     vac_name: str
     startdatevac: date
