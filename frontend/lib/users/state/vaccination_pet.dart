@@ -13,12 +13,12 @@ class PetVacUserInitial extends PetVacUserState {}
 class PetVacUserLoading extends PetVacUserState {}
 
 class PetVacUserLoaded extends PetVacUserState {
-  final PetVacUserProfile vacUserProfile;
+  final List<PetVacUserProfile> vacUserProfiles;
 
-  const PetVacUserLoaded(this.vacUserProfile);
+  const PetVacUserLoaded(this.vacUserProfiles);
 
   @override
-  List<Object> get props => [vacUserProfile];
+  List<Object> get props => [vacUserProfiles];
 }
 
 class PetVacUserError extends PetVacUserState {

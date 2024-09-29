@@ -34,18 +34,25 @@ class VaccinePetsScreen extends StatelessWidget {
           ],
         ),
       ),
-      body: BlocBuilder<PetVacUserBloc, PetVacUserState>(builder: (context, state) {
-        if (state is PetVacUserLoading) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (state is PetVacUserError) {
-          return Center(child: Text('Error: ${state.error}'));
-        } else if (state is PetVacUserLoaded) {
-          final vaccine = state.vacUserProfile;
-          return _buildVaccineDetails(vaccine);
-        } else {
-          return const Center(child: Text('No vaccine data available'));
-        }
-      }),
+      body: BlocBuilder<PetVacUserBloc, PetVacUserState>(
+        builder: (context, state) {
+          if (state is PetVacUserLoading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state is PetVacUserError) {
+            return Center(child: Text('Error: ${state.error}'));
+          } else if (state is PetVacUserLoaded) {
+            return ListView.builder(
+              itemCount: state.vacUserProfiles.length,
+              itemBuilder: (context, index) {
+                final vaccine = state.vacUserProfiles[index];
+                return _buildVaccineDetails(vaccine);
+              },
+            );
+          } else {
+            return const Center(child: Text('No vaccine data available'));
+          }
+        },
+      ),
     );
   }
 
@@ -70,8 +77,6 @@ class VaccinePetsScreen extends StatelessWidget {
             Text('Pet ID: ${vaccine.petsId}'),
             Text('Pet Name: ${vaccine.petName}'),
             Text('Owner Name: ${vaccine.ownerName}'),
-            const SizedBox(height: 16),
-            Text('Remark: ${vaccine.remark}'),
             Text('Note By: ${vaccine.noteBy}'),
           ],
         ),

@@ -10,8 +10,8 @@ class PetVacUserBloc extends Bloc<PetVacUserEvent, PetVacUserState> {
     on<LoadPetVacUserProfile>((event, emit) async {
       emit(PetVacUserLoading());
       try {
-        final vacProfile = await petVacRepository.fetchPetById(event.petsId);
-        emit(PetVacUserLoaded(vacProfile));
+        final vacProfileList = await petVacRepository.fetchPetById(event.petsId);
+        emit(PetVacUserLoaded(vacProfileList));
       } catch (e) {
         emit(PetVacUserError(e.toString()));
       }

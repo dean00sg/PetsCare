@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class PetVacUserRepository { 
   final String apiUrl = 'http://10.0.2.2:8000/pets_vac/pet_vac_profile/';
 
-  Future<PetVacUserProfile> fetchPetById(String petsId) async { 
+  Future<List<PetVacUserProfile>> fetchPetById(String petsId) async { 
     try {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token') ?? '';
@@ -20,8 +20,8 @@ class PetVacUserRepository {
       );
 
       if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        return PetVacUserProfile.fromJson(data);
+        final List<dynamic> data = json.decode(response.body);
+        return data.map((json) => PetVacUserProfile.fromJson(json)).toList();
       } else {
         throw Exception('Failed to load pet vaccine profile');
       }

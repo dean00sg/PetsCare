@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from models.pet_vac import PetVacProfile, CreatePetVacProfile, PetVacProfileResponse, LogPetVacProfile, UpdatePetVacProfile
@@ -81,26 +82,29 @@ def create_pet_vac_profile(
     )
 
 
-@router.get("/pet_vac_profile/{pets_id}", response_model=PetVacProfileResponse)
+@router.get("/pet_vac_profile/{pets_id}", response_model=List[PetVacProfileResponse])
 def get_pet_vac_profile(pets_id: int, db: Session = Depends(get_session)):
-    profile = db.query(PetVacProfile).filter(PetVacProfile.pets_id == pets_id).first()
+    profiles = db.query(PetVacProfile).filter(PetVacProfile.pets_id == pets_id).all()
 
-    if not profile:
-        raise HTTPException(status_code=404, detail="Vaccine profile not found")
+    if not profiles:
+        raise HTTPException(status_code=404, detail="Vaccine profiles not found")
 
-    return PetVacProfileResponse(
-        status="success",
-        vac_id=profile.vac_id,
-        dose=profile.dose,
-        vac_name=profile.vac_name,
-        startdatevac=profile.startdatevac,
-        location=profile.location,
-        remark=profile.remark,
-        pets_id=profile.pets_id,
-        pet_name=profile.pet_name,
-        owner_name=profile.owner_name,
-        note_by=profile.note_by
-    )
+    return [
+        PetVacProfileResponse(
+            status="success",
+            vac_id=profile.vac_id,
+            dose=profile.dose,
+            vac_name=profile.vac_name,
+            startdatevac=profile.startdatevac,
+            location=profile.location,
+            remark=profile.remark,
+            pets_id=profile.pets_id,
+            pet_name=profile.pet_name,
+            owner_name=profile.owner_name,
+            note_by=profile.note_by
+        )
+        for profile in profiles
+    ]
 
 
 @router.put("/pet_vac_profile/{pets_id}/{dose}", response_model=PetVacProfileResponse)
