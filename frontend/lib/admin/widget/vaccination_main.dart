@@ -40,7 +40,7 @@ class VaccinationMainWidget extends StatelessWidget {
                       context,
                       title: 'Add Vaccine Pets',
                       icon: Icons.vaccines,
-                      color: Colors.blue,
+                      color: const Color(0xFF92B8E0),
                       onTap: () {
                         Navigator.of(context).pushNamed('/addvaccination');
                       },
@@ -49,7 +49,7 @@ class VaccinationMainWidget extends StatelessWidget {
                       context,
                       title: 'Check Vaccination',
                       icon: Icons.search,
-                      color: const Color.fromARGB(255, 239, 30, 114),
+                      color: const Color(0xFFE09492),
                       onTap: () {
                         Navigator.of(context).pushNamed('/checkvaccination');
                       },

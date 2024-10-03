@@ -137,7 +137,7 @@ class Sidebar extends StatelessWidget {
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 8.0),
               decoration: BoxDecoration(
-                color: const Color.fromARGB(255, 239, 30, 114),
+                color: const Color(0xFFE09C99),
                 borderRadius: BorderRadius.circular(4),
                 boxShadow: [
                   BoxShadow(
