@@ -19,7 +19,7 @@ final TextStyle titleTextStyle = TextStyle(
 
 // Box decoration สไตล์สำหรับ Container
 final BoxDecoration containerBoxDecoration = BoxDecoration(
-  color: const Color(0xFFED7777),
+  color: const Color(0xFFF2B8B5),
   borderRadius: BorderRadius.circular(10),
 );
 
