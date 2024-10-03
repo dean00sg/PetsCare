@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/admin/bloc/add_feedpost.dart'; 
+import 'package:frontend/admin/bloc/add_feedpost.dart'; // Ensure correct import
 import 'package:frontend/admin/bloc/add_healthrec.dart';
 import 'package:frontend/admin/bloc/add_historyrec.dart';
 import 'package:frontend/admin/bloc/add_notification.dart';
@@ -8,7 +8,7 @@ import 'package:frontend/admin/bloc/add_vaccination.dart';
 import 'package:frontend/admin/bloc/check_historyrec.dart';
 import 'package:frontend/admin/bloc/user.dart';
 import 'package:frontend/admin/bloc/vaccination.dart';
-import 'package:frontend/admin/repositories/add_feedpost.dart'; 
+import 'package:frontend/admin/repositories/add_feedpost.dart'; // Ensure correct import
 import 'package:frontend/admin/bloc/check_info_bloc.dart';
 import 'package:frontend/admin/repositories/add_notification.dart';
 import 'package:frontend/admin/repositories/historyrec.dart';
@@ -22,7 +22,7 @@ import 'package:frontend/admin/widget/check_alluser.dart';
 import 'package:frontend/admin/widget/check_healthrec.dart';
 import 'package:frontend/admin/widget/check_historyrec.dart';
 import 'package:frontend/admin/widget/check_info_screen.dart';
-import 'package:frontend/admin/widget/add_feedpost.dart'; 
+import 'package:frontend/admin/widget/add_feedpost.dart'; // Correct imports
 import 'package:frontend/admin/widget/feed_admin.dart';
 import 'package:frontend/admin/widget/healthrecord_main.dart';
 import 'package:frontend/admin/widget/historyrec_main.dart';
@@ -33,12 +33,14 @@ import 'package:frontend/admin/bloc/chechhealth_rec.dart';
 import 'package:frontend/admin/widget/check_vaccination.dart';
 import 'package:frontend/admin/widget/vaccination_main.dart';
 import 'package:frontend/users/bloc/create_pet_bloc.dart';
+import 'package:frontend/users/bloc/historyrec_pet.dart';
 import 'package:frontend/users/bloc/login_bloc.dart';
 import 'package:frontend/users/bloc/petprofile.dart';
 import 'package:frontend/users/bloc/profile_bloc.dart';
 import 'package:frontend/users/bloc/signup_bloc.dart';
 import 'package:frontend/admin/repositories/chechhealth_rec.dart';
 import 'package:frontend/users/bloc/vaccination_pet.dart';
+import 'package:frontend/users/repositories/historyrec_pet.dart';
 import 'package:frontend/users/repositories/login_repository.dart';
 import 'package:frontend/users/repositories/petprofile.dart';
 import 'package:frontend/users/repositories/petsgetall.dart';
@@ -47,6 +49,7 @@ import 'package:frontend/users/repositories/signup_repository.dart';
 import 'package:frontend/users/repositories/vaccination_pet.dart';
 import 'package:frontend/users/widget_screen/create_pet_screen.dart';
 import 'package:frontend/users/widget_screen/feed_screen.dart';
+import 'package:frontend/users/widget_screen/historyrec_pet.dart';
 import 'package:frontend/users/widget_screen/login_screen.dart';
 import 'package:frontend/users/widget_screen/notification.dart';
 import 'package:frontend/users/widget_screen/pet_screen.dart';
@@ -130,7 +133,9 @@ class MyApp extends StatelessWidget {
         BlocProvider<PetVacUserBloc>(
           create: (context) => PetVacUserBloc(PetVacUserRepository()),
         ),
-                
+         BlocProvider(
+          create: (context) => HistoryRecUserBloc(HistoryRecUserRepository()),
+        ),
       ],
       child: MaterialApp(
         title: 'Pet Care',
@@ -167,6 +172,7 @@ class MyApp extends StatelessWidget {
           '/checkhistoryrec':(context) => const HistoryScreen(),
           '/addhistoryrec': (context) => const AddHistoryRecScreen(),
           '/vaccinepet': (context) => const VaccinePetsScreen(),
+          '/historyrec': (context) => const HistoryRecUserScreen(),
           
 
 

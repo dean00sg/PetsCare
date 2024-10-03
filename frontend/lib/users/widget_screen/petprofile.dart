@@ -193,8 +193,12 @@ class PetProfileScreen extends StatelessWidget {
                           onTap: () {
                             Navigator.pushNamed(
                               context,
-                              '/feed',
-                              arguments: {'petsId': petsId},
+                              '/historyrec',
+                              arguments: {
+                                'petsId': petsId,
+                                'name': pet.name,
+                                'image':imagePath
+                              },
                             );
                           },
                           child: Container(
