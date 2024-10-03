@@ -173,7 +173,7 @@ class PetProfileScreen extends StatelessWidget {
                             height: 120,
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: Colors.red[200],
+                              color:  const Color(0xFFE09492),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: const Column(
@@ -201,7 +201,7 @@ class PetProfileScreen extends StatelessWidget {
                             height: 120,
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: Colors.green[200],
+                              color: const Color(0xFFA3C48C),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: const Column(
