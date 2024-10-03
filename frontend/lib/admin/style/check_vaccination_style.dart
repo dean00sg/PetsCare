@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 //container หลัก
 const primaryColor = Color.fromARGB(255, 38, 111, 202);
-const secondaryColor = Color(0xFFED7777);
+const secondaryColor = Color(0xFFF2B8B5);
 const backgroundColor = Colors.white;
 
 //AppBar Title
@@ -58,7 +58,7 @@ final vaccineContainerDecoration = BoxDecoration(
 
 //Date 
 final dateContainerDecoration = BoxDecoration(
-  color: const Color.fromARGB(255, 239, 30, 114),
+  color: const Color(0xFFD82B77),
   borderRadius: BorderRadius.circular(5),
 );
 

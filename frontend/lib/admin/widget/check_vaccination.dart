@@ -48,7 +48,7 @@ class _PetVacProfilesScreenState extends State<PetVacProfilesScreen> {
                   MainAxisAlignment.start, 
               children: [
                 Text(
-                  "Check History",
+                  "Check Vaccination",
                   style: headerTextStyle,
                 ),
               ],
@@ -158,7 +158,7 @@ class _PetVacProfilesScreenState extends State<PetVacProfilesScreen> {
                                   ),
                                   const SizedBox(height: 10),
                                   Text(
-                                    '${profile.ownerName}',
+                                    profile.ownerName,
                                     style: profileNameTextStyle,
                                     textAlign: TextAlign.center,
                                   ),
