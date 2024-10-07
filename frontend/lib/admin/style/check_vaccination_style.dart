@@ -51,21 +51,19 @@ final profileContainerDecoration = BoxDecoration(
 );
 
 //ข้อมูลวัคซีน
-final vaccineContainerDecoration = BoxDecoration(
+const vaccineContainerDecoration = BoxDecoration(
   color: backgroundColor,
-  borderRadius: BorderRadius.circular(8.0),
 );
 
 //Date 
-final dateContainerDecoration = BoxDecoration(
-  color: const Color(0xFFD82B77),
-  borderRadius: BorderRadius.circular(5),
+const dateContainerDecoration = BoxDecoration(
+  color: Color(0xFFD82B77),
+  
 );
 
 //Note by
-final noteByContainerDecoration = BoxDecoration(
-  color: const Color.fromARGB(255, 100, 150, 230), 
-  borderRadius: BorderRadius.circular(5),
+const noteByContainerDecoration = BoxDecoration(
+  color: Color.fromARGB(255, 100, 150, 230), 
 );
 
 //ข้อความ Note by

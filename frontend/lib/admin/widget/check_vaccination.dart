@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/admin/bloc/vaccination.dart';
 import 'package:frontend/admin/event/vaccination.dart';
+import 'package:frontend/admin/models/user.dart';
+import 'package:frontend/admin/repositories/user_repository.dart';
 import 'package:frontend/admin/state/vaccination.dart';
 import 'package:intl/intl.dart';
 import '../style/check_vaccination_style.dart';
@@ -13,13 +15,33 @@ class PetVacProfilesScreen extends StatefulWidget {
   _PetVacProfilesScreenState createState() => _PetVacProfilesScreenState();
 }
 
+//ใช้เทียบ email กับ name
 class _PetVacProfilesScreenState extends State<PetVacProfilesScreen> {
   TextEditingController _searchController = TextEditingController();
+  Map<String, String> emailToFullName =
+      {}; 
 
   @override
   void initState() {
     super.initState();
     context.read<PetVacBloc>().add(FetchPetVacProfiles());
+    _loadUserProfiles(); //ดึงข้อมูลแอดมินทั้งหมด
+  }
+
+  Future<void> _loadUserProfiles() async {
+    try {
+      List<UserProfilePets> userProfiles = await UserRepository().getProfile();
+
+      //จับคู่ระหว่างอีเมลกับชื่อ-สกุล
+      setState(() {
+        emailToFullName = {
+          for (var profile in userProfiles)
+            profile.email: '${profile.firstName} ${profile.lastName}',
+        };
+      });
+    } catch (e) {
+      print('Failed to load user profiles: $e');
+    }
   }
 
   @override
@@ -38,14 +60,13 @@ class _PetVacProfilesScreenState extends State<PetVacProfilesScreen> {
       ),
       body: Column(
         children: [
-        //Header Section
+          //Header Section
           Container(
-            width: double.infinity, 
+            width: double.infinity,
             padding:
                 const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: Row(
-              mainAxisAlignment:
-                  MainAxisAlignment.start, 
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
                   "Check Vaccination",
@@ -176,13 +197,13 @@ class _PetVacProfilesScreenState extends State<PetVacProfilesScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    //Pet Name
+                                    // Pet Name
                                     Center(
                                       child: Text(
                                         'Name: ${profile.petName}',
                                         style: const TextStyle(
                                           fontSize: 18,
-                                          color: Colors.white,
+                                          color: Colors.black,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
@@ -198,127 +219,125 @@ class _PetVacProfilesScreenState extends State<PetVacProfilesScreen> {
                                           DateFormat('yyyy-MM-dd').format(
                                               vaccineProfile.startDateVac);
 
+                                      //ใช้ email Map เพื่อแปลงอีเมลเป็นชื่อ-สกุล
+                                      String fullName = emailToFullName[
+                                              vaccineProfile.noteBy] ??
+                                          vaccineProfile.noteBy;
+
                                       return Container(
                                         margin: const EdgeInsets.only(top: 8.0),
-                                        decoration: vaccineContainerDecoration,
-                                        padding: const EdgeInsets.all(16.0),
+                                        decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                        ),
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            //Vaccination Header and Note by
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                //Date 
-                                                Container(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
+                                            // Date
+                                            Container(
+                                              width: double.infinity,
+                                              color: Colors.pink,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
                                                       horizontal: 8,
                                                       vertical: 4),
-                                                  decoration:
-                                                      dateContainerDecoration,
-                                                  child: Text(
-                                                    'Date: $formattedDate',
-                                                    style: const TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.white,
-                                                    ),
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
-                                                  ),
+                                              child: Text(
+                                                'Date: $formattedDate',
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white,
                                                 ),
-                                                const SizedBox(width: 10),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
 
-                                                //Note 
-                                                Flexible(
-                                                  child: Container(
-                                                    alignment:
-                                                        Alignment.centerRight,
-                                                    decoration:
-                                                        noteByContainerDecoration,
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 8,
-                                                        vertical: 4),
-                                                    child: Row(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
+                                            // Note by 
+                                            Container(
+                                              width: double.infinity,
+                                              color: Colors.blue,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 4),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  const Icon(Icons.note_alt,
+                                                      size: 16,
+                                                      color: Colors.white),
+                                                  const SizedBox(width: 5),
+                                                  Flexible(
+                                                    child: Text(
+                                                      'Note by: $fullName',
+                                                      style: noteByTextStyle,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+
+                                            //Vaccine Information 
+                                            Padding(
+                                              padding: const EdgeInsets.all(
+                                                  16.0), 
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  const SizedBox(height: 10),
+                                                  RichText(
+                                                    text: TextSpan(
+                                                      style: formTextStyle,
                                                       children: [
-                                                        const Icon(
-                                                            Icons.note_alt,
-                                                            size: 16,
-                                                            color:
-                                                                Colors.white),
-                                                        const SizedBox(
-                                                            width: 5),
-                                                        Flexible(
-                                                          child: Text(
-                                                            'Note by: ${vaccineProfile.noteBy}',
-                                                            style:
-                                                                noteByTextStyle,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                          ),
+                                                        const TextSpan(
+                                                          text:
+                                                              'Vaccine Name: ',
+                                                          style:
+                                                              boldFormTextStyle,
+                                                        ),
+                                                        TextSpan(
+                                                          text: vaccineProfile
+                                                              .vacName,
                                                         ),
                                                       ],
                                                     ),
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 10),
-
-                                            //Vaccine Information 
-                                            RichText(
-                                              text: TextSpan(
-                                                style: formTextStyle,
-                                                children: [
-                                                  const TextSpan(
-                                                    text: 'Vaccine Name: ',
-                                                    style: boldFormTextStyle,
+                                                  const SizedBox(height: 8),
+                                                  RichText(
+                                                    text: TextSpan(
+                                                      style: formTextStyle,
+                                                      children: [
+                                                        const TextSpan(
+                                                          text: 'Location: ',
+                                                          style:
+                                                              boldFormTextStyle,
+                                                        ),
+                                                        TextSpan(
+                                                          text: vaccineProfile
+                                                              .location,
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
-                                                  TextSpan(
-                                                    text:
-                                                        vaccineProfile.vacName,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            const SizedBox(height: 8),
-
-                                            RichText(
-                                              text: TextSpan(
-                                                style: formTextStyle,
-                                                children: [
-                                                  const TextSpan(
-                                                    text: 'Location: ',
-                                                    style: boldFormTextStyle,
-                                                  ),
-                                                  TextSpan(
-                                                    text:
-                                                        vaccineProfile.location,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            const SizedBox(height: 8),
-
-                                            RichText(
-                                              text: TextSpan(
-                                                style: formTextStyle,
-                                                children: [
-                                                  const TextSpan(
-                                                    text: 'Remark: ',
-                                                    style: boldFormTextStyle,
-                                                  ),
-                                                  TextSpan(
-                                                    text: vaccineProfile.remark,
+                                                  const SizedBox(height: 8),
+                                                  RichText(
+                                                    text: TextSpan(
+                                                      style: formTextStyle,
+                                                      children: [
+                                                        const TextSpan(
+                                                          text: 'Remark: ',
+                                                          style:
+                                                              boldFormTextStyle,
+                                                        ),
+                                                        TextSpan(
+                                                          text: vaccineProfile
+                                                              .remark,
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ],
                                               ),
@@ -328,7 +347,7 @@ class _PetVacProfilesScreenState extends State<PetVacProfilesScreen> {
                                       );
                                     }).toList(),
 
-                                    //Add Vaccine button
+                                    // Add Vaccine button
                                     const SizedBox(height: 16),
                                     ElevatedButton(
                                       style: elevatedButtonStyle,
@@ -348,10 +367,8 @@ class _PetVacProfilesScreenState extends State<PetVacProfilesScreen> {
                                         width: double.infinity,
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 8.0, horizontal: 16.0),
-                                        decoration: BoxDecoration(
+                                        decoration: const BoxDecoration(
                                           color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
                                         ),
                                         child: Row(
                                           mainAxisAlignment:
