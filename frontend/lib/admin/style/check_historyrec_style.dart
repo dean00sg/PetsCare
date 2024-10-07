@@ -28,7 +28,7 @@ const ownerNameTextStyle = TextStyle(
 //Pet Name
 const petNameTextStyle = TextStyle(
   fontSize: 18,
-  color: Colors.white,
+  color: Colors.black,
   fontWeight: FontWeight.bold,
 );
 
@@ -59,19 +59,17 @@ final elevatedButtonStyle = ElevatedButton.styleFrom(
 );
 
 //container ข้อมูลวัคซีน
-final vaccineInfoBoxDecoration = BoxDecoration(
-  color: secondaryColor,
+var vaccineInfoBoxDecoration = BoxDecoration(
+  color: const Color(0xFF90C8AC),
   borderRadius: BorderRadius.circular(8.0),
 );
 
 //container Date
-final dateBoxDecoration = BoxDecoration(
-  color: const Color.fromARGB(255, 9, 154, 132), 
-  borderRadius: BorderRadius.circular(5),
+const dateBoxDecoration = BoxDecoration(
+  color: secondaryColor
 );
 
 //container Note
-final noteBoxDecoration = BoxDecoration(
-  color: const Color.fromARGB(255, 100, 150, 230), 
-  borderRadius: BorderRadius.circular(5),
+const noteBoxDecoration = BoxDecoration(
+  color: Color.fromARGB(255, 100, 150, 230), 
 );

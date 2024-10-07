@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/admin/bloc/check_historyrec.dart';
 import 'package:frontend/admin/event/check_historyrec.dart';
+import 'package:frontend/admin/models/user.dart';
+import 'package:frontend/admin/repositories/user_repository.dart';
 import 'package:frontend/admin/state/check_historyrec.dart';
 import 'package:frontend/admin/style/check_historyrec_style.dart';
 import 'package:intl/intl.dart';
@@ -15,11 +17,28 @@ class HistoryScreen extends StatefulWidget {
 
 class _HistoryScreenState extends State<HistoryScreen> {
   TextEditingController _searchController = TextEditingController();
+  Map<String, String> emailToFullName = {};
 
   @override
   void initState() {
     super.initState();
     context.read<HistoryBloc>().add(FetchHistoryRecords());
+    _loadUserProfiles();
+  }
+
+  Future<void> _loadUserProfiles() async {
+    try {
+      List<UserProfilePets> userProfiles = await UserRepository().getProfile();
+
+      setState(() {
+        emailToFullName = {
+          for (var profile in userProfiles)
+            profile.email: '${profile.firstName} ${profile.lastName}',
+        };
+      });
+    } catch (e) {
+      print('Failed to load user profiles: $e');
+    }
   }
 
   @override
@@ -38,10 +57,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
       ),
       body: Column(
         children: [
-          //Header 
+          // Header
           Container(
             padding: const EdgeInsets.all(16.0),
-            alignment: Alignment.topLeft, //ข้อความอยู่แทบซ้าย
+            alignment: Alignment.topLeft,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -54,7 +73,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
             ),
           ),
 
-          //Search Bar
+          // Search Bar
           Container(
             decoration: BoxDecoration(
               color: primaryColor,
@@ -62,8 +81,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
             ),
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             margin: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Center( 
-              child: Container(  //ขนาดของช่องค้นหา
+            child: Center(
+              child: Container(
                 width: 350,
                 height: 50,
                 decoration: BoxDecoration(
@@ -74,10 +93,10 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 child: TextField(
                   controller: _searchController,
                   decoration: InputDecoration(
-                    prefixIcon: const Icon(Icons.search, size: 15), 
+                    prefixIcon: const Icon(Icons.search, size: 15),
                     suffixIcon: _searchController.text.isNotEmpty
                         ? IconButton(
-                            icon: const Icon(Icons.clear, size: 24), 
+                            icon: const Icon(Icons.clear, size: 24),
                             onPressed: () {
                               setState(() {
                                 _searchController.clear();
@@ -105,7 +124,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 } else if (state is HistoryLoaded) {
                   String searchTerm = _searchController.text.toLowerCase();
 
-                  //ข้อมูลสำหรับแสดง Check History
+                  // ข้อมูลที่ใช้แสดง Check History
                   final filteredRecords = state.historyRecords.where((record) {
                     return record.header.toLowerCase().contains(searchTerm) ||
                         record.symptoms.toLowerCase().contains(searchTerm) ||
@@ -146,7 +165,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                           padding: const EdgeInsets.all(16.0),
                           child: Column(
                             children: [
-                              //Owner Profile 
+                              // Owner Profile
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
@@ -158,7 +177,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                   ),
                                   const SizedBox(height: 10),
                                   Text(
-                                    '${record.ownerName}',
+                                    record.ownerName,
                                     style: ownerNameTextStyle,
                                     textAlign: TextAlign.center,
                                   ),
@@ -191,151 +210,131 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                               historyRecord.recordDatetime
                                                   .toLocal());
 
+                                      String fullName = emailToFullName[
+                                              historyRecord.noteBy] ??
+                                          historyRecord.noteBy;
+
                                       return Container(
                                         margin: const EdgeInsets.only(top: 8.0),
-                                        decoration: BoxDecoration(
+                                        decoration: const BoxDecoration(
                                           color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
                                         ),
-                                        padding: const EdgeInsets.all(16.0),
                                         child: Column(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Row(
-                                              children: [
-                                                //Date 
-                                                Flexible(
-                                                  flex: 1,
-                                                  child: Container(
-                                                    decoration:
-                                                        dateBoxDecoration, 
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 8,
-                                                        vertical: 4),
+                                            // Date
+                                            Container(
+                                              width: double.infinity,
+                                              decoration: dateBoxDecoration,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 4),
+                                              child: Text(
+                                                'Date: $formattedDate',
+                                                style: dateContainerTextStyle,
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ),
+                                            // Note by
+                                            Container(
+                                              width: double.infinity,
+                                              decoration: noteBoxDecoration,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 4),
+                                              child: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  const Icon(Icons.note_alt,
+                                                      size: 16,
+                                                      color: Colors.white),
+                                                  const SizedBox(width: 5),
+                                                  Flexible(
                                                     child: Text(
-                                                      'Date: $formattedDate',
+                                                      'Note by: $fullName',
                                                       style:
                                                           dateContainerTextStyle,
-                                                      maxLines: 1,
                                                       overflow:
                                                           TextOverflow.ellipsis,
-                                                      softWrap: false,
                                                     ),
                                                   ),
-                                                ),
-                                                const SizedBox(width: 10),
+                                                ],
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
 
-                                                //Note 
-                                                Expanded(
-                                                  child: Align(
-                                                    alignment:
-                                                        Alignment.centerRight,
-                                                    child: Container(
-                                                      decoration:
-                                                          noteBoxDecoration, 
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 8,
-                                                          vertical: 4),
-                                                      child: Row(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: [
-                                                          const Icon(
-                                                            Icons.note_alt,
-                                                            size: 16,
-                                                            color: Colors.white,
-                                                          ),
-                                                          const SizedBox(
-                                                              width: 5),
-                                                          Flexible(
-                                                            child: Text(
-                                                              'Note by: ${historyRecord.noteBy}',
-                                                              style:
-                                                                  dateContainerTextStyle,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              maxLines: 1,
-                                                              softWrap: false,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(16.0),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  RichText(
+                                                    text: TextSpan(
+                                                      style: regularTextStyle,
+                                                      children: [
+                                                        const TextSpan(
+                                                          text: 'Header: ',
+                                                          style: boldTextStyle,
+                                                        ),
+                                                        TextSpan(
+                                                          text: historyRecord
+                                                              .header,
+                                                        ),
+                                                      ],
                                                     ),
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                            const SizedBox(height: 8),
-
-                                            //หัวข้อเป็นตัวหนา เนื้อหาตัวปกติ
-                                            RichText( //ใช้แสดงข้อความหลายรูปแบบ
-                                              text: TextSpan(
-                                                style: regularTextStyle,
-                                                children: [
-                                                  const TextSpan(
-                                                    text: 'Header: ',
-                                                    style: boldTextStyle,
+                                                  const SizedBox(height: 8),
+                                                  RichText(
+                                                    text: TextSpan(
+                                                      style: regularTextStyle,
+                                                      children: [
+                                                        const TextSpan(
+                                                          text: 'Symptoms: ',
+                                                          style: boldTextStyle,
+                                                        ),
+                                                        TextSpan(
+                                                          text: historyRecord
+                                                              .symptoms,
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
-                                                  TextSpan(
-                                                    text: historyRecord.header,
+                                                  const SizedBox(height: 8),
+                                                  RichText(
+                                                    text: TextSpan(
+                                                      style: regularTextStyle,
+                                                      children: [
+                                                        const TextSpan(
+                                                          text: 'Diagnose: ',
+                                                          style: boldTextStyle,
+                                                        ),
+                                                        TextSpan(
+                                                          text: historyRecord
+                                                              .diagnose,
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
-                                                ],
-                                              ),
-                                            ),
-                                            const SizedBox(height: 8),
-
-                                            //Symptoms
-                                            RichText(
-                                              text: TextSpan(
-                                                style: regularTextStyle,
-                                                children: [
-                                                  const TextSpan(
-                                                    text: 'Symptoms: ',
-                                                    style: boldTextStyle,
-                                                  ),
-                                                  TextSpan(
-                                                    text:
-                                                        historyRecord.symptoms,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            const SizedBox(height: 8),
-
-                                            //Diagnose
-                                            RichText(
-                                              text: TextSpan(
-                                                style: regularTextStyle,
-                                                children: [
-                                                  const TextSpan(
-                                                    text: 'Diagnose: ',
-                                                    style: boldTextStyle,
-                                                  ),
-                                                  TextSpan(
-                                                    text:
-                                                        historyRecord.diagnose,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            const SizedBox(height: 8),
-
-                                            //Remark 
-                                            RichText(
-                                              text: TextSpan(
-                                                style: regularTextStyle,
-                                                children: [
-                                                  const TextSpan(
-                                                    text: 'Remark: ',
-                                                    style: boldTextStyle,
-                                                  ),
-                                                  TextSpan(
-                                                    text: historyRecord.remark,
+                                                  const SizedBox(height: 8),
+                                                  RichText(
+                                                    text: TextSpan(
+                                                      style: regularTextStyle,
+                                                      children: [
+                                                        const TextSpan(
+                                                          text: 'Remark: ',
+                                                          style: boldTextStyle,
+                                                        ),
+                                                        TextSpan(
+                                                          text: historyRecord
+                                                              .remark,
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ],
                                               ),
@@ -345,7 +344,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                       );
                                     }).toList(),
 
-                                    //Add Record button
+                                    // Add Record button
                                     const SizedBox(height: 8),
                                     ElevatedButton(
                                       style: elevatedButtonStyle,
@@ -354,9 +353,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                             await Navigator.of(context)
                                                 .pushNamed('/addhistoryrec');
 
-                                        // Check if a new record was added
                                         if (result != null && result == true) {
-                                          // Reload data after adding a record
                                           context
                                               .read<HistoryBloc>()
                                               .add(FetchHistoryRecords());
@@ -366,10 +363,8 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                         width: double.infinity,
                                         padding: const EdgeInsets.symmetric(
                                             vertical: 8.0, horizontal: 16.0),
-                                        decoration: BoxDecoration(
+                                        decoration: const BoxDecoration(
                                           color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
                                         ),
                                         child: Row(
                                           mainAxisAlignment:
@@ -379,7 +374,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                                               padding:
                                                   const EdgeInsets.all(8.0),
                                               decoration: const BoxDecoration(
-                                                color: secondaryColor,
+                                                color: Color(0xFF90C8AC),
                                                 shape: BoxShape.circle,
                                               ),
                                               child: const Icon(
