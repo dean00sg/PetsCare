@@ -41,3 +41,42 @@ class PetVacUserProfile {
     );
   }
 }
+
+
+class AddPetVacProfile {
+  final int petsId;
+  final String vacName;
+  final int dose;
+  final DateTime startDateVac;
+  final String location;
+  final String remark;
+  final String petName;
+  final String ownerName;
+  final String noteBy;
+
+  AddPetVacProfile({
+    required this.petsId,
+    required this.vacName,
+    required this.dose,
+    required this.startDateVac,
+    required this.location,
+    required this.remark,
+    required this.petName,
+    required this.ownerName,
+    required this.noteBy,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'pets_id': petsId,
+      'vac_name': vacName,
+      'dose': dose,
+      'startdatevac': startDateVac.toIso8601String(),
+      'location': location,
+      'remark': remark,
+      'pet_name': petName,
+      'owner_name': ownerName,
+      'note_by': noteBy,
+    };
+  }
+}

@@ -38,6 +38,7 @@ import 'package:frontend/users/bloc/login_bloc.dart';
 import 'package:frontend/users/bloc/petprofile.dart';
 import 'package:frontend/users/bloc/profile_bloc.dart';
 import 'package:frontend/users/bloc/signup_bloc.dart';
+import 'package:frontend/users/bloc/add_vaccination.dart';
 import 'package:frontend/admin/repositories/chechhealth_rec.dart';
 import 'package:frontend/users/bloc/vaccination_pet.dart';
 import 'package:frontend/users/repositories/historyrec_pet.dart';
@@ -47,6 +48,7 @@ import 'package:frontend/users/repositories/petsgetall.dart';
 import 'package:frontend/users/repositories/profile_repository.dart';
 import 'package:frontend/users/repositories/signup_repository.dart';
 import 'package:frontend/users/repositories/vaccination_pet.dart';
+import 'package:frontend/users/repositories/vaccination.dart';
 import 'package:frontend/users/widget_screen/create_pet_screen.dart';
 import 'package:frontend/users/widget_screen/feed_screen.dart';
 import 'package:frontend/users/widget_screen/historyrec_pet.dart';
@@ -57,6 +59,7 @@ import 'package:frontend/users/widget_screen/petprofile.dart';
 import 'package:frontend/users/widget_screen/profile.dart';
 import 'package:frontend/users/widget_screen/signup_screen.dart';
 import 'package:frontend/users/widget_screen/vaccination_pet.dart';
+import 'package:frontend/users/widget_screen/addvaccinepet.dart' ;
 
 
 void main() {
@@ -136,6 +139,9 @@ class MyApp extends StatelessWidget {
          BlocProvider(
           create: (context) => HistoryRecUserBloc(HistoryRecUserRepository()),
         ),
+        BlocProvider(
+          create: (context) => VaccinationBloc(UserPetVacRepository(apiUrl: 'http://10.0.2.2:8000')),
+        ),
       ],
       child: MaterialApp(
         title: 'Pet Care',
@@ -173,6 +179,7 @@ class MyApp extends StatelessWidget {
           '/addhistoryrec': (context) => const AddHistoryRecScreen(),
           '/vaccinepet': (context) => const VaccinePetsScreen(),
           '/historyrec': (context) => const HistoryRecUserScreen(),
+          '/addvaccinepet': (context) => const AddvaccinePetsScreen(),
           
 
 
