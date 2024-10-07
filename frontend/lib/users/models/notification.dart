@@ -12,6 +12,7 @@ class NotificationUserModel {
   final String detail;
   final String createBy;
   final String createname;
+  final String statusShow;
 
   NotificationUserModel({
     required this.notiId,
@@ -25,9 +26,8 @@ class NotificationUserModel {
     required this.detail,
     required this.createBy,
     required this.createname,
+    required this.statusShow,
   });
-
-
 
   factory NotificationUserModel.fromJson(Map<String, dynamic> json) {
     return NotificationUserModel(
@@ -42,10 +42,10 @@ class NotificationUserModel {
       detail: json['detail'],
       createBy: json['create_by'],
       createname: json['create_name'],
+      statusShow: json['status_show'],
     );
   }
 
-  // ฟังก์ชันสำหรับแสดงผลวันที่
   String getFormattedStartNoti() {
     return DateFormat('yyyy-MM-dd HH:mm').format(startNoti);
   }

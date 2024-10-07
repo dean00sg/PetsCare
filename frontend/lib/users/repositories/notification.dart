@@ -35,8 +35,7 @@ class NotificationUserRepository {
     }
   }
 
-  // ฟังก์ชันสำหรับลบการแจ้งเตือน
-  Future<void> deleteNotification(int notificationId) async {
+  Future<void> updateNotificationStatus(int notificationId, String statusShow) async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
 
@@ -44,16 +43,21 @@ class NotificationUserRepository {
       throw Exception('Token not found, user not logged in');
     }
 
-    final response = await http.delete(
-      Uri.parse('$apiUrl/Notification/$notificationId/'),
+    final response = await http.put(
+      Uri.parse('$apiUrl/Notification/'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
+      body: json.encode({
+        'noti_id': notificationId,
+        'status_show': statusShow,
+      }),
     );
 
     if (response.statusCode != 200) {
-      throw Exception('Failed to delete notification');
+      final errorData = json.decode(response.body);
+      throw Exception(errorData['detail'] ?? 'Failed to update notification');
     }
   }
 }

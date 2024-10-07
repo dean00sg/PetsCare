@@ -8,11 +8,10 @@ class NotificationUserBloc extends Bloc<NotificationUserEvent, NotificationUserS
 
   NotificationUserBloc({required this.notificationRepository}) 
       : super(NotificationInitial()) {
+    // Load Notifications
     on<LoadNotificationsUser>((event, emit) async {
       emit(NotificationLoading());
-
       try {
-        // Fetch notifications without needing to pass the token from here
         final notifications = await notificationRepository.fetchNotificationsUser();
         emit(NotificationLoaded(notifications));
       } catch (error) {
@@ -20,12 +19,12 @@ class NotificationUserBloc extends Bloc<NotificationUserEvent, NotificationUserS
       }
     });
 
+    // Update Notification Status (Hide)
     on<DeleteNotificationUser>((event, emit) async {
       try {
-        await notificationRepository.deleteNotification(event.notificationId); // ลบการแจ้งเตือน
-        // โหลดการแจ้งเตือนใหม่หลังจากลบเสร็จ
-        final notifications = await notificationRepository.fetchNotificationsUser();
-        emit(NotificationLoaded(notifications));
+        await notificationRepository.updateNotificationStatus(event.notificationId, 'hide');
+        // Reload the notifications after the update
+        add(LoadNotificationsUser());
       } catch (error) {
         emit(NotificationUserError(error.toString()));
       }

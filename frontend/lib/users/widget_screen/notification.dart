@@ -18,7 +18,6 @@ class NotificationUser extends StatelessWidget {
         notificationRepository: NotificationUserRepository(apiUrl: 'http://10.0.2.2:8000'),
       )..add(LoadNotificationsUser()),
       child: const Scaffold(
- 
         body: NotificationScreen(),
       ),
     );
@@ -52,8 +51,7 @@ class NotificationScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(
-                  width: 290,
+                Expanded( // Use Expanded to make the search bar take up available space
                   child: CustomSearchBar(
                     onChanged: (value) {
                       searchQuery = value;
@@ -61,19 +59,13 @@ class NotificationScreen extends StatelessWidget {
                     },
                   ),
                 ),
-                const SizedBox(width: 10),
-                Container(
-                  decoration: NotificationStyles.deleteButtonDecoration,
-                  child: IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.white),
-                    onPressed: () {
-                      // Action for delete button
-                    },
-                  ),
-                ),
+                
               ],
             ),
           ),
+          // Rest of your widget code
+
+
           Expanded(
             child: BlocBuilder<NotificationUserBloc, NotificationUserState>(
               builder: (context, state) {
@@ -86,10 +78,11 @@ class NotificationScreen extends StatelessWidget {
                     final matchesSearchQuery = notification.detail.toLowerCase().contains(searchQuery.toLowerCase()) ||
                                                 notification.userName.toLowerCase().contains(searchQuery.toLowerCase()) ||
                                                 notification.createname.toLowerCase().contains(searchQuery.toLowerCase());
-                    return isInTimeRange && matchesSearchQuery;
+                    final isStatusShow = notification.statusShow == 'show';
+
+                    return isInTimeRange && matchesSearchQuery && isStatusShow;
                   }).toList();
 
-                  // จำนวนการ์ดที่กรอง
                   final notificationCount = filteredNotifications.length;
 
                   if (notificationCount == 0) {
@@ -134,6 +127,7 @@ class NotificationScreen extends StatelessWidget {
                                         IconButton(
                                           icon: const Icon(Icons.close, color: Colors.white),
                                           onPressed: () {
+                                            // Update notification status to "hide"
                                             BlocProvider.of<NotificationUserBloc>(context).add(DeleteNotificationUser(notification.notiId));
                                           },
                                         ),
@@ -159,9 +153,6 @@ class NotificationScreen extends StatelessWidget {
                                       notification.header,
                                       style: NotificationStyles.headerStyle,
                                     ),
-
-
-                                    //imageUrl
                                     if (notification.file.isNotEmpty) ...[
                                       const SizedBox(height: 10),
                                       Image.network(
@@ -172,23 +163,21 @@ class NotificationScreen extends StatelessWidget {
                                         },
                                       ),
                                     ],
-
-
-                                    const SizedBox(height: 5),
+                                    const SizedBox(height: 10),
                                     Text(
                                       notification.detail,
                                       style: NotificationStyles.detailStyle,
                                     ),
                                     const SizedBox(height: 10),
-                                    Row(
-                                      children: [
-                                        const Spacer(),
-                                        Text(
-                                          formatDateTime(notification.recordDatetime),
-                                          style: const TextStyle(color: Colors.white70),
-                                        ),
-                                      ],
-                                    ),
+                                      Row(
+                                        children: [
+                                          const Spacer(),
+                                          Text(
+                                            formatDateTime(notification.recordDatetime),
+                                            style: const TextStyle(color: Colors.white70),
+                                          ),
+                                        ],
+                                      ),
                                   ],
                                 ),
                               ),
@@ -200,9 +189,9 @@ class NotificationScreen extends StatelessWidget {
                   );
                 } else if (state is NotificationUserError) {
                   return Center(child: Text(state.message));
-                } else {
-                  return const Center(child: Text('No Notifications'));
                 }
+
+                return const Center(child: Text('Something went wrong!'));
               },
             ),
           ),
