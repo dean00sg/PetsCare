@@ -41,7 +41,7 @@ class AddHistoryRec {
   final String symptoms;
   final String diagnose;
   final String remark;
-  final String petName;
+  final String pets_id;
   final String ownerName;
 
   AddHistoryRec({
@@ -49,7 +49,7 @@ class AddHistoryRec {
     required this.symptoms,
     required this.diagnose,
     required this.remark,
-    required this.petName,
+    required this.pets_id,
     required this.ownerName,
   });
 
@@ -58,7 +58,7 @@ class AddHistoryRec {
         "Symptoms": symptoms,
         "Diagnose": diagnose,
         "Remark": remark,
-        "pet_name": petName,
+        "pets_id": pets_id,
         "owner_name": ownerName,
         // ไม่รวม record_datetime
       };
@@ -69,7 +69,7 @@ class AddHistoryRec {
       symptoms: json['Symptoms'],
       diagnose: json['Diagnose'],
       remark: json['Remark'],
-      petName: json['pet_name'],
+      pets_id: json['pets_id'],
       ownerName: json['owner_name'],
     );
   }

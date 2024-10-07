@@ -30,9 +30,11 @@ class _AddHistoryRecScreenState extends State<AddHistoryRecScreen> {
   List<PetProfileUserModel> petProfiles = [];
   List<String> ownerNames = [];
   List<String> petNames = [];
+  Map<String, int> petNameToId = {}; // Map to store pet name to ID mapping
 
   String? selectedOwner;
-  String? selectedPet;
+  String? selectedPetName;
+  int? selectedPetId; // Store selected pet's ID
   String? username;
 
   @override
@@ -66,7 +68,13 @@ class _AddHistoryRecScreenState extends State<AddHistoryRecScreen> {
           .where((pet) => pet.owner_name == selectedOwner)
           .map((pet) => pet.name)
           .toList();
-      selectedPet = null; 
+
+      petNameToId = {
+        for (var pet in petProfiles.where((pet) => pet.owner_name == selectedOwner))
+          pet.name: pet.petsId,
+      };
+      selectedPetName = null;
+      selectedPetId = null;
     });
   }
 
@@ -117,39 +125,6 @@ class _AddHistoryRecScreenState extends State<AddHistoryRecScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
-                                  padding: const EdgeInsets.all(16.0),
-                                  decoration: profileContainerBoxDecoration,
-                                  child: Row(
-                                    children: [
-                                      CircleAvatar(
-                                        backgroundImage: state.profile.imageUrl != null
-                                            ? NetworkImage(state.profile.imageUrl!)
-                                            : null,
-                                        radius: 30,
-                                        child: state.profile.imageUrl == null
-                                            ? const Icon(Icons.person, size: 30)
-                                            : null,
-                                      ),
-                                      const SizedBox(width: 12),
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            "${state.profile.firstName} ${state.profile.lastName}",
-                                            style: const TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          Text(state.profile.email,
-                                              style: const TextStyle(color: Colors.white)),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
                                 const SizedBox(height: 8),
                                 const Text('Owner:', style: TextStyle(color: Colors.white)),
                                 const SizedBox(height: 5),
@@ -206,11 +181,12 @@ class _AddHistoryRecScreenState extends State<AddHistoryRecScreen> {
                                   ),
                                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
                                   child: DropdownButton<String>(
-                                    value: selectedPet,
+                                    value: selectedPetName,
                                     hint: const Text('Select Pet', style: TextStyle(color: Colors.white)),
                                     onChanged: (newValue) {
                                       setState(() {
-                                        selectedPet = newValue;
+                                        selectedPetName = newValue;
+                                        selectedPetId = petNameToId[newValue!];
                                       });
                                     },
                                     isExpanded: true,
@@ -258,14 +234,14 @@ class _AddHistoryRecScreenState extends State<AddHistoryRecScreen> {
                                     style: submitButtonStyle,
                                     onPressed: () {
                                       if (selectedOwner != null &&
-                                          selectedPet != null &&
+                                          selectedPetId != null &&
                                           username != null) {
                                         final record = AddHistoryRec(
                                           header: headerController.text,
                                           symptoms: symptomsController.text,
                                           diagnose: diagnoseController.text,
                                           remark: remarkController.text,
-                                          petName: selectedPet!,
+                                          pets_id: selectedPetId.toString(),
                                           ownerName: selectedOwner!,
                                         );
 
@@ -287,8 +263,11 @@ class _AddHistoryRecScreenState extends State<AddHistoryRecScreen> {
                           ),
                         ],
                       );
+                    } else if (state is ProfileLoading) {
+                      return const CircularProgressIndicator();
+                    } else {
+                      return const Text('Error loading profile');
                     }
-                    return const SizedBox();
                   },
                 ),
               ],
