@@ -100,6 +100,14 @@ class PetProfileScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Colors.blue[100],
                       borderRadius: BorderRadius.circular(10),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0xFFBBDEFB),
+                          spreadRadius: 3,
+                          blurRadius: 5,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -154,10 +162,18 @@ class PetProfileScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: InkWell(
+                  Expanded(
+                    child: GridView.count(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 30,
+                      crossAxisSpacing: 30,
+                      childAspectRatio: 1,
+                      children: [
+                        _buildVaccinationMainCard(
+                          context,
+                          title: 'VACCINE PET\'S',
+                          icon: Icons.vaccines,
+                          color: const Color(0xFFE09492),
                           onTap: () {
                             Navigator.pushNamed(
                               context,
@@ -165,31 +181,16 @@ class PetProfileScreen extends StatelessWidget {
                               arguments: {
                                 'petsId': petsId,
                                 'name': pet.name,
-                                'image':imagePath
+                                'image': imagePath,
                               },
                             );
                           },
-                          child: Container(
-                            height: 120,
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color:  const Color(0xFFE09492),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: const Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.vaccines, size: 40, color: Colors.white),
-                                SizedBox(height: 10),
-                                Text('VACCINE PET\'S', style: TextStyle(fontSize: 16, color: Colors.white)),
-                              ],
-                            ),
-                          ),
                         ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: InkWell(
+                        _buildVaccinationMainCard(
+                          context,
+                          title: 'Check History',
+                          icon: Icons.history,
+                          color: const Color(0xFF72C1A3),
                           onTap: () {
                             Navigator.pushNamed(
                               context,
@@ -197,30 +198,13 @@ class PetProfileScreen extends StatelessWidget {
                               arguments: {
                                 'petsId': petsId,
                                 'name': pet.name,
-                                'image':imagePath
+                                'image': imagePath,
                               },
                             );
                           },
-                          child: Container(
-                            height: 120,
-                            padding: const EdgeInsets.all(16),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF72C1A3)
-,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: const Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.history, size: 40, color: Colors.white),
-                                SizedBox(height: 10),
-                                Text('Check History', style: TextStyle(fontSize: 16, color: Colors.white)),
-                              ],
-                            ),
-                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -249,5 +233,45 @@ class PetProfileScreen extends StatelessWidget {
     }
 
     return {'years': years, 'months': months, 'days': days};
+  }
+
+  Widget _buildVaccinationMainCard(BuildContext context,
+      {required String title,
+      required IconData icon,
+      required Color color,
+      required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius:
+              BorderRadius.circular(10), // Added border radius for better UI
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.5),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: const Offset(0, 3), // changes position of shadow
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 50, color: Colors.white),
+            const SizedBox(height: 8),
+            Text(
+              title,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
