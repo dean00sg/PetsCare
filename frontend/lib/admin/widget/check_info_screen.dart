@@ -40,7 +40,7 @@ class AdminCheckInfoScreen extends StatelessWidget {
                 childAspectRatio: 4 / 4,
                 children: [
                   _buildInfoCard(context, 'check all user', Icons.group, Colors.blue),
-                  _buildInfoCard(context, 'check all user by name', Icons.person_search, Colors.teal),
+                  _buildInfoCard(context, 'check history rec of pets', Icons.search, Colors.teal),
                   _buildInfoCard(context, 'check owner of pets', Icons.pets, Colors.cyan),
                   _buildInfoCard(context, 'check vaccine of pets', Icons.vaccines, Colors.teal[300]!),
                 ],
@@ -60,13 +60,14 @@ Widget _buildInfoCard(BuildContext context, String title, IconData icon, Color c
      
         BlocProvider.of<UserBloc>(context).add(LoadUserPets());
         await Navigator.of(context).pushNamed('/checkAllUsersScreen');
-      } else if (title == 'check all user by name') {
+      } else if (title == 'check history rec of pets') {
+        await Navigator.of(context).pushNamed('/checkhistoryrec');
    
       } else if (title == 'check owner of pets') {
         
         await Navigator.of(context).pushNamed('/petsprofileuser'); 
       } else if (title == 'check vaccine of pets') {
-      
+       await Navigator.of(context).pushNamed('/petsprofileuser'); 
       }
     },
       child: Container(
