@@ -67,7 +67,7 @@ Widget _buildInfoCard(BuildContext context, String title, IconData icon, Color c
         
         await Navigator.of(context).pushNamed('/petsprofileuser'); 
       } else if (title == 'check vaccine of pets') {
-       await Navigator.of(context).pushNamed('/petsprofileuser'); 
+       await Navigator.of(context).pushNamed('/checkvaccination'); 
       }
     },
       child: Container(
