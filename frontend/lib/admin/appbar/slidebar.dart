@@ -5,7 +5,6 @@ class Sidebar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final currentRoute = ModalRoute.of(context)?.settings.name;
     return Drawer(
       child: Container(
         color: Colors.white,
@@ -25,7 +24,6 @@ class Sidebar extends StatelessWidget {
             ),
             // ใช้ Container ครอบ ListTile แต่ละอัน
             const SizedBox(height: 25),
-            if (currentRoute != '/feedadmin') 
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 10),
               decoration: BoxDecoration(
@@ -52,7 +50,6 @@ class Sidebar extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 15),
-            if (currentRoute != '/checkinfo') 
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 8.0),
               decoration: BoxDecoration(
@@ -79,7 +76,6 @@ class Sidebar extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 15),
-            if (currentRoute != '/notifications') 
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 8.0),
               decoration: BoxDecoration(
@@ -105,8 +101,7 @@ class Sidebar extends StatelessWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 15),
-            if (currentRoute != '/healthrecordmain') 
+            const SizedBox(height: 15), 
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 8.0),
               decoration: BoxDecoration(
@@ -133,7 +128,6 @@ class Sidebar extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 15),
-            if (currentRoute != '/vaccinationmain') 
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 8.0),
               decoration: BoxDecoration(
@@ -160,7 +154,6 @@ class Sidebar extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 15),
-            if (currentRoute != '/historyrecmain') 
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 8.0),
               decoration: BoxDecoration(
@@ -178,7 +171,7 @@ class Sidebar extends StatelessWidget {
               child: Column(
                 children: [
                   ListTile(
-                    title: const Text('History Record', style: TextStyle(color: Colors.white)),
+                    title: const Text('Histry Record', style: TextStyle(color: Colors.white)),
                     onTap: () {
                       Navigator.pushNamed(context, '/historyrecmain');
                     },

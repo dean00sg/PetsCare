@@ -57,7 +57,6 @@ class _SidebarState extends State<Sidebar> {
 
   Widget _buildDrawerItem({required String title, required String route, required bool isCurrentRoute}) {
     return Visibility(
-      visible: !isCurrentRoute,
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 10),
         decoration: BoxDecoration(
