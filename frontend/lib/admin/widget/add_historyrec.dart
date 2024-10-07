@@ -30,11 +30,11 @@ class _AddHistoryRecScreenState extends State<AddHistoryRecScreen> {
   List<PetProfileUserModel> petProfiles = [];
   List<String> ownerNames = [];
   List<String> petNames = [];
-  Map<String, int> petNameToId = {}; // Map to store pet name to ID mapping
+  Map<String, int> petNameToId = {}; 
 
   String? selectedOwner;
   String? selectedPetName;
-  int? selectedPetId; // Store selected pet's ID
+  int? selectedPetId; 
   String? username;
 
   @override
@@ -126,7 +126,7 @@ class _AddHistoryRecScreenState extends State<AddHistoryRecScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const SizedBox(height: 8),
-                                const Text('Owner:', style: TextStyle(color: Colors.white)),
+                                const Text('Owner:', style: TextStyle(color: Colors.black)),
                                 const SizedBox(height: 5),
                                 Row(
                                   children: [
@@ -172,7 +172,7 @@ class _AddHistoryRecScreenState extends State<AddHistoryRecScreen> {
                                   ],
                                 ),
                                 const SizedBox(height: 10),
-                                const Text('Pet Name:', style: TextStyle(color: Colors.white)),
+                                const Text('Pet Name:', style: TextStyle(color: Colors.black)),
                                 const SizedBox(height: 5),
                                 Container(
                                   decoration: BoxDecoration(
@@ -182,7 +182,7 @@ class _AddHistoryRecScreenState extends State<AddHistoryRecScreen> {
                                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
                                   child: DropdownButton<String>(
                                     value: selectedPetName,
-                                    hint: const Text('Select Pet', style: TextStyle(color: Colors.white)),
+                                    hint: const Text('Select Pet', style: TextStyle(color: Color(0xFFD3D3D3))),
                                     onChanged: (newValue) {
                                       setState(() {
                                         selectedPetName = newValue;
@@ -200,28 +200,28 @@ class _AddHistoryRecScreenState extends State<AddHistoryRecScreen> {
                                   ),
                                 ),
                                 const SizedBox(height: 10),
-                                const Text('Record Header:', style: TextStyle(color: Colors.white)),
+                                const Text('Record Header:', style: TextStyle(color: Colors.black)),
                                 const SizedBox(height: 5),
                                 TextField(
                                   controller: headerController,
                                   decoration: inputDecorationStyle,
                                 ),
                                 const SizedBox(height: 10),
-                                const Text('Symptoms:', style: TextStyle(color: Colors.white)),
+                                const Text('Symptoms:', style: TextStyle(color: Colors.black)),
                                 const SizedBox(height: 5),
                                 TextField(
                                   controller: symptomsController,
                                   decoration: inputDecorationStyle,
                                 ),
                                 const SizedBox(height: 10),
-                                const Text('Diagnose:', style: TextStyle(color: Colors.white)),
+                                const Text('Diagnose:', style: TextStyle(color: Colors.black)),
                                 const SizedBox(height: 5),
                                 TextField(
                                   controller: diagnoseController,
                                   decoration: inputDecorationStyle,
                                 ),
                                 const SizedBox(height: 10),
-                                const Text('Remark: Optional', style: TextStyle(color: Colors.white)),
+                                const Text('Remark: Optional', style: TextStyle(color: Colors.black)),
                                 const SizedBox(height: 5),
                                 TextField(
                                   controller: remarkController,
