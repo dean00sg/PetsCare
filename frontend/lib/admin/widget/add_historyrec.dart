@@ -125,6 +125,40 @@ class _AddHistoryRecScreenState extends State<AddHistoryRecScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Container(
+                                  padding: const EdgeInsets.all(16.0),
+                                  decoration: profileContainerBoxDecoration, 
+                                  child: Row(
+                                    children: [
+                                      CircleAvatar(
+                                        backgroundImage: state.profile.imageUrl != null
+                                            ? NetworkImage(state.profile.imageUrl!)
+                                            : null,
+                                        radius: 30,
+                                        child: state.profile.imageUrl == null
+                                            ? const Icon(Icons.person, size: 30)
+                                            : null,
+                                      ),
+                                      const SizedBox(width: 12),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            "${state.profile.firstName} ${state.profile.lastName}",
+                                            style: const TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          Text(state.profile.email,
+                                              style: const TextStyle(
+                                                  color: Colors.white)),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
                                 const SizedBox(height: 8),
                                 const Text('Owner:', style: TextStyle(color: Colors.black)),
                                 const SizedBox(height: 5),
@@ -182,7 +216,7 @@ class _AddHistoryRecScreenState extends State<AddHistoryRecScreen> {
                                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
                                   child: DropdownButton<String>(
                                     value: selectedPetName,
-                                    hint: const Text('Select Pet', style: TextStyle(color: Color(0xFFD3D3D3))),
+                                    hint: const Text(' '),
                                     onChanged: (newValue) {
                                       setState(() {
                                         selectedPetName = newValue;
