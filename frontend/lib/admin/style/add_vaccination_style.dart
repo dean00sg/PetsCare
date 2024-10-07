@@ -24,7 +24,7 @@ final BoxDecoration containerBoxDecoration = BoxDecoration(
 );
 
 final BoxDecoration containerHistoryBoxDecoration = BoxDecoration(
-  color: const Color(0xFF41A785),
+  color: const Color(0xFF90C8AC) ,
   borderRadius: BorderRadius.circular(10),
 );
 
