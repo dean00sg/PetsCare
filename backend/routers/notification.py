@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from datetime import datetime
 from models.user import UserProfile
 from deps import get_session, get_current_user
-from models.notification import Notification, CreateNotification, LogNotification, NotificationResponse
+from models.notification import Notification, CreateNotification, LogNotification, NotificationResponse, NotificationUpdate
 
 router = APIRouter(tags=["Notification"])
 
@@ -70,47 +70,45 @@ def get_all_notifications(
 
     return db_notifications
 
-# @router.put("/{notification_id}", response_model=CreateNotification)
-# def update_notification(
-#     notification_id: int,
-#     notification_update: CreateNotification,
-#     session: Session = Depends(get_session),
-#     username: str = Depends(get_current_user)
-# ):
-   
-#     db_notification = session.query(Notification).filter(Notification.noti_id == notification_id).first()
+@router.put("/", response_model=NotificationResponse)
+def update_notification(
+    notification_update: NotificationUpdate,
+    session: Session = Depends(get_session),
+    username: str = Depends(get_current_user)
+):
+    # Retrieve notification ID from the request body
+    notification_id = notification_update.noti_id
 
-#     if db_notification is None:
-#         raise HTTPException(status_code=404, detail="Notification not found")
+    # Query the database for the notification
+    db_notification = session.query(Notification).filter(Notification.noti_id == notification_id).first()
 
+    if db_notification is None:
+        raise HTTPException(status_code=404, detail="Notification not found")
 
-#     old_notification = db_notification.dict()
+    # Update only the status_show field
+    db_notification.status_show = notification_update.status_show
 
- 
-#     for key, value in notification_update.dict(exclude_unset=True).items():
-#         setattr(db_notification, key, value)
+    session.commit()
+    session.refresh(db_notification)
 
-#     session.commit()
-#     session.refresh(db_notification)
+    # Log the update action
+    log_entry = LogNotification(
+        noti_id=db_notification.noti_id,
+        action_name="update",
+        login_datetime=datetime.now().replace(microsecond=0),
+        header=db_notification.header,
+        to_user=db_notification.to_user,
+        record_datetime=db_notification.record_datetime,
+        start_noti=db_notification.start_noti,
+        end_noti=db_notification.end_noti,
+        file=db_notification.file,
+        detail=db_notification.detail,
+        create_by=username
+    )
+    session.add(log_entry)
+    session.commit()
 
-#     # Log the update action
-#     log_entry = LogNotification(
-#         noti_id=db_notification.noti_id,
-#         action_name="update",
-#         login_datetime=datetime.now().replace(microsecond=0),
-#         header=old_notification['header'],
-#         to_user=old_notification['to_user'],
-#         record_datetime=old_notification['record_datetime'],
-#         start_noti=old_notification['start_noti'],
-#         end_noti=old_notification['end_noti'],
-#         file=old_notification['file'],
-#         detail=old_notification['detail'],
-#         create_by=username
-#     )
-#     session.add(log_entry)
-#     session.commit()
-
-#     return db_notification
+    return db_notification
 
 
 @router.delete("/{notification_id}", status_code=status.HTTP_200_OK)

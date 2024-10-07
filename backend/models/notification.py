@@ -18,6 +18,7 @@ class Notification(Base):
     end_noti =Column(DateTime, nullable=False)
     file = Column(String,nullable=True)
     detail = Column(String,nullable=True)  
+    status_show=Column(String, default="show")  
     create_by = Column(String,nullable=True)
     create_name = Column(String,nullable=True)
 
@@ -47,6 +48,12 @@ class CreateNotification(BaseModel):
     end_noti: datetime
     file: Optional[str] = None
     detail: Optional[str] = None
+
+
+class NotificationUpdate(BaseModel):
+    noti_id: int
+    status_show: str
+
    
 class NotificationResponse(BaseModel):
     noti_id: int
@@ -60,3 +67,4 @@ class NotificationResponse(BaseModel):
     detail: Optional[str] = None
     create_by: Optional[str] = None
     create_name: Optional[str] = None
+    status_show: str
