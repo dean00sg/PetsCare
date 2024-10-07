@@ -1,3 +1,5 @@
+
+import 'package:frontend/users/models/healthrec.dart';
 import 'package:frontend/users/models/petprofile.dart';
 
 abstract class PetProfileState {}
@@ -8,8 +10,9 @@ class PetProfileLoading extends PetProfileState {}
 
 class PetProfileLoaded extends PetProfileState {
   final PetProfile petProfile;
+  final List<HealthRecordUser> healthRecords;
 
-  PetProfileLoaded(this.petProfile);
+  PetProfileLoaded(this.petProfile, this.healthRecords);
 }
 
 class PetProfileError extends PetProfileState {

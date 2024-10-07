@@ -41,6 +41,7 @@ import 'package:frontend/users/bloc/signup_bloc.dart';
 import 'package:frontend/users/bloc/add_vaccination.dart';
 import 'package:frontend/admin/repositories/chechhealth_rec.dart';
 import 'package:frontend/users/bloc/vaccination_pet.dart';
+import 'package:frontend/users/repositories/healthrec.dart';
 import 'package:frontend/users/repositories/historyrec_pet.dart';
 import 'package:frontend/users/repositories/login_repository.dart';
 import 'package:frontend/users/repositories/petprofile.dart';
@@ -101,9 +102,13 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => AdminCheckInfoBloc(),
         ),
-        BlocProvider(
-          create: (context) => PetProfileBloc(PetProfileRepository()),
+         BlocProvider(
+        create: (context) => PetProfileBloc(
+          PetProfileRepository(),
+          HealthRecordUserRepository(), // Add HealthRecordRepository here
         ),
+        child: const PetProfileScreen(), // Change to your initial screen
+      ),
         BlocProvider(
           create: (context) => HealthRecordBloc(HealthRecordRepository()),
         ),

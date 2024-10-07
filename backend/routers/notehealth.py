@@ -119,8 +119,7 @@ def get_health_record(
 
 @router.get("/all", response_model=List[HealthRecordResponse])
 def get_all_health_records(
-    session: Session = Depends(get_session),
-    role: str = Depends(get_current_user_role)
+    session: Session = Depends(get_session)
 ):
     # ดึงข้อมูลทั้งหมดจากตาราง health_records
     stmt = select(ModelHealthRecord)
@@ -133,7 +132,7 @@ def get_all_health_records(
     return [
         HealthRecordResponse(
             HR_id=record.HR_id,
-            header = record.header,
+            header=record.header,
             pet_type=record.pet_type,
             age=Age(
                 years=record.age_years,
