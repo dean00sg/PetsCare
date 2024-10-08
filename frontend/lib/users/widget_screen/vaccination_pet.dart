@@ -41,9 +41,9 @@ class VaccinePetsScreen extends StatelessWidget {
           children: [
             Padding(
               padding: EdgeInsets.fromLTRB(
-                MediaQuery.of(context).size.width * 0.05, 
+                MediaQuery.of(context).size.width * 0.05,
                 16.0,
-                MediaQuery.of(context).size.width * 0.05, 
+                MediaQuery.of(context).size.width * 0.05,
                 0.0,
               ),
               //Pet Name
@@ -96,8 +96,7 @@ class VaccinePetsScreen extends StatelessWidget {
                         return Column(
                           children: [
                             const Center(child: Text('No data available')),
-                            _buildAddVaccineButton(
-                                context), 
+                            _buildAddVaccineButton(context),
                           ],
                         );
                       } else if (state is PetVacUserLoaded) {
@@ -113,8 +112,7 @@ class VaccinePetsScreen extends StatelessWidget {
                                     vaccine, index + 1);
                               },
                             ),
-                            _buildAddVaccineButton(
-                                context), 
+                            _buildAddVaccineButton(context),
                           ],
                         );
                       } else {
@@ -148,18 +146,16 @@ class VaccinePetsScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Vaccine Dose container 
+          // Vaccine Dose container
           Container(
             width: double.infinity,
-            margin: EdgeInsets.zero, 
-            padding: const EdgeInsets.symmetric(
-                vertical: 8, horizontal: 0), 
+            margin: EdgeInsets.zero,
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
             decoration: const BoxDecoration(
               color: Color(0xFFD3B8AE), // container ของ Vaccine Dose
             ),
             child: Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 16), 
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
                 'Vaccine Dose: ${vaccine.dose}',
                 style:
@@ -170,9 +166,7 @@ class VaccinePetsScreen extends StatelessWidget {
           // ข้อมูลวัคซีนอื่น ๆ
           const SizedBox(height: 16),
           Padding(
-            padding: const EdgeInsets.symmetric(
-                horizontal:
-                    16), 
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -254,9 +248,25 @@ class VaccinePetsScreen extends StatelessWidget {
   Widget _buildAddVaccineButton(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.pushNamed(context, '/addvaccinepet');
+        Navigator.pushNamed(
+          context,
+          '/addvaccinepet',
+          arguments: {
+            'petsId': ModalRoute.of(context)?.settings.arguments != null
+                ? (ModalRoute.of(context)?.settings.arguments
+                    as Map<String, dynamic>)['petsId']
+                : null,
+            'name': ModalRoute.of(context)?.settings.arguments != null
+                ? (ModalRoute.of(context)?.settings.arguments
+                    as Map<String, dynamic>)['name']
+                : '',
+            'image': ModalRoute.of(context)?.settings.arguments != null
+                ? (ModalRoute.of(context)?.settings.arguments
+                    as Map<String, dynamic>)['image']
+                : '',
+          },
+        );
       },
-      
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         child: Container(
