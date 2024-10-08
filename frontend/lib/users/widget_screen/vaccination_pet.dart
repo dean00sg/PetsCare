@@ -28,13 +28,14 @@ class VaccinePetsScreen extends StatelessWidget {
         backgroundColor: PetProfileStyles.appBarBackgroundColor,
         centerTitle: true,
         toolbarHeight: 70,
-        title: const Text('Vaccine', 
-        style: TextStyle(
-          fontSize: 22,
-          color: Colors.white,
-          )),
+        title: const Text('Vaccine',
+            style: TextStyle(
+              fontSize: 22,
+              color: Colors.white,
+            )),
       ),
-      body: SingleChildScrollView( //ป้องกันการล้นจอ
+      body: SingleChildScrollView(
+        //ป้องกันการล้นจอ
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -48,7 +49,8 @@ class VaccinePetsScreen extends StatelessWidget {
               //Pet Name
               child: Container(
                 width: double.infinity,
-                color: const Color.fromARGB(255, 200, 90, 90), //container of pet name
+                color: const Color.fromARGB(
+                    255, 200, 90, 90), //container of pet name
                 height: 80,
                 padding: const EdgeInsets.symmetric(
                     horizontal: 16.0, vertical: 16.0),
@@ -81,37 +83,48 @@ class VaccinePetsScreen extends StatelessWidget {
                 16.0,
               ),
               child: Container(
-                width: double.infinity,
-                color: const Color(0xFFF2B8B5), //container main of vaccine infor
-                child: BlocBuilder<PetVacUserBloc, PetVacUserState>(
-                  builder: (context, state) {
-                    if (state is PetVacUserLoading) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (state is PetVacUserError) {
-                      return Center(child: Text('Error: ${state.error}'));
-                    } else if (state is PetVacUserLoaded) {
-                      return Column(
-                        children: [
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: state.vacUserProfiles.length,
-                            itemBuilder: (context, index) {
-                              final vaccine = state.vacUserProfiles[index]; //ปรับขนาด container ตามจำนวนวัคซีน
-                              return _buildVaccineContainer(vaccine, index + 1);
-                            },
-                          ),
-                          //const SizedBox(height: 8),
-                          _buildAddVaccineButton(context),
-                        ],
-                      );
-                    } else {
-                      return const Center(
-                          child: Text('No vaccine data available'));
-                    }
-                  },
-                ),
-              ),
+                  width: double.infinity,
+                  color:
+                      const Color(0xFFF2B8B5), //container main of vaccine infor
+                  child: BlocBuilder<PetVacUserBloc, PetVacUserState>(
+                    builder: (context, state) {
+                      if (state is PetVacUserLoading) {
+                        return const Center(
+                            child:
+                                CircularProgressIndicator()); //ตรวจสอบสถานะเมื่อเกิดข้อผิดพลาดในการโหลดข้อมูล
+                      } else if (state is PetVacUserError) {
+                        return const Center(
+                            child: Text(
+                                'No data available')); //ตรวจสอบข้อผิดพลาดดึงข้อมูลจากserver
+                      } else if (state is PetVacUserLoaded &&
+                          state.vacUserProfiles.isEmpty) {
+                        return const Center(
+                            child: Text(
+                                'No data available')); //โหลดข้อมูลสำเร็จแต่ไม่มีข้อมูล
+                      } else if (state is PetVacUserLoaded) {
+                        return Column(
+                          children: [
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: state.vacUserProfiles.length,
+                              itemBuilder: (context, index) {
+                                final vaccine = state.vacUserProfiles[
+                                    index]; //ปรับขนาด container ตามจำนวนวัคซีน
+                                return _buildVaccineContainer(
+                                    vaccine, index + 1);
+                              },
+                            ),
+                            _buildAddVaccineButton(context),
+                          ],
+                        );
+                      } else {
+                        return const Center(
+                            child: Text(
+                                'No data available')); //กรณีที่สถานะไม่ตรงกับกรณีข้างต้นทั้งหมด
+                      }
+                    },
+                  )),
             ),
           ],
         ),
@@ -119,144 +132,159 @@ class VaccinePetsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildVaccineContainer(PetVacUserProfile vaccine, int index) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,  //container of vaccine infor
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
-            spreadRadius: 2,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
+Widget _buildVaccineContainer(PetVacUserProfile vaccine, int index) {
+  return Container(
+    margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+    decoration: BoxDecoration(
+      color: Colors.white, // container ของข้อมูลวัคซีน
+      boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(0.3),
+          spreadRadius: 2,
+          blurRadius: 5,
+          offset: const Offset(0, 3),
+        ),
+      ],
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Vaccine Dose container (ชนขอบด้านบนและด้านข้างของคอนเทนเนอร์สีขาว)
+        Container(
+          width: double.infinity,
+          margin: EdgeInsets.zero, // ทำให้ชนขอบด้านข้าง
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0), // ไม่มี padding ด้านข้าง
+          decoration: const BoxDecoration(
+            color: Color(0xFFD3B8AE), // container ของ Vaccine Dose
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-            decoration: BoxDecoration(
-              color: const Color(0xFFD3B8AE), //container of vaccine dose 
-              borderRadius: BorderRadius.circular(8),
-            ),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16), // เพิ่ม padding แค่ด้านในข้อความ
             child: Text(
               'Vaccine Dose: ${vaccine.dose}',
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
-          //Vaccine infor
-          const SizedBox(height: 16),
-          Row(
+        ),
+        // ข้อมูลวัคซีนอื่น ๆ
+        const SizedBox(height: 16),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16), // ทำให้เนื้อหาข้อมูลวัคซีนสมดุลกับขอบคอนเทนเนอร์
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text(
-                'Vaccine Name: ', 
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Vaccine Name: ',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Expanded(
+                    child: Text(
+                      vaccine.vacName,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
               ),
-              Expanded(
-                child: Text(
-                  vaccine.vacName,
-                  style: const TextStyle(fontSize: 16),
-                ),
+              const SizedBox(height: 8),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Datetime: ',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Expanded(
+                    child: Text(
+                      vaccine.startDateVac,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Datetime: ',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              const SizedBox(height: 8),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Location: ',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Expanded(
+                    child: Text(
+                      vaccine.location,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
               ),
-              Expanded(
-                child: Text(
-                  vaccine.startDateVac,
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Location: ',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              Expanded(
-                child: Text(
-                  vaccine.location,
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Remark: ',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              Expanded(
-                child: Text(
-                  vaccine.remark,
-                  style: const TextStyle(fontSize: 16),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAddVaccineButton(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        //bottmon Add Vaccine
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.3),
-                spreadRadius: 2,
-                blurRadius: 5,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 18,
-                backgroundColor: Color(0xFFF2B8B5),
-                child: Icon(Icons.add, color: Colors.white),
-              ),
-              SizedBox(width: 8),
-              Text(
-                'Add Vaccine',
-                style: TextStyle(fontSize: 18, color: Colors.black),
+              const SizedBox(height: 8),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Remark: ',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Expanded(
+                    child: Text(
+                      vaccine.remark,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ),
+      ],
+    ),
+  );
+}
+
+
+
+
+Widget _buildAddVaccineButton(BuildContext context) {
+  return GestureDetector(
+    onTap: () {
+      // เมื่อกดปุ่ม + จะเปลี่ยนไปยังหน้า /addvaccinepet
+      Navigator.pushNamed(context, '/addvaccinepet');
+    },
+    child: Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.3),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircleAvatar(
+              radius: 18,
+              backgroundColor: Color(0xFFF2B8B5),
+              child: Icon(Icons.add, color: Colors.white),
+            ),
+            SizedBox(width: 8),
+            Text(
+              'Add Vaccine',
+              style: TextStyle(fontSize: 18, color: Colors.black),
+            ),
+          ],
+        ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 }
