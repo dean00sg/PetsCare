@@ -41,9 +41,9 @@ class VaccinePetsScreen extends StatelessWidget {
           children: [
             Padding(
               padding: EdgeInsets.fromLTRB(
-                MediaQuery.of(context).size.width * 0.05, //ระยะห่างขอบบน
+                MediaQuery.of(context).size.width * 0.05, 
                 16.0,
-                MediaQuery.of(context).size.width * 0.05, //ระยะห่างขอบล่าง
+                MediaQuery.of(context).size.width * 0.05, 
                 0.0,
               ),
               //Pet Name
@@ -62,7 +62,6 @@ class VaccinePetsScreen extends StatelessWidget {
                       radius: 25,
                       backgroundImage: AssetImage(imagePath),
                     ),
-                    //const SizedBox(width: 8),
                     Text(
                       ' $petName',
                       style: const TextStyle(
@@ -89,18 +88,18 @@ class VaccinePetsScreen extends StatelessWidget {
                   child: BlocBuilder<PetVacUserBloc, PetVacUserState>(
                     builder: (context, state) {
                       if (state is PetVacUserLoading) {
-                        return const Center(
-                            child:
-                                CircularProgressIndicator()); //ตรวจสอบสถานะเมื่อเกิดข้อผิดพลาดในการโหลดข้อมูล
-                      } else if (state is PetVacUserError) {
-                        return const Center(
-                            child: Text(
-                                'No data available')); //ตรวจสอบข้อผิดพลาดดึงข้อมูลจากserver
-                      } else if (state is PetVacUserLoaded &&
-                          state.vacUserProfiles.isEmpty) {
-                        return const Center(
-                            child: Text(
-                                'No data available')); //โหลดข้อมูลสำเร็จแต่ไม่มีข้อมูล
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (state is PetVacUserError ||
+                          (state is PetVacUserLoaded &&
+                              state.vacUserProfiles.isEmpty)) {
+                        // กรณีที่เกิดข้อผิดพลาดหรือไม่มีข้อมูลวัคซีน
+                        return Column(
+                          children: [
+                            const Center(child: Text('No data available')),
+                            _buildAddVaccineButton(
+                                context), 
+                          ],
+                        );
                       } else if (state is PetVacUserLoaded) {
                         return Column(
                           children: [
@@ -109,13 +108,13 @@ class VaccinePetsScreen extends StatelessWidget {
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: state.vacUserProfiles.length,
                               itemBuilder: (context, index) {
-                                final vaccine = state.vacUserProfiles[
-                                    index]; //ปรับขนาด container ตามจำนวนวัคซีน
+                                final vaccine = state.vacUserProfiles[index];
                                 return _buildVaccineContainer(
                                     vaccine, index + 1);
                               },
                             ),
-                            _buildAddVaccineButton(context),
+                            _buildAddVaccineButton(
+                                context), 
                           ],
                         );
                       } else {
@@ -149,18 +148,18 @@ class VaccinePetsScreen extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Vaccine Dose container (ชนขอบด้านบนและด้านข้างของคอนเทนเนอร์สีขาว)
+          // Vaccine Dose container 
           Container(
             width: double.infinity,
-            margin: EdgeInsets.zero, // ทำให้ชนขอบด้านข้าง
+            margin: EdgeInsets.zero, 
             padding: const EdgeInsets.symmetric(
-                vertical: 8, horizontal: 0), // ไม่มี padding ด้านข้าง
+                vertical: 8, horizontal: 0), 
             decoration: const BoxDecoration(
               color: Color(0xFFD3B8AE), // container ของ Vaccine Dose
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(
-                  horizontal: 16), // เพิ่ม padding แค่ด้านในข้อความ
+                  horizontal: 16), 
               child: Text(
                 'Vaccine Dose: ${vaccine.dose}',
                 style:
@@ -173,7 +172,7 @@ class VaccinePetsScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(
                 horizontal:
-                    16), // ทำให้เนื้อหาข้อมูลวัคซีนสมดุลกับขอบคอนเทนเนอร์
+                    16), 
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -255,9 +254,9 @@ class VaccinePetsScreen extends StatelessWidget {
   Widget _buildAddVaccineButton(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // เมื่อกดปุ่ม + จะเปลี่ยนไปยังหน้า /addvaccinepet
         Navigator.pushNamed(context, '/addvaccinepet');
       },
+      
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
         child: Container(
