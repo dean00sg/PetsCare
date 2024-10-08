@@ -117,14 +117,14 @@ class _AddvaccinePetsScreen extends State<AddvaccinePetsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 10),
-                      const Text('Vaccination Name :', style: TextStyle(color: Colors.white)),
+                      const Text('Vaccination Name :', style: TextStyle(color: Colors.black)),
                       const SizedBox(height: 5),
                       TextField(
                         controller: vacNameController,
                         decoration: inputDecorationStyle,
                       ),
                       const SizedBox(height: 10),
-                      const Text('Dose :', style: TextStyle(color: Colors.white)),
+                      const Text('Dose :', style: TextStyle(color: Colors.black)),
                       const SizedBox(height: 5),
                       TextField(
                         controller: doseController,
@@ -132,7 +132,7 @@ class _AddvaccinePetsScreen extends State<AddvaccinePetsScreen> {
                         keyboardType: TextInputType.number,
                       ),
                       const SizedBox(height: 10),
-                      const Text('Dose Datetime :', style: TextStyle(color: Colors.white)),
+                      const Text('Dose Datetime :', style: TextStyle(color: Colors.black)),
                       const SizedBox(height: 5),
                       GestureDetector(
                         onTap: () => _selectDate(context),
@@ -152,14 +152,14 @@ class _AddvaccinePetsScreen extends State<AddvaccinePetsScreen> {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      const Text('Location :', style: TextStyle(color: Colors.white)),
+                      const Text('Location :', style: TextStyle(color: Colors.black)),
                       const SizedBox(height: 5),
                       TextField(
                         controller: locationController,
                         decoration: inputDecorationStyle,
                       ),
                       const SizedBox(height: 10),
-                      const Text('Remark : Optional', style: TextStyle(color: Colors.white)),
+                      const Text('Remark : Optional', style: TextStyle(color: Colors.black)),
                       const SizedBox(height: 5),
                       TextField(
                         controller: remarkController,
