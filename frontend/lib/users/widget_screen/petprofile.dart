@@ -82,7 +82,7 @@ class PetProfileScreen extends StatelessWidget {
                                 Text('${pet.typePets}, ${pet.sex}', style: PetProfileStyles.petInfoTextStyle),
                                 const SizedBox(height: 5),
                                 Text(
-                                  '${pet.birthDate}, Age: ${petAge['years']} Y ${petAge['months']} M ${petAge['days']} D',
+                                  '${pet.birthDate}, Age: ${petAge['years'] != 0 ? '${petAge['years']} Y ' : ''}${petAge['months'] != 0 ? '${petAge['months']} M ' : ''}${petAge['days'] != 0 ? '${petAge['days']} D' : ''}',       // แสดงวันถ้ามากกว่า 0
                                   style: PetProfileStyles.petInfoTextStyle,
                                 ),
                                 const SizedBox(height: 5),
@@ -97,67 +97,130 @@ class PetProfileScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     Container(
+                      width: double.infinity,
                       padding: const EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                        color: Colors.blue[100],
-                        borderRadius: BorderRadius.circular(10),
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Color(0xFFBBDEFB),
-                            spreadRadius: 3,
-                            blurRadius: 5,
-                            offset: Offset(0, 3),
-                          ),
-                        ],
-                      ),
+                      decoration: PetProfileStyles.boxDecoration,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const Text(
-                            'Health Advice',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.blue,
+                          Container(
+                            color: const Color(0xFF3574D8),
+                            padding: const EdgeInsets.all(16.0),
+                            child: const Center(
+                              child: Text(
+                                'Health Advice',
+                                style: PetProfileStyles.healthAdviceTitleStyle, 
+                              ),
                             ),
                           ),
                           const SizedBox(height: 10),
-                          // Display Health Records in a scrollable view
-                          SingleChildScrollView( // Enable scrolling for health records
-                            child: Column(
-                              children: state.healthRecords.map((record) {
-                                return Container(
-                                  padding: const EdgeInsets.all(10),
-                                  margin: const EdgeInsets.only(bottom: 10),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(5),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: Colors.grey,
-                                        blurRadius: 3,
-                                        offset: Offset(0, 2),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        record.header,
-                                        style: const TextStyle(fontWeight: FontWeight.bold),
-                                      ),
-                                      Text('${record.recordDate}, Age: ${record.age.years}Y ${record.age.months}M ${record.age.days}D'),
-                                      Text(record.description),
-                                    ],
+                          Builder(
+                            builder: (context) {
+                              // ดึงข้อมูลที่ตรงตามเงื่อนไข
+                              final healthRecords = state.healthRecords.where((record) {
+                                final petYears = petAge['years'] ?? 0;
+                                final petMonths = petAge['months'] ?? 0;
+                                final petDays = petAge['days'] ?? 0;
+                                final petWeight = pet.weight;
+
+                                final startAgeCheck = petYears > record.age.years ||
+                                    (petYears == record.age.years && petMonths > record.age.months) ||
+                                    (petYears == record.age.years && petMonths == record.age.months && petDays >= record.age.days);
+
+                                final endAgeCheck = petYears < record.toAge.years ||
+                                    (petYears == record.toAge.years && petMonths < record.toAge.months) ||
+                                    (petYears == record.toAge.years && petMonths == record.toAge.months && petDays <= record.toAge.days);
+
+                                final weightCheck = petWeight >= record.weightStartMonths &&
+                                    petWeight <= record.weightEndMonths;
+
+                                return startAgeCheck && endAgeCheck && weightCheck;
+                              }).toList(); // เปลี่ยนเป็น List เพื่อเช็คว่ามีข้อมูลหรือไม่
+
+                              // ตรวจสอบว่า healthRecords ว่างหรือไม่
+                              if (healthRecords.isEmpty) {
+                                return const Center(
+                                  child: Text(
+                                    'No health advice available',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Color(0xFF616161),
+                                    ),
                                   ),
                                 );
-                              }).toList(),
-                            ),
+                              }
+
+                              // ถ้ามีข้อมูลที่ตรงตามเงื่อนไข แสดงข้อมูลเหล่านั้น
+                              return Column(
+                                children: healthRecords.map((record) {
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        color: const Color(0xFF6496E6),
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              'Header : ${record.header}',
+                                              style: PetProfileStyles.headerTextStyle,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.all(8.0),
+                                        color: Colors.teal[300],
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              'Age: ${record.age.years > 0 ? '${record.age.years}Y ' : ''}${record.age.months > 0 ? '${record.age.months}M ' : ''} - ${record.toAge.years > 0 ? '${record.toAge.years}Y ' : ''}${record.toAge.months > 0 ? '${record.toAge.months}M ' : ''}',
+                                              style: PetProfileStyles.ageAndWeightTextStyle, 
+                                            ),
+                                            Text(
+                                              'Weight: ${record.weightStartMonths} - ${record.weightEndMonths}kg',
+                                              style: PetProfileStyles.ageAndWeightTextStyle, 
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        height: 150,
+                                        width: double.infinity,
+                                        color: Colors.white,
+                                        padding: const EdgeInsets.all(8),
+                                        child: SingleChildScrollView(
+                                          child: RichText(
+                                              text: TextSpan(
+                                                children: [
+                                                  const TextSpan(
+                                                    text: 'Advice: ',
+                                                    style: PetProfileStyles.adviceTextStyleBold,
+                                                  ),
+                                                  TextSpan(
+                                                    text: record.description,
+                                                    style: PetProfileStyles.adviceTextStyle,
+                                                  ),
+                                                ],
+                                              ),
+                                              overflow: TextOverflow.visible, 
+                                            ),
+                                          ),
+                                        ),
+
+                                    ],
+                                  );
+                                }).toList(),
+                              );
+                            },
                           ),
                         ],
                       ),
                     ),
+
 
                     const SizedBox(height: 20),
                     Container(

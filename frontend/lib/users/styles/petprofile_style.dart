@@ -32,4 +32,50 @@ class PetProfileStyles {
       ),
     ],
   );
+
+  static final boxDecoration = BoxDecoration(
+    color: Colors.blue[100],
+    borderRadius: BorderRadius.circular(10),
+    boxShadow: const [
+      BoxShadow(
+        color: Color(0xFFBBDEFB),
+        spreadRadius: 3,
+        blurRadius: 5,
+        offset: Offset(0, 3),
+      ),
+    ],
+  );
+
+  // TextStyle สำหรับ Title
+  static const healthAdviceTitleStyle = TextStyle(
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+    color: Colors.white,
+  );
+
+  // TextStyle สำหรับข้อความหัวข้อ
+  static const headerTextStyle = TextStyle(
+    fontSize: 18,
+    fontWeight: FontWeight.bold,
+    color: Colors.white,
+  );
+
+  // TextStyle สำหรับข้อมูลอายุและน้ำหนัก
+  static const ageAndWeightTextStyle = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+    color: Colors.white,
+  );
+
+  // TextStyle สำหรับ Advice Section
+  static const adviceTextStyleBold = TextStyle(
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+    color: Colors.black,
+  );
+
+  static const adviceTextStyle = TextStyle(
+    fontSize: 16,
+    color: Colors.black,
+  );
 }
