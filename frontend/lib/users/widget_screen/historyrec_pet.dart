@@ -79,34 +79,41 @@ class HistoryRecUserScreen extends StatelessWidget {
                 16.0,
               ),
               child: Container(
-                width: double.infinity,
-                color: const Color(0xFF98D9B8), // Main container for history
-                child: BlocBuilder<HistoryRecUserBloc, HistoryRecUserState>(
-                  builder: (context, state) {
-                    if (state is HistoryRecUserLoading) {
-                      return const Center(child: CircularProgressIndicator());
-                    } else if (state is HistoryRecUserError) {
-                      return Center(child: Text('Error: ${state.message}'));
-                    } else if (state is HistoryRecUserLoaded) {
-                      return Column(
-                        children: [
-                          ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount: state.records.length,
-                            itemBuilder: (context, index) {
-                              final record = state.records[index];
-                              return _buildHistoryContainer(record);
-                            },
-                          ),
-                        ],
-                      );
-                    } else {
-                      return const Center(child: Text('No records found.'));
-                    }
-                  },
-                ),
-              ),
+                  width: double.infinity,
+                  color: const Color(0xFF98D9B8), // Main container for history
+                  child: BlocBuilder<HistoryRecUserBloc, HistoryRecUserState>(
+                    builder: (context, state) {
+                      //ถ้าอยู่ในสถานะกำลังโหลด
+                      if (state is HistoryRecUserLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      //ถ้ามีข้อผิดพลาด
+                      else if (state is HistoryRecUserError) {
+                        return const Center(child: Text('No data available'));
+                      }
+                      //โหลดข้อมูลสำเร็จแต่ไม่มีข้อมูล
+                      else if (state is HistoryRecUserLoaded &&
+                          state.records.isEmpty) {
+                        return const Center(child: Text('No data available'));
+                      } else if (state is HistoryRecUserLoaded) {
+                        return Column(
+                          children: [
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: state.records.length,
+                              itemBuilder: (context, index) {
+                                final record = state.records[index];
+                                return _buildHistoryContainer(record);
+                              },
+                            ),
+                          ],
+                        );
+                      } else {
+                        return const Center(child: Text('No data available'));
+                      }
+                    },
+                  )),
             ),
           ],
         ),
@@ -115,8 +122,8 @@ class HistoryRecUserScreen extends StatelessWidget {
   }
 
   Widget _buildHistoryContainer(record) {
-    final formattedDate = DateFormat('yyyy-MM-dd')
-        .format(record.recordDateTime);
+    final formattedDate =
+        DateFormat('yyyy-MM-dd').format(record.recordDateTime);
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
@@ -124,7 +131,7 @@ class HistoryRecUserScreen extends StatelessWidget {
         color: Colors.white, //Container of history information
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.3), 
+            color: Colors.grey.withOpacity(0.3),
             spreadRadius: 2,
             blurRadius: 5,
             offset: const Offset(0, 3),
@@ -138,7 +145,7 @@ class HistoryRecUserScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
             decoration: const BoxDecoration(
-              color: Color.fromARGB(255, 9, 154, 132), 
+              color: Color.fromARGB(255, 9, 154, 132),
             ),
             child: Text(
               'Date: $formattedDate',
@@ -152,7 +159,7 @@ class HistoryRecUserScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
             decoration: const BoxDecoration(
-              color: Color.fromARGB(255, 100, 150, 230), 
+              color: Color.fromARGB(255, 100, 150, 230),
             ),
             child: Text(
               'Note Name: ${record.noteName}',
@@ -162,7 +169,7 @@ class HistoryRecUserScreen extends StatelessWidget {
               ),
             ),
           ),
-          //Main information container 
+          //Main information container
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(

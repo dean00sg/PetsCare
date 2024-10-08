@@ -34,7 +34,8 @@ class _AddvaccinePetsScreen extends State<AddvaccinePetsScreen> {
 
     // รับ arguments จากหน้าที่เรียกมา
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final arguments = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      final arguments =
+          ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
       if (arguments != null) {
         final petsId = arguments['petsId'];
         await _loadPetProfile(petsId);
@@ -109,7 +110,7 @@ class _AddvaccinePetsScreen extends State<AddvaccinePetsScreen> {
                   'Add Vaccination',
                   style: titleTextStyle,
                 ),
-                const SizedBox(height: 20), 
+                const SizedBox(height: 20),
                 Container(
                   decoration: containerBoxDecoration,
                   padding: const EdgeInsets.all(16),
@@ -117,14 +118,16 @@ class _AddvaccinePetsScreen extends State<AddvaccinePetsScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 10),
-                      const Text('Vaccination Name :', style: TextStyle(color: Colors.black)),
+                      const Text('Vaccination Name :',
+                          style: TextStyle(color: Colors.black)),
                       const SizedBox(height: 5),
                       TextField(
                         controller: vacNameController,
                         decoration: inputDecorationStyle,
                       ),
                       const SizedBox(height: 10),
-                      const Text('Dose :', style: TextStyle(color: Colors.black)),
+                      const Text('Dose :',
+                          style: TextStyle(color: Colors.black)),
                       const SizedBox(height: 5),
                       TextField(
                         controller: doseController,
@@ -132,7 +135,8 @@ class _AddvaccinePetsScreen extends State<AddvaccinePetsScreen> {
                         keyboardType: TextInputType.number,
                       ),
                       const SizedBox(height: 10),
-                      const Text('Dose Datetime :', style: TextStyle(color: Colors.black)),
+                      const Text('Dose Datetime :',
+                          style: TextStyle(color: Colors.black)),
                       const SizedBox(height: 5),
                       GestureDetector(
                         onTap: () => _selectDate(context),
@@ -152,14 +156,16 @@ class _AddvaccinePetsScreen extends State<AddvaccinePetsScreen> {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      const Text('Location :', style: TextStyle(color: Colors.black)),
+                      const Text('Location :',
+                          style: TextStyle(color: Colors.black)),
                       const SizedBox(height: 5),
                       TextField(
                         controller: locationController,
                         decoration: inputDecorationStyle,
                       ),
                       const SizedBox(height: 10),
-                      const Text('Remark : Optional', style: TextStyle(color: Colors.black)),
+                      const Text('Remark : Optional',
+                          style: TextStyle(color: Colors.black)),
                       const SizedBox(height: 5),
                       TextField(
                         controller: remarkController,
@@ -187,14 +193,19 @@ class _AddvaccinePetsScreen extends State<AddvaccinePetsScreen> {
                               );
 
                               // Dispatch the event to the bloc
-                              context.read<VaccinationBloc>().add(AddVaccinationEvent(profile));
+                              context
+                                  .read<VaccinationBloc>()
+                                  .add(AddVaccinationEvent(profile));
                             } else {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Please fill out all fields')),
+                                const SnackBar(
+                                    content:
+                                        Text('Please fill out all fields')),
                               );
                             }
                           },
-                          child: const Text('Save', style: TextStyle(color: Colors.white)),
+                          child: const Text('Save',
+                              style: TextStyle(color: Colors.white)),
                         ),
                       ),
                       const SizedBox(height: 30),

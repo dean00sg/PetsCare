@@ -132,159 +132,164 @@ class VaccinePetsScreen extends StatelessWidget {
     );
   }
 
-Widget _buildVaccineContainer(PetVacUserProfile vaccine, int index) {
-  return Container(
-    margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-    decoration: BoxDecoration(
-      color: Colors.white, // container ของข้อมูลวัคซีน
-      boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(0.3),
-          spreadRadius: 2,
-          blurRadius: 5,
-          offset: const Offset(0, 3),
-        ),
-      ],
-    ),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Vaccine Dose container (ชนขอบด้านบนและด้านข้างของคอนเทนเนอร์สีขาว)
-        Container(
-          width: double.infinity,
-          margin: EdgeInsets.zero, // ทำให้ชนขอบด้านข้าง
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 0), // ไม่มี padding ด้านข้าง
-          decoration: const BoxDecoration(
-            color: Color(0xFFD3B8AE), // container ของ Vaccine Dose
+  Widget _buildVaccineContainer(PetVacUserProfile vaccine, int index) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      decoration: BoxDecoration(
+        color: Colors.white, // container ของข้อมูลวัคซีน
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.3),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
           ),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16), // เพิ่ม padding แค่ด้านในข้อความ
-            child: Text(
-              'Vaccine Dose: ${vaccine.dose}',
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Vaccine Dose container (ชนขอบด้านบนและด้านข้างของคอนเทนเนอร์สีขาว)
+          Container(
+            width: double.infinity,
+            margin: EdgeInsets.zero, // ทำให้ชนขอบด้านข้าง
+            padding: const EdgeInsets.symmetric(
+                vertical: 8, horizontal: 0), // ไม่มี padding ด้านข้าง
+            decoration: const BoxDecoration(
+              color: Color(0xFFD3B8AE), // container ของ Vaccine Dose
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 16), // เพิ่ม padding แค่ด้านในข้อความ
+              child: Text(
+                'Vaccine Dose: ${vaccine.dose}',
+                style:
+                    const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
             ),
           ),
-        ),
-        // ข้อมูลวัคซีนอื่น ๆ
-        const SizedBox(height: 16),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16), // ทำให้เนื้อหาข้อมูลวัคซีนสมดุลกับขอบคอนเทนเนอร์
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          // ข้อมูลวัคซีนอื่น ๆ
+          const SizedBox(height: 16),
+          Padding(
+            padding: const EdgeInsets.symmetric(
+                horizontal:
+                    16), // ทำให้เนื้อหาข้อมูลวัคซีนสมดุลกับขอบคอนเทนเนอร์
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Vaccine Name: ',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    Expanded(
+                      child: Text(
+                        vaccine.vacName,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Datetime: ',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    Expanded(
+                      child: Text(
+                        vaccine.startDateVac,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Location: ',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    Expanded(
+                      child: Text(
+                        vaccine.location,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Remark: ',
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    Expanded(
+                      child: Text(
+                        vaccine.remark,
+                        style: const TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAddVaccineButton(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        // เมื่อกดปุ่ม + จะเปลี่ยนไปยังหน้า /addvaccinepet
+        Navigator.pushNamed(context, '/addvaccinepet');
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.3),
+                spreadRadius: 2,
+                blurRadius: 5,
+                offset: const Offset(0, 3),
+              ),
+            ],
+          ),
+          child: const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Vaccine Name: ',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  Expanded(
-                    child: Text(
-                      vaccine.vacName,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  ),
-                ],
+              CircleAvatar(
+                radius: 18,
+                backgroundColor: Color(0xFFF2B8B5),
+                child: Icon(Icons.add, color: Colors.white),
               ),
-              const SizedBox(height: 8),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Datetime: ',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  Expanded(
-                    child: Text(
-                      vaccine.startDateVac,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Location: ',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  Expanded(
-                    child: Text(
-                      vaccine.location,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Remark: ',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  Expanded(
-                    child: Text(
-                      vaccine.remark,
-                      style: const TextStyle(fontSize: 16),
-                    ),
-                  ),
-                ],
+              SizedBox(width: 8),
+              Text(
+                'Add Vaccine',
+                style: TextStyle(fontSize: 18, color: Colors.black),
               ),
             ],
           ),
         ),
-      ],
-    ),
-  );
-}
-
-
-
-
-Widget _buildAddVaccineButton(BuildContext context) {
-  return GestureDetector(
-    onTap: () {
-      // เมื่อกดปุ่ม + จะเปลี่ยนไปยังหน้า /addvaccinepet
-      Navigator.pushNamed(context, '/addvaccinepet');
-    },
-    child: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.3),
-              spreadRadius: 2,
-              blurRadius: 5,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CircleAvatar(
-              radius: 18,
-              backgroundColor: Color(0xFFF2B8B5),
-              child: Icon(Icons.add, color: Colors.white),
-            ),
-            SizedBox(width: 8),
-            Text(
-              'Add Vaccine',
-              style: TextStyle(fontSize: 18, color: Colors.black),
-            ),
-          ],
-        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 }
