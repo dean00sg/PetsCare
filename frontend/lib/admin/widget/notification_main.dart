@@ -13,7 +13,7 @@ class NotificationWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => NotificationBloc(),  // Provide NotificationBloc here
+      create: (context) => NotificationBloc(),  
       child: Scaffold(
         appBar: const Navbar(),
         drawer: const Sidebar(),

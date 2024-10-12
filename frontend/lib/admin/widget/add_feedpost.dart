@@ -244,7 +244,7 @@ class _FeedPostWidgetState extends State<FeedPostWidget> {
                               Container(
                                 alignment: Alignment.centerLeft,
                                 child: const Text(
-                                  'Image URL :',
+                                  'Image:',
                                   style: TextStyle(
                                       color: Colors.white, fontSize: 16),
                                 ),

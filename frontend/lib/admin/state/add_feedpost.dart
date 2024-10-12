@@ -35,7 +35,6 @@ class FeedSuccess extends FeedState {
   List<Object> get props => [feedPost];
 }
 
-// Failure state if there's an error
 class FeedFailure extends FeedState {
   final String error;
 

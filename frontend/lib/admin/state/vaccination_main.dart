@@ -9,5 +9,3 @@ abstract class VaccinationMainState extends Equatable {
 class VaccinationMainInitial extends VaccinationMainState {}
 
 class VaccinationMainAddedState extends VaccinationMainState {}
-
-// Removed NewsFeedAdviceAddedState

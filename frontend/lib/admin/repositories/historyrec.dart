@@ -8,24 +8,21 @@ class HistoryRepository {
 
   HistoryRepository({required this.apiUrl});
 
-  // Method to create a history record
   Future<void> createHistoryRecord(AddHistoryRec record) async {
     try {
-      // Retrieve the token from SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token') ?? '';
 
-      // Making the POST request
+      //POST request
       final response = await http.post(
-        Uri.parse('$apiUrl/History Records/history_rec/'), // Ensure the correct endpoint
+        Uri.parse('$apiUrl/History Records/history_rec/'), 
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
-        body: json.encode(record.toJson()), // Convert the record to JSON
+        body: json.encode(record.toJson()), //Convert the record to JSON
       );
 
-      // Check if the request was successful
       if (response.statusCode == 201 || response.statusCode == 200) {
         print("History record created successfully");
       } else {

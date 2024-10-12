@@ -32,7 +32,7 @@ class PetProfileUserBloc extends Bloc<PetProfileUserEvent, PetProfileUserState> 
     try {
       await petRepository.createPet(event.petData);
       emit(PetCreatedUserState());
-      // Re-fetch pets after creating
+      //Re-fetch pets after creating
       add(FetchPetsEvent());
     } catch (e) {
       emit(PetErrorUserState(e.toString()));

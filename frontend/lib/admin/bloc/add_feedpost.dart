@@ -13,10 +13,10 @@ class AddFeedBloc extends Bloc<AddFeedPostEvent, FeedState> {
   Future<void> _onAddFeedPost(AddFeedPostEvent event, Emitter<FeedState> emit) async {
     emit(FeedLoading());
     try {
-      final addedPost = await repository.addFeedPost(event.post); // Await backend response
-      emit(FeedSuccess(addedPost)); // Emit success state with added post
+      final addedPost = await repository.addFeedPost(event.post); //Await backend response
+      emit(FeedSuccess(addedPost)); //Emit success state with added post
     } catch (e) {
-      emit(FeedFailure(e.toString())); // Emit failure state
+      emit(FeedFailure(e.toString())); //Emit failure state
     }
   }
 }

@@ -7,7 +7,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   final UserRepository userRepository;
 
   UserBloc({required this.userRepository}) : super(UserInitial()) {
-    // Register the LoadUserPets event handler
+    //Register the LoadUserPets event handler
     on<LoadUserPets>(_onLoadUserPets);
   }
 

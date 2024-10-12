@@ -13,7 +13,6 @@ class _CheckAllUsersScreenState extends State<CheckAllUsersScreen> {
   @override
   void initState() {
     super.initState();
-    // Use loadUserPets() to load the data
     BlocProvider.of<UserBloc>(context).loadUserPets();
   }
 
@@ -24,7 +23,7 @@ class _CheckAllUsersScreenState extends State<CheckAllUsersScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.of(context).pop(); // Back button functionality
+            Navigator.of(context).pop(); 
           },
         ),
         iconTheme: const IconThemeData(color: Colors.white),
@@ -54,7 +53,6 @@ class _CheckAllUsersScreenState extends State<CheckAllUsersScreen> {
                   } else if (state is UserPetsLoaded) {
                     final List<UserProfilePets> profiles = state.profiles;
 
-                    // Filter users with role 'userpets'
                     List<UserProfilePets> userPets = profiles
                         .where((user) => user.role == 'userpets')
                         .toList();

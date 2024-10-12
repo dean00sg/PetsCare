@@ -1,4 +1,3 @@
-// events/notification_event.dart
 import 'package:equatable/equatable.dart';
 
 abstract class NotificationEvent extends Equatable {

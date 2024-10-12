@@ -16,7 +16,7 @@ class PetProfileUserScreen extends StatefulWidget {
 }
 
 class _PetProfileScreenState extends State<PetProfileUserScreen> {
-  String _searchQuery = ''; // ตัวแปรสำหรับเก็บค่าการค้นหา
+  String _searchQuery = ''; //ตัวแปรสำหรับเก็บค่าการค้นหา
 
   @override
   Widget build(BuildContext context) {
@@ -50,11 +50,10 @@ class _PetProfileScreenState extends State<PetProfileUserScreen> {
                   ),
                 ),
               ),
-              // เรียกใช้ CustomSearchBar
               CustomSearchBar(
                 onChanged: (value) {
                   setState(() {
-                    _searchQuery = value.toLowerCase(); // อัปเดตค่าการค้นหา
+                    _searchQuery = value.toLowerCase(); //อัปเดตการค้นหา
                   });
                 },
               ),
@@ -74,11 +73,11 @@ class _PetProfileScreenState extends State<PetProfileUserScreen> {
                         ownerPetsMap.putIfAbsent(pet.owner_name, () => []).add(pet);
                       }
 
-                      // กรองผลลัพธ์ตาม search query (ค้นหาทั้งข้อมูลเจ้าของและสัตว์เลี้ยง)
+                      //กรองผลลัพธ์ตาม search query (ค้นหาทั้งข้อมูลเจ้าของและสัตว์เลี้ยง)
                       final filteredOwnerPetsMap = ownerPetsMap.entries.where((entry) {
                         final ownerName = entry.key.toLowerCase();
                         final filteredPets = entry.value.where((pet) {
-                          // ค้นหาทั้งหมดในข้อมูลสัตว์เลี้ยง
+                          //ค้นหาทั้งหมดในข้อมูลสัตว์เลี้ยง
                           return ownerName.contains(_searchQuery) ||
                                  pet.name.toLowerCase().contains(_searchQuery) ||
                                  pet.type_pets.toLowerCase().contains(_searchQuery) ||
@@ -89,7 +88,7 @@ class _PetProfileScreenState extends State<PetProfileUserScreen> {
                         return filteredPets.isNotEmpty || ownerName.contains(_searchQuery);
                       }).toList();
 
-                      // จัดเรียงสัตว์เลี้ยงที่ตรงกับการค้นหาขึ้นด้านบน
+                      //จัดเรียงสัตว์เลี้ยงที่ตรงกับการค้นหาขึ้นด้านบน
                       filteredOwnerPetsMap.sort((a, b) {
                         final aContainsQuery = a.value.any((pet) =>
                             pet.name.toLowerCase().contains(_searchQuery) ||
@@ -101,7 +100,7 @@ class _PetProfileScreenState extends State<PetProfileUserScreen> {
                             pet.type_pets.toLowerCase().contains(_searchQuery) ||
                             pet.breed.toLowerCase().contains(_searchQuery));
                         
-                        // แปลง bool เป็น int (true = 1, false = 0) แล้วนำมาเปรียบเทียบ
+                        //แปลง bool เป็น int (true = 1, false = 0) แล้วนำมาเปรียบเทียบ
                         return bContainsQuery ? 1 : 0 - (aContainsQuery ? 1 : 0);
                       });
 

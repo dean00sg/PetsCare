@@ -8,7 +8,5 @@ class VaccinationMainBloc extends Bloc<VaccinationMainEvent, VaccinationMainStat
     on<VaccinationMainEvent>((event, emit) {
       emit(VaccinationMainAddedState());
     });
-
-    // Removed AddNewsFeedAdviceEvent
   }
 }

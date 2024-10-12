@@ -32,21 +32,19 @@ class HealthRecordRepository {
 
   Future<void> addHealthRecord(HealthRecord healthRecord) async {
     try {
-      // Retrieve the token from SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token') ?? '';
 
-      // Making the POST request
+      //POST request
       final response = await http.post(
-        Uri.parse('$apiUrl/notehealth/'), // Ensure the correct endpoint
+        Uri.parse('$apiUrl/notehealth/'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
-        body: json.encode(healthRecord.toJson()), // Convert the healthRecord to JSON
+        body: json.encode(healthRecord.toJson()), 
       );
 
-      // Check if the request was successful
       if (response.statusCode == 201 || response.statusCode == 200) {
         print("Health record created successfully");
       } else {

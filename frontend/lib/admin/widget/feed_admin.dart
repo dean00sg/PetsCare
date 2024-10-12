@@ -24,21 +24,20 @@ class FeedadminScreen extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             } else if (state is FeedLoaded) {
               return Container(
-                color: Colors.white,  // Set the background color of the body to white
+                color: Colors.white,  
                 child: ListView.builder(
-                  itemCount: state.feedPosts.length + 1,  // +1 for the welcome section
+                  itemCount: state.feedPosts.length + 1, 
                   itemBuilder: (context, index) {
-                    // Welcome section inside ListView.builder
                     if (index == 0) {
                       return Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
                           children: [
                             Image.asset(
-                              'lib/images/logo.png',  // Your logo path
-                              height: 170,             // Set the height
-                              width: 170,              // Set the width
-                              fit: BoxFit.contain,      // Control how the image fits within the space
+                              'lib/images/logo.png',  
+                              height: 170,            
+                              width: 170,            
+                              fit: BoxFit.contain,      
                             ),
                             const SizedBox(height: 10),
                             const Text(
@@ -84,7 +83,6 @@ class FeedadminScreen extends StatelessWidget {
                                   textAlign: TextAlign.center,
                                 ),
                                 const SizedBox(height: 8),
-                                // Correct conditional rendering for image loading
                                 if (post.imageUrl != null && post.imageUrl!.isNotEmpty) ...[
                                   Image.network(
                                     post.imageUrl!,
@@ -98,9 +96,8 @@ class FeedadminScreen extends StatelessWidget {
                                       );
                                     },
                                   ),
-                                  const SizedBox(height: 8), // Add spacing after the image
+                                  const SizedBox(height: 8),
                                 ],
-                                // Updated description text color to white
                                 Text(
                                   post.description ?? 'No description available',
                                   style: const TextStyle(

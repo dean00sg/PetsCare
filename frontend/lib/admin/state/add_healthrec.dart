@@ -12,7 +12,6 @@ class HealthRecordInitial extends AddHealthRecordState {}
 class HealthRecordSubmitting extends AddHealthRecordState {}
 
 class HealthRecordSubmitted extends AddHealthRecordState {
-  // No longer need to store HealthRecord in the success state
   @override
   List<Object> get props => [];
 }

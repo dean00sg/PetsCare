@@ -5,12 +5,10 @@ import 'package:frontend/admin/state/notification_main.dart';
 
 class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
   NotificationBloc() : super(NotificationInitial()) {
-    // Handling AddNotificationEvent
     on<AddNotificationEvent>((event, emit) {
       emit(NotificationAddedState());
     });
 
-    // Handling AddNewsFeedAdviceEvent
     on<AddNewsFeedAdviceEvent>((event, emit) {
       emit(NewsFeedAdviceAddedState());
     });

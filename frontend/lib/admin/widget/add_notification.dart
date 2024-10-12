@@ -245,11 +245,15 @@ class _AddNotificationScreenState extends State<AddNotificationScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Padding(
-                padding: EdgeInsets.only(left: 10.0),
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
                 child: Text(
                   "Sent Notification",
-                  style: headerTextStyle,
+                  style: TextStyle(
+                    color: Colors.blueGrey[900], 
+                    fontWeight: FontWeight.bold,
+                    fontSize: 40,
+                  ),
                 ),
               ),
               const SizedBox(height: 16),
@@ -357,8 +361,7 @@ class _AddNotificationScreenState extends State<AddNotificationScreen> {
                       decoration: inputDecoration,
                     ),
                     const SizedBox(height: 16),
-                    const Text("Image URL:",
-                        style: TextStyle(color: Colors.white)),
+                    const Text("Image:", style: TextStyle(color: Colors.white)),
                     TextField(
                       controller: _imageUrlController,
                       decoration: inputDecoration,

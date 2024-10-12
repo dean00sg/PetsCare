@@ -67,11 +67,11 @@ class _EditProfileScreenState extends State<EditProfileAdminScreen> {
                     decoration: containerDecoration,
                     child: TextFormField(
                       initialValue: _firstName,
-                      style: const TextStyle(color: Colors.white), //กำหนดสีของตัวอักษรในช่องกรอกให้เป็นสีขาว
+                      style: const TextStyle(color: Colors.white), 
                       decoration: const InputDecoration(
                         labelText: 'First Name',
                         border: InputBorder.none,
-                        labelStyle: TextStyle(color: Colors.white), //กำหนดสีของ label ให้เป็นสีขาว
+                        labelStyle: TextStyle(color: Colors.white),
                       ),
                       onSaved: (value) {
                         _firstName = value!;
@@ -151,7 +151,7 @@ class _EditProfileScreenState extends State<EditProfileAdminScreen> {
                           );
                           // อัปเดตโปรไฟล์โดยใช้ Bloc
                           context.read<ProfileBloc>().updateProfile(updatedProfile);
-                          Navigator.pop(context, true); // บอกให้หน้าก่อนหน้ารู้ว่าโปรไฟล์ได้รับการอัปเดตแล้ว
+                          Navigator.pop(context, true); 
                         }
                       },
                       child: const Text('Save', style: TextStyle(fontSize: 16)),

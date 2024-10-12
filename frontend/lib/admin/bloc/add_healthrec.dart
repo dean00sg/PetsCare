@@ -15,9 +15,8 @@ class AddHealthRecordBloc extends Bloc<AddHealthRecordEvent, AddHealthRecordStat
       SubmitHealthRecord event, Emitter<AddHealthRecordState> emit) async {
     emit(HealthRecordSubmitting());
     try {
-      // No need to capture the return since it's now Future<void>
       await repository.addHealthRecord(event.healthRecord);
-      emit(HealthRecordSubmitted()); // Success state without returning a record
+      emit(HealthRecordSubmitted()); 
     } catch (e) {
       emit(HealthRecordError(e.toString()));
     }

@@ -43,7 +43,7 @@ class HistoryRecMainWidget extends StatelessWidget {
                       icon: Icons.note_add,
                       color: Colors.blue,
                       onTap: () {
-                        Navigator.of(context).pushNamed('/addhistoryrec'); // Use the actual route
+                        Navigator.of(context).pushNamed('/addhistoryrec');
                       },
                     ),
                     _buildHistoryRecMainCard(
@@ -52,7 +52,7 @@ class HistoryRecMainWidget extends StatelessWidget {
                       icon: Icons.search,
                       color: const Color.fromARGB(255, 9, 154, 132),
                       onTap: () {
-                        Navigator.of(context).pushNamed('/checkhistoryrec'); // Use the actual route
+                        Navigator.of(context).pushNamed('/checkhistoryrec');
                       },
                     ),
                   ],
@@ -72,13 +72,13 @@ class HistoryRecMainWidget extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: color,
-          borderRadius: BorderRadius.circular(10), // Added border radius for better UI
+          borderRadius: BorderRadius.circular(10), 
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.5),
               spreadRadius: 2,
               blurRadius: 5,
-              offset: const Offset(0, 3), // changes position of shadow
+              offset: const Offset(0, 3),
             ),
           ],
         ),

@@ -22,7 +22,7 @@ class AdminCheckInfoScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 4), //ปรับระยะห่างระหว่างหัวข้อและ Tab Bar
+            const SizedBox(height: 4), 
             Text(
               'Check Info',
               style: TextStyle(
@@ -31,7 +31,7 @@ class AdminCheckInfoScreen extends StatelessWidget {
                 color: Colors.blueGrey[900],
               ),
             ),
-            const SizedBox(height: 20),  //ปรับระยะห่างระหว่างหัวข้อและ GridView
+            const SizedBox(height: 20),  
             Expanded(
               child: GridView.count(
                 crossAxisCount: 2,

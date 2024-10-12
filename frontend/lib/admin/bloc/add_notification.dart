@@ -16,7 +16,7 @@ class AddNotificationBloc extends Bloc<AddNotificationEvent, AddNotificationStat
     required this.userListRepository,
   }) : super(AddNotificationInitial()) {
   
-    // Loading the list of users
+    //Loading the list of users
     on<LoadUsersForNotification>((event, emit) async {
       emit(AddNotificationLoading());
       try {
@@ -27,7 +27,7 @@ class AddNotificationBloc extends Bloc<AddNotificationEvent, AddNotificationStat
       }
     });
 
-    // Submitting the notification
+    //Submitting the notification
     on<AddNotificationSubmitted>((event, emit) async {
       emit(AddNotificationLoading());
       try {
@@ -35,14 +35,14 @@ class AddNotificationBloc extends Bloc<AddNotificationEvent, AddNotificationStat
           notiId: 0,
           header: event.header,
           toUser: event.toUser,
-          userName: '',  // To be filled based on the current user's data
+          userName: '', 
           recordDatetime: DateTime.now(),
           startNoti: event.startNoti,
           endNoti: event.endNoti,
           file: event.file,
           detail: event.detail,
-          createBy: '', // To be set based on your logic
-          createname: '', // To be set based on your logic
+          createBy: '', 
+          createname: '',
         );
         await notificationRepository.postNotification(notification);
         emit(AddNotificationSuccess());
@@ -52,7 +52,7 @@ class AddNotificationBloc extends Bloc<AddNotificationEvent, AddNotificationStat
     });
   }
 
-  // Fetching the list of users from the repository
+  //Fetching the list of users 
   Future<List<UserProfilePets>> _loadUsers() async {
     try {
       final List<UserProfilePets> users = await userListRepository.getProfile();

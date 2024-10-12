@@ -1,4 +1,3 @@
-// states/notification_state.dart
 import 'package:equatable/equatable.dart';
 
 abstract class HealthrecordMainState extends Equatable {

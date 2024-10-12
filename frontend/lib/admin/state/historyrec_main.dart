@@ -9,5 +9,3 @@ abstract class HistoryRecMainState extends Equatable {
 class HistoryRecMainInitial extends HistoryRecMainState {}
 
 class HistoryRecMainAddedState extends HistoryRecMainState {}
-
-// Removed NewsFeedAdviceAddedState

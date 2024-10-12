@@ -92,8 +92,8 @@ class _AddVaccinationScreenState extends State<AddVaccinationScreen> {
     return BlocListener<AddVaccinationBloc, AddVaccinationState>(
       listener: (context, state) {
         if (state is AddVaccinationSuccess) {
-          ScaffoldMessenger.of(context).showSnackBar(snackBarStyle); // ใช้สไตล์ SnackBar ที่แยกไว้
-          Navigator.pop(context); // Navigate back after success
+          ScaffoldMessenger.of(context).showSnackBar(snackBarStyle); 
+          Navigator.pop(context); 
         } else if (state is AddVaccinationFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.error)),
@@ -314,7 +314,6 @@ class _AddVaccinationScreenState extends State<AddVaccinationScreen> {
                                           noteBy: username!,
                                         );
 
-                                        // Dispatch the event to the bloc
                                         context
                                             .read<AddVaccinationBloc>()
                                             .add(SubmitVaccinationForm(profile));

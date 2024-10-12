@@ -44,7 +44,7 @@ const regularTextStyle = TextStyle(
   color: Colors.black,
 );
 
-//หัวข้อฟอร์มเป็นตัวหนา
+//หัวข้อฟอร์ม
 const boldTextStyle = TextStyle(
   fontWeight: FontWeight.bold,
   fontSize: 16,

@@ -9,7 +9,5 @@ class HistoryRecMainBloc extends Bloc<HistoryRecMainEvent, HistoryRecMainState> 
     on<HistoryRecMainEvent>((event, emit) {
       emit(HistoryRecMainAddedState());
     });
-
-    // Removed AddNewsFeedAdviceEvent
   }
 }
