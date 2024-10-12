@@ -51,7 +51,7 @@ class NotificationScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded( // Use Expanded to make the search bar take up available space
+                Expanded( 
                   child: CustomSearchBar(
                     onChanged: (value) {
                       searchQuery = value;
@@ -63,8 +63,6 @@ class NotificationScreen extends StatelessWidget {
               ],
             ),
           ),
-          // Rest of your widget code
-
 
           Expanded(
             child: BlocBuilder<NotificationUserBloc, NotificationUserState>(
@@ -127,7 +125,6 @@ class NotificationScreen extends StatelessWidget {
                                         IconButton(
                                           icon: const Icon(Icons.close, color: Colors.white),
                                           onPressed: () {
-                                            // Update notification status to "hide"
                                             BlocProvider.of<NotificationUserBloc>(context).add(DeleteNotificationUser(notification.notiId));
                                           },
                                         ),
@@ -157,7 +154,7 @@ class NotificationScreen extends StatelessWidget {
                                       const SizedBox(height: 10),
                                       Image.network(
                                         notification.file,
-                                        fit: BoxFit.cover, // Fit the image
+                                        fit: BoxFit.cover, 
                                         errorBuilder: (context, error, stackTrace) {
                                           return const Text('Image not available');
                                         },

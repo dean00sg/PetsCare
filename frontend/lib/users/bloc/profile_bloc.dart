@@ -3,7 +3,6 @@ import 'package:frontend/users/models/profile_model.dart';
 import 'package:frontend/users/repositories/profile_repository.dart';
 import 'package:frontend/users/state/profile_state.dart';
 
-// Profile Bloc
 class ProfileBloc extends Cubit<ProfileState> {
   final ProfileRepository profileRepository;
 

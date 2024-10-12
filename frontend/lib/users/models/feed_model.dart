@@ -19,8 +19,8 @@ class FeedPost {
 
   factory FeedPost.fromJson(Map<String, dynamic> json) {
     return FeedPost(
-      ntId: json['NT_id'] ?? 0, // Default value if null
-      header: json['header'] ?? 'No header', // Default value if null
+      ntId: json['NT_id'] ?? 0,
+      header: json['header'] ?? 'No header', 
       startDatetime: DateTime.parse(json['start_datetime'] ?? DateTime.now().toIso8601String()),
       endDatetime: DateTime.parse(json['end_datetime'] ?? DateTime.now().toIso8601String()),
       imageUrl: json['image_url'],

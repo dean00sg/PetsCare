@@ -1,15 +1,13 @@
-
-
 import 'package:flutter/material.dart';
 
-// สไตล์ของชื่อหัวข้อ SIGN IN
+//หัวข้อ SIGN IN
 const TextStyle signInTitleStyle = TextStyle(
   fontSize: 32,
   fontWeight: FontWeight.bold,
   color: Colors.white,
 );
 
-// สไตล์ของปุ่ม Sign In และ Sign Up
+//ปุ่ม Sign In และ Sign Up
 final ButtonStyle loginButtonStyle = ElevatedButton.styleFrom(
   backgroundColor: Colors.amber,
   padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 50),
@@ -18,7 +16,7 @@ final ButtonStyle loginButtonStyle = ElevatedButton.styleFrom(
   ),
 );
 
-// สไตล์ของ TextField สำหรับใส่ Username/Password
+//TextField สำหรับ Username/Password
 InputDecoration inputDecoration(String hintText) {
   return InputDecoration(
     filled: true,
@@ -31,7 +29,7 @@ InputDecoration inputDecoration(String hintText) {
   );
 }
 
-// สไตล์ของ Container
+//Container
 final BoxDecoration containerDecoration = BoxDecoration(
   color: const Color.fromARGB(255, 122, 83, 65),
   borderRadius: BorderRadius.circular(25),

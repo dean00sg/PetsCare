@@ -8,7 +8,6 @@ class UserPetVacRepository {
 
   UserPetVacRepository({required this.apiUrl});
 
-  /// สร้างข้อมูลวัคซีนสำหรับสัตว์เลี้ยง
   Future<void> createPetVacProfile(AddPetVacProfile profile) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -56,7 +55,6 @@ class UserPetVacRepository {
     }
   }
 
-  /// อัปเดตข้อมูลวัคซีนของสัตว์เลี้ยง
   Future<void> updateVaccinationProfile(int vacId, AddPetVacProfile profile) async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -79,7 +77,6 @@ class UserPetVacRepository {
     }
   }
 
-  /// ลบข้อมูลวัคซีนของสัตว์เลี้ยง
   Future<void> deleteVaccinationProfile(int vacId) async {
     try {
       final prefs = await SharedPreferences.getInstance();

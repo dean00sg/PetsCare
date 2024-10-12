@@ -36,8 +36,8 @@ class PetSMaincreen extends StatelessWidget {
                         color: Colors.brown[900],
                       ),
                     ),
-                    const SizedBox(height: 20), // ระยะห่างระหว่างข้อความและ GridView
-                    Expanded( // ใช้ Expanded เพื่อให้ GridView ครอบคลุมพื้นที่ที่เหลืออยู่
+                    const SizedBox(height: 20), 
+                    Expanded( 
                       child: GridView.builder(
                         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,

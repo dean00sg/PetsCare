@@ -46,28 +46,28 @@ class PetProfileStyles {
     ],
   );
 
-  // TextStyle สำหรับ Title
+  //Title
   static const healthAdviceTitleStyle = TextStyle(
     fontSize: 20,
     fontWeight: FontWeight.bold,
     color: Colors.white,
   );
 
-  // TextStyle สำหรับข้อความหัวข้อ
+  //ข้อความหัวข้อ
   static const headerTextStyle = TextStyle(
     fontSize: 18,
     fontWeight: FontWeight.bold,
     color: Colors.white,
   );
 
-  // TextStyle สำหรับข้อมูลอายุและน้ำหนัก
+  //ข้อมูลอายุและน้ำหนัก
   static const ageAndWeightTextStyle = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.bold,
     color: Colors.white,
   );
 
-  // TextStyle สำหรับ Advice Section
+  //Advice Section
   static const adviceTextStyleBold = TextStyle(
     fontSize: 16,
     fontWeight: FontWeight.bold,

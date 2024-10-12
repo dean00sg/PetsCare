@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-// สไตล์ของ Container หลัก
+//Container หลัก
 final BoxDecoration containerDecoration = BoxDecoration(
   color: Colors.brown, // สีน้ำตาลตามรูป
   borderRadius: BorderRadius.circular(20),
@@ -13,7 +13,7 @@ final BoxDecoration containerDecoration = BoxDecoration(
   ],
 );
 
-// สไตล์ของ TextField
+//TextField
 InputDecoration inputDecoration(String hintText) {
   return InputDecoration(
     filled: true,
@@ -26,7 +26,7 @@ InputDecoration inputDecoration(String hintText) {
   );
 }
 
-// สไตล์ของปุ่ม Save
+//ปุ่ม Save
 final ButtonStyle saveButtonStyle = ElevatedButton.styleFrom(
   backgroundColor: Colors.amber,
   shape: RoundedRectangleBorder(
@@ -35,7 +35,7 @@ final ButtonStyle saveButtonStyle = ElevatedButton.styleFrom(
   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 80),
 );
 
-// สไตล์ของข้อความ "Profile"
+//ข้อความ Profile
 const TextStyle profileTextStyle = TextStyle(
   color: Colors.white,
   fontSize: 20,

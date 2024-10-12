@@ -129,8 +129,7 @@ class ProfileScreen extends StatelessWidget {
                         onPressed: () async {
                           final profileRepository = ProfileRepository(apiUrl: 'http://10.0.2.2:8000');
                           await profileRepository.logout();
-
-                          // Navigate to the login screen or another appropriate screen
+                          
                           Navigator.of(context).pushReplacementNamed('/login');
                         },
                         child: const Text('Logout', style: TextStyle(fontSize: 16, color: Colors.white)),

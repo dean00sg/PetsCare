@@ -11,7 +11,6 @@ class UserProfile {
     required this.phone,
   });
 
-  // Factory method to create a UserProfile from JSON
   factory UserProfile.fromJson(Map<String, dynamic> json) {
     return UserProfile(
       firstName: json['first_name'],
@@ -23,7 +22,6 @@ class UserProfile {
 
   get imageUrl => null;
 
-  // Method to convert UserProfile to JSON
   Map<String, dynamic> toJson() {
     return {
       'first_name': firstName,

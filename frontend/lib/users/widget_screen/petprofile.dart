@@ -38,7 +38,7 @@ class PetProfileScreen extends StatelessWidget {
 
             return Padding(
               padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView( // Enable scrolling
+              child: SingleChildScrollView( 
                 child: Column(
                   children: [
                     Container(
@@ -151,7 +151,7 @@ class PetProfileScreen extends StatelessWidget {
                                 );
                               }
 
-                              // ถ้ามีข้อมูลที่ตรงตามเงื่อนไข แสดงข้อมูลเหล่านั้น
+                              // ถ้ามีข้อมูลที่ตรงตามเงื่อนไข แสดงข้อมูลนั้น
                               return Column(
                                 children: healthRecords.map((record) {
                                   return Column(
@@ -221,11 +221,9 @@ class PetProfileScreen extends StatelessWidget {
                       ),
                     ),
 
-
                     const SizedBox(height: 20),
-                    Container(
-                      // Prevents overflow issue by giving a finite height
-                      height: MediaQuery.of(context).size.height * 0.4, // Set a reasonable height
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.4, 
                       child: GridView.count(
                         crossAxisCount: 2,
                         mainAxisSpacing: 30,
@@ -308,13 +306,13 @@ class PetProfileScreen extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: color,
-          borderRadius: BorderRadius.circular(10), // Added border radius for better UI
+          borderRadius: BorderRadius.circular(10), 
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.5),
               spreadRadius: 2,
               blurRadius: 5,
-              offset: const Offset(0, 3), // changes position of shadow
+              offset: const Offset(0, 3), 
             ),
           ],
         ),

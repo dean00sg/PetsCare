@@ -29,7 +29,7 @@ class _CreatePetScreenState extends State<CreatePetScreen> {
     super.didChangeDependencies();
     args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
     if (args != null) {
-      _petTypeController.text = args!['name'];  // Set type of pet
+      _petTypeController.text = args!['name'];  //Set type of pet
       _imagePath = args!['imagePath'];
     }
   }
@@ -53,12 +53,12 @@ class _CreatePetScreenState extends State<CreatePetScreen> {
 
     final pet = PetModel(
       name: _nameController.text,
-      dateOfBirth: _dateController.text,  // 'birth_date'
+      dateOfBirth: _dateController.text,  
       weight: weight,
       sex: _selectedSex!,
       breed: _breedController.text,
-      typePets: _petTypeController.text,  // 'type_pets'
-      imagePath: _imagePath ?? '',        // Optional imagePath
+      typePets: _petTypeController.text,  
+      imagePath: _imagePath ?? '',        
     );
 
     BlocProvider.of<CreatePetBloc>(context).add(SavePetProfile(pet));

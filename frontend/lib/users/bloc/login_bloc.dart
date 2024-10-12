@@ -11,10 +11,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(LoginLoading());
       try {
         final result = await loginRepository.login(event.loginData);
-        
-        // Handle the nullable string issue
-        final token = result['access_token'] ?? ''; // Provide default value if null
-        final role = result['role'] ?? ''; // Provide default value if null
+        final token = result['access_token'] ?? ''; 
+        final role = result['role'] ?? ''; 
 
         print("Login successful, token: $token, role: $role");
         emit(LoginSuccess(token: token, role: role));

@@ -25,11 +25,11 @@ class LoginRepository {
 
         final token = data['access_token'] ?? '';
         Map<String, dynamic> decodedToken = JwtDecoder.decode(token);
-        final role = decodedToken['role'] ?? ''; // Extract role from token
+        final role = decodedToken['role'] ?? ''; 
 
         await prefs.setString('token', token);
         await prefs.setString('role', role);
-        print('Decoded role: $role'); // Print decoded role
+        print('Decoded role: $role'); 
         return {'access_token': token, 'role': role};
       } else {
         final errorData = json.decode(response.body);

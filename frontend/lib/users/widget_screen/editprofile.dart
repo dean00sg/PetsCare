@@ -103,7 +103,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   ),
                   const SizedBox(height: 12),
 
-                  // Email (Non-editable)
+                  // Email
                   Container(
                     padding: containerPadding,
                     decoration: containerDecoration.copyWith(
@@ -158,7 +158,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             phone: _phone,
                           );
                           context.read<ProfileBloc>().updateProfile(updatedProfile);
-                          Navigator.pop(context, true); // Indicate profile updated
+                          Navigator.pop(context, true); 
                         }
                       },
                       child: const Text('Save', style: TextStyle(fontSize: 16)),

@@ -8,7 +8,7 @@ class NotificationUserBloc extends Bloc<NotificationUserEvent, NotificationUserS
 
   NotificationUserBloc({required this.notificationRepository}) 
       : super(NotificationInitial()) {
-    // Load Notifications
+
     on<LoadNotificationsUser>((event, emit) async {
       emit(NotificationLoading());
       try {
@@ -19,11 +19,9 @@ class NotificationUserBloc extends Bloc<NotificationUserEvent, NotificationUserS
       }
     });
 
-    // Update Notification Status (Hide)
     on<DeleteNotificationUser>((event, emit) async {
       try {
         await notificationRepository.updateNotificationStatus(event.notificationId, 'hide');
-        // Reload the notifications after the update
         add(LoadNotificationsUser());
       } catch (error) {
         emit(NotificationUserError(error.toString()));

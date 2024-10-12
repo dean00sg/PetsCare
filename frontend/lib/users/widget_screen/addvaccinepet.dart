@@ -51,7 +51,6 @@ class _AddvaccinePetsScreen extends State<AddvaccinePetsScreen> {
         petProfile = profile;
       });
     } catch (e) {
-      // แสดงข้อผิดพลาดหรือจัดการในกรณีที่โหลดข้อมูลไม่สำเร็จ
       print('Error loading pet profile: $e');
     }
   }
@@ -192,7 +191,6 @@ class _AddvaccinePetsScreen extends State<AddvaccinePetsScreen> {
                                 noteBy: username!,
                               );
 
-                              // Dispatch the event to the bloc
                               context
                                   .read<VaccinationBloc>()
                                   .add(AddVaccinationEvent(profile));

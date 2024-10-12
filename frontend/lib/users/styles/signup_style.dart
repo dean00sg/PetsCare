@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 
-// สีพื้นหลังของ Container
+//Container main
 final BoxDecoration containerDecoration = BoxDecoration(
   color: const Color.fromARGB(255, 122, 83, 65),
   borderRadius: BorderRadius.circular(25),
 );
 
-// สไตล์ข้อความหัวเรื่อง SIGN UP
+//SIGN UP
 const TextStyle signUpTitleStyle = TextStyle(
   fontSize: 32,
   fontWeight: FontWeight.bold,
   color: Colors.white,
 );
 
-// สไตล์ข้อความลิงก์ Sign In
+//Sign In
 const TextStyle signInLinkStyle = TextStyle(
   fontSize: 16,
   color: Colors.lightBlue,
@@ -25,7 +25,7 @@ const TextStyle generalTextStyle = TextStyle(
   color: Colors.white,
 );
 
-// สไตล์ปุ่ม Sign Up
+//ปุ่ม Sign Up
 final ButtonStyle signUpButtonStyle = ElevatedButton.styleFrom(
   backgroundColor: Colors.amber,
   padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 40),
@@ -34,7 +34,7 @@ final ButtonStyle signUpButtonStyle = ElevatedButton.styleFrom(
   ),
 );
 
-// สไตล์ของ TextField
+//TextField
 InputDecoration inputDecoration(String hintText) {
   return InputDecoration(
     filled: true,

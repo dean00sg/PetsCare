@@ -13,7 +13,7 @@ const BoxDecoration containerDecoration = BoxDecoration(
     BoxShadow(
       color: Color.fromARGB(255, 122, 83, 65),
       blurRadius: 7,
-      offset: Offset(0, 3), // Shadow offset
+      offset: Offset(0, 3), 
     ),
   ],
 );
@@ -26,5 +26,5 @@ const TextStyle contentTextStyle = TextStyle(
 const TextStyle subContentTextStyle = TextStyle(
   fontSize: 14,
   color: Colors.white,
-  height: 1.5,  // Adjust line height
+  height: 1.5,  
 );

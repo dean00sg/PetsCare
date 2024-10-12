@@ -7,7 +7,7 @@ class SignupBloc extends Bloc<SignupEvent, SignupState> {
   final SignupRepository signupRepository;
 
   SignupBloc({required this.signupRepository}) : super(SignupInitial()) {
-    // ลงทะเบียนอีเวนต์ SignupButtonPressed
+    // ลงทะเบียน SignupButtonPressed
     on<SignupButtonPressed>((event, emit) async {
       emit(SignupLoading());
       try {

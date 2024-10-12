@@ -21,9 +21,9 @@ class LoginScreen extends StatelessWidget {
           if (state is LoginSuccess) {
             print("Login successful with role: ${state.role}");
             if (state.role == 'admin') {
-              Navigator.pushNamed(context, '/feedadmin'); // Navigate to admin page
+              Navigator.pushNamed(context, '/feedadmin'); 
             } else if (state.role == 'userpets') {
-              Navigator.pushNamed(context, '/feed'); // Navigate to user page
+              Navigator.pushNamed(context, '/feed'); 
             }
           } else if (state is LoginFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -31,7 +31,7 @@ class LoginScreen extends StatelessWidget {
             );
           }
         },
-        child: SingleChildScrollView( // Allow scrolling
+        child: SingleChildScrollView( 
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

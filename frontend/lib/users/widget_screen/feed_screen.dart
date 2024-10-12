@@ -85,7 +85,6 @@ class FeedScreen extends StatelessWidget {
                                   textAlign: TextAlign.center,
                                 ),
                                 const SizedBox(height: 8),
-                                // Correct conditional rendering for image loading
                                 if (post.imageUrl != null && post.imageUrl!.isNotEmpty) ...[
                                   Image.network(
                                     post.imageUrl!,
@@ -99,9 +98,8 @@ class FeedScreen extends StatelessWidget {
                                       );
                                     },
                                   ),
-                                  const SizedBox(height: 8), // Add spacing after the image
+                                  const SizedBox(height: 8), 
                                 ],
-                                // Updated description text color to white
                                 Text(
                                   post.description ?? 'No description available',
                                   style: const TextStyle(
