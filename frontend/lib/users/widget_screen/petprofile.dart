@@ -163,9 +163,17 @@ class PetProfileScreen extends StatelessWidget {
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text(
-                                              'Header : ${record.header}',
-                                              style: PetProfileStyles.headerTextStyle,
+                                            Expanded(
+                                              child: SingleChildScrollView(
+                                                scrollDirection: Axis.horizontal,
+                                                child: Text(
+                                                  'Header : ${record.header}',
+                                                  style: PetProfileStyles.headerTextStyle,
+                                                  maxLines: 1,
+                                                  softWrap: false, 
+                                                  overflow: TextOverflow.clip, 
+                                                ),
+                                              ),
                                             ),
                                           ],
                                         ),
