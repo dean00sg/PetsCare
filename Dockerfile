@@ -14,6 +14,6 @@ COPY . /src
 
 # CMD [ "cd", "backend" ]
 RUN cd backend
-CMD ["python", "-m", "uvicorn", "backend/main:app", "--reload"]
+CMD ["python", "-m", "uvicorn", "main:app", "--reload"]
 
 EXPOSE 8000:8000
