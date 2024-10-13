@@ -13,7 +13,7 @@ CMD ["py.test", "--cov-report xml:coverage.xml", "--cov=.", "--junitxml=result.x
 COPY . /src 
 
 # CMD [ "cd", "backend" ]
-RUN cd backend
+RUN cd /backend
 CMD ["python", "-m", "uvicorn", "main:app", "--reload"]
 
 EXPOSE 8000:8000
