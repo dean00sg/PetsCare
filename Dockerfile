@@ -2,6 +2,8 @@ FROM alpine:3.17
 
 WORKDIR /src
 
+RUN ls
+
 COPY ./requirements.txt /src/requirements.txt
 
 RUN apk add python3
