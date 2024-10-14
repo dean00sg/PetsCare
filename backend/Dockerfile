@@ -10,10 +10,6 @@ COPY ./requirements.txt /src/requirements.txt
 RUN pip install -r /src/requirements.txt --ignore-installed packaging
 
 
-# Set the working directory to /src/backend
-WORKDIR /src/backend
-
-
 # Run the application
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8080"]
 
