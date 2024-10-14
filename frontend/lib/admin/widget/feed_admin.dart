@@ -17,7 +17,7 @@ class FeedadminScreen extends StatelessWidget {
       appBar: const Navbar(), 
       drawer: const Sidebar(), 
       body: BlocProvider(
-        create: (context) => FeedBloc(feedRepository: FeedRepository(apiUrl: 'http://10.0.2.2:8000'))..add(FetchFeedData()),
+        create: (context) => FeedBloc(feedRepository: FeedRepository(apiUrl: 'https://pets-care.onrender.com'))..add(FetchFeedData()),
         child: BlocBuilder<FeedBloc, FeedState>(
           builder: (context, state) {
             if (state is FeedLoading) {

@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 
 class LoginRepository {
-  final String apiUrl = 'http://10.0.2.2:8000/authentication/login';
+  final String apiUrl = 'https://pets-care.onrender.com/authentication/login';
 
   Future<Map<String, String>> login(LoginModel loginData) async {
     try {

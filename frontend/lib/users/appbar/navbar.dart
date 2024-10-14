@@ -12,7 +12,7 @@ class NavbarUser extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => NotificationUserBloc(
-        notificationRepository: NotificationUserRepository(apiUrl: 'http://10.0.2.2:8000'),
+        notificationRepository: NotificationUserRepository(apiUrl: 'https://pets-care.onrender.com'),
       )..add(LoadNotificationsUser()),
       child: AppBar(
         backgroundColor: Colors.brown,

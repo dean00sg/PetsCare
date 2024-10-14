@@ -82,13 +82,13 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => AddNotificationBloc(
-            notificationRepository: AddNotificationUserRepository(apiUrl: 'http://10.0.2.2:8000'),
+            notificationRepository: AddNotificationUserRepository(apiUrl: 'https://pets-care.onrender.com'),
             userListRepository: UserListRepository(), 
           ),
         ),
         BlocProvider(
           create: (context) => ProfileBloc(
-              profileRepository: ProfileRepository(apiUrl: 'http://10.0.2.2:8000')),
+              profileRepository: ProfileRepository(apiUrl: 'https://pets-care.onrender.com')),
         ),
         BlocProvider(
           create: (context) => SignupBloc(signupRepository: SignupRepository()),
@@ -118,23 +118,23 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => PetVacBloc(
-            petVacRepository: PetVacRepository(apiUrl: 'http://10.0.2.2:8000'), 
+            petVacRepository: PetVacRepository(apiUrl: 'https://pets-care.onrender.com'), 
           ),
         ),
         BlocProvider(
           create: (context) => AddVaccinationBloc(
-            PetVacRepository(apiUrl: 'http://10.0.2.2:8000'), 
+            PetVacRepository(apiUrl: 'https://pets-care.onrender.com'), 
           ),
           child: const AddVaccinationScreen(),
         ),
         BlocProvider(
           create: (context) => HistoryBloc(
-            repository: HistoryRepository(apiUrl: 'http://10.0.2.2:8000'),
+            repository: HistoryRepository(apiUrl: 'https://pets-care.onrender.com'),
           ),
         ),
         BlocProvider(
           create: (context) => AddHistoryRecBloc(
-            HistoryRepository(apiUrl: 'http://10.0.2.2:8000'),
+            HistoryRepository(apiUrl: 'https://pets-care.onrender.com'),
           ),
           child: const AddHistoryRecScreen(), 
         ),
@@ -145,7 +145,7 @@ class MyApp extends StatelessWidget {
           create: (context) => HistoryRecUserBloc(HistoryRecUserRepository()),
         ),
         BlocProvider(
-          create: (context) => VaccinationBloc(UserPetVacRepository(apiUrl: 'http://10.0.2.2:8000')),
+          create: (context) => VaccinationBloc(UserPetVacRepository(apiUrl: 'https://pets-care.onrender.com')),
         ),
       ],
       child: MaterialApp(

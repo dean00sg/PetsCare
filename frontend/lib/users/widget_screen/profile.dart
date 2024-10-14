@@ -127,7 +127,7 @@ class ProfileScreen extends StatelessWidget {
                       child: OutlinedButton(
                         style: logoutButtonStyle,
                         onPressed: () async {
-                          final profileRepository = ProfileRepository(apiUrl: 'http://10.0.2.2:8000');
+                          final profileRepository = ProfileRepository(apiUrl: 'https://pets-care.onrender.com');
                           await profileRepository.logout();
                           
                           Navigator.of(context).pushReplacementNamed('/login');

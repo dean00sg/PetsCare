@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserRepository {
-  final String apiUrl = 'http://10.0.2.2:8000/admin_manage/';
+  final String apiUrl = 'https://pets-care.onrender.com/admin_manage/';
 
   Future<List<UserProfilePets>> getProfile() async {
     final prefs = await SharedPreferences.getInstance();

@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PetProfileRepository {
-  final String apiUrl = 'http://10.0.2.2:8000/pets/byid';
+  final String apiUrl = 'https://pets-care.onrender.com/pets/byid';
 
   Future<PetProfile> fetchPetByName(String petsId) async {
     try {
@@ -36,7 +36,7 @@ class PetProfileRepository {
       final token = prefs.getString('token') ?? '';
 
       final response = await http.put(
-        Uri.parse('http://10.0.2.2:8000/pets/$petsId'),
+        Uri.parse('https://pets-care.onrender.com/pets/$petsId'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',

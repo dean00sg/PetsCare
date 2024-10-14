@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PetVacUserRepository { 
-  final String apiUrl = 'http://10.0.2.2:8000/pets_vac/pet_vac_profile/';
+  final String apiUrl = 'https://pets-care.onrender.com/pets_vac/pet_vac_profile/';
 
   Future<List<PetVacUserProfile>> fetchPetById(String petsId) async { 
     try {

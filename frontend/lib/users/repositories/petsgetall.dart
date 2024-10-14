@@ -5,7 +5,7 @@ import 'package:frontend/users/models/petslidebar_models.dart';
 import 'package:frontend/users/models/create_pet_model.dart';
 
 class CreatePetRepository {
-  final String apiUrl = 'http://10.0.2.2:8000/pets/'; 
+  final String apiUrl = 'https://pets-care.onrender.com/pets/'; 
 
 
   Future<void> createPet(PetModel petData) async {

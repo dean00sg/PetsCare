@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:frontend/users/models/signup_model.dart';
 
 class SignupRepository {
-  final String apiUrl = 'http://10.0.2.2:8000/authentication/register';
+  final String apiUrl = 'https://pets-care.onrender.com/authentication/register';
 
   Future<SignupModel> signup(SignupModel signupData) async {
     final response = await http.post(
