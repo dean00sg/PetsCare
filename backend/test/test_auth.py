@@ -7,12 +7,12 @@ client = TestClient(app)
 
 # กรณีทดสอบการเข้าสู่ระบบ (Login)
 def test_login_success():
-    response = client.post("/authentication/login", data={"username": "Dean.sg@gmail.com", "password": "123456"})
+    response = client.post("/authentication/login", data={"username": "preampreawping@gmail.com", "password": "123456"})
     assert response.status_code == status.HTTP_200_OK
     assert "access_token" in response.json()
 
 def test_login_failure():
-    response = client.post("/authentication/login", data={"username": "Dean.sg@gmail.com", "password": "000000"})
+    response = client.post("/authentication/login", data={"username": "preampreawping@gmail.com", "password": "010203"})
     assert response.status_code == status.HTTP_401_UNAUTHORIZED
     assert response.json() == {"detail": "Incorrect username or password"}
 

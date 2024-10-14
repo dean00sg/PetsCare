@@ -16,7 +16,7 @@ def get_auth_header(email: str, password: str, role: str = "user"):
     return {"Authorization": f"Bearer {token}"}
 
 def setup_pet():
-    headers = get_auth_header("pream@gmail.com", password="010203")
+    headers = get_auth_header("sunny@gmail.com", password="123456")
     pet_name = "TestPet"
     response = client.post("/pets/", json={
         "name": pet_name,
@@ -29,7 +29,7 @@ def setup_pet():
     return response.json()["pets_id"], pet_name
 
 def test_create_pet():
-    headers = get_auth_header("pream@gmail.com", password="010203")
+    headers = get_auth_header("sunny@gmail.com", password="123456")
     response = client.post("/pets/", json={
         "name": "Milo",
         "type_pets": "Dog",
@@ -42,27 +42,27 @@ def test_create_pet():
     assert response.json()["name"] == "Milo"
 
 def test_get_pets():
-    headers = get_auth_header("pream@gmail.com", password="010203")
+    headers = get_auth_header("sunny@gmail.com", password="123456")
     response = client.get("/pets/", headers=headers)
     assert response.status_code == 200
     assert isinstance(response.json(), list)
 
 def test_get_pet_by_id():
     pet_id, pet_name = setup_pet()
-    headers = get_auth_header("pream@gmail.com", password="010203")
+    headers = get_auth_header("sunny@gmail.com", password="123456")
     response = client.get(f"/pets/byid?pet_id={pet_id}", headers=headers)
     assert response.status_code == 200
     assert response.json()["pets_id"] == pet_id
 
 def test_get_all_pets_admin():
-    headers = get_auth_header("Dean.sg@gmail.com", password="123456", role="admin")
+    headers = get_auth_header("preampreawping@gmail.com", password="123456", role="admin")
     response = client.get("/pets/all-pets-admin", headers=headers)
     assert response.status_code == 200
     assert isinstance(response.json(), list)
 
 def test_update_pet():
     pet_id, _ = setup_pet()
-    headers = get_auth_header("pream@gmail.com", password="010203")
+    headers = get_auth_header("sunny@gmail.com", password="123456")
     response = client.put(f"/pets/{pet_id}", json={
         "name": "Max",
         "birth_date": "2024-10-14",
@@ -73,7 +73,7 @@ def test_update_pet():
 
 def test_delete_pet():
     _, pet_name = setup_pet()
-    headers = get_auth_header("pream@gmail.com", password="010203")
+    headers = get_auth_header("sunny@gmail.com", password="123456")
     response = client.delete(f"/pets/{pet_name}", headers=headers)
     assert response.status_code == 200
     assert response.json()["detail"] == f"Pet '{pet_name}' has been deleted and logged in the system."
