@@ -29,4 +29,4 @@ sqlmodel==0.0.22
 starlette==0.38.5
 typing_extensions==4.12.2
 uvicorn==0.30.6
-# httpxs
+httpxs
