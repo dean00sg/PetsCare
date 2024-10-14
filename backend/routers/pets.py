@@ -98,7 +98,7 @@ async def get_pets(
         )
         for pet in pets
     ]
-from fastapi import Query
+
 
 @router.get("/byid", response_model=PetResponse)
 async def get_pet_by_id(

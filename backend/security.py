@@ -46,6 +46,3 @@ class AuthHandler:
         except JWTError:
             raise Exception("Invalid token")
     
-    def get_current_user_role(self, token: str) -> str:
-        payload = self.decode_access_token(token)
-        return payload.get("role")
