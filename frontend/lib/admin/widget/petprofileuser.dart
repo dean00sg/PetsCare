@@ -16,7 +16,7 @@ class PetProfileUserScreen extends StatefulWidget {
 }
 
 class _PetProfileScreenState extends State<PetProfileUserScreen> {
-  String _searchQuery = ''; //ตัวแปรสำหรับเก็บค่าการค้นหา
+  String _searchQuery = '';
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +39,7 @@ class _PetProfileScreenState extends State<PetProfileUserScreen> {
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Padding(
-                  padding: EdgeInsets.only(left: 25, top: 16), 
+                  padding: EdgeInsets.only(left: 25, top: 16),
                   child: Text(
                     'User with Pets',
                     style: TextStyle(
@@ -50,10 +50,11 @@ class _PetProfileScreenState extends State<PetProfileUserScreen> {
                   ),
                 ),
               ),
+
               CustomSearchBar(
                 onChanged: (value) {
                   setState(() {
-                    _searchQuery = value.toLowerCase(); //อัปเดตการค้นหา
+                    _searchQuery = value.toLowerCase();
                   });
                 },
               ),
@@ -67,46 +68,37 @@ class _PetProfileScreenState extends State<PetProfileUserScreen> {
                         return const Center(child: Text('No pets available.'));
                       }
 
-                      // Group pets by owner
-                      final Map<String, List<PetProfileUserModel>> ownerPetsMap = {};
-                      for (var pet in state.pets) {
-                        ownerPetsMap.putIfAbsent(pet.owner_name, () => []).add(pet);
-                      }
+                      // ฟิลเตอร์ข้อมูลเจ้าของและสัตว์เลี้ยงตาม _searchQuery
+                      final filteredOwnerPetsMap = state.pets.where((pet) {
+                        final petsIdStr = pet.petsId.toString().toLowerCase();
+                        final ownerName = pet.owner_name.toLowerCase();
+                        final petName = pet.name.toLowerCase();
+                        final petType = pet.type_pets.toLowerCase();
+                        final petSex = pet.sex.toLowerCase();
+                        final petBreed = pet.breed.toLowerCase();
+                        final petBirthDate = pet.birth_date.toLowerCase();
+                        final petWeightStr = pet.weight.toString().toLowerCase();
 
-                      //กรองผลลัพธ์ตาม search query (ค้นหาทั้งข้อมูลเจ้าของและสัตว์เลี้ยง)
-                      final filteredOwnerPetsMap = ownerPetsMap.entries.where((entry) {
-                        final ownerName = entry.key.toLowerCase();
-                        final filteredPets = entry.value.where((pet) {
-                          //ค้นหาทั้งหมดในข้อมูลสัตว์เลี้ยง
-                          return ownerName.contains(_searchQuery) ||
-                                 pet.name.toLowerCase().contains(_searchQuery) ||
-                                 pet.type_pets.toLowerCase().contains(_searchQuery) ||
-                                 pet.breed.toLowerCase().contains(_searchQuery) ||
-                                 pet.birth_date.toString().contains(_searchQuery) ||
-                                 pet.weight.toString().contains(_searchQuery);
-                        }).toList();
-                        return filteredPets.isNotEmpty || ownerName.contains(_searchQuery);
-                      }).toList();
-
-                      //จัดเรียงสัตว์เลี้ยงที่ตรงกับการค้นหาขึ้นด้านบน
-                      filteredOwnerPetsMap.sort((a, b) {
-                        final aContainsQuery = a.value.any((pet) =>
-                            pet.name.toLowerCase().contains(_searchQuery) ||
-                            pet.type_pets.toLowerCase().contains(_searchQuery) ||
-                            pet.breed.toLowerCase().contains(_searchQuery));
-                        
-                        final bContainsQuery = b.value.any((pet) =>
-                            pet.name.toLowerCase().contains(_searchQuery) ||
-                            pet.type_pets.toLowerCase().contains(_searchQuery) ||
-                            pet.breed.toLowerCase().contains(_searchQuery));
-                        
-                        //แปลง bool เป็น int (true = 1, false = 0) แล้วนำมาเปรียบเทียบ
-                        return bContainsQuery ? 1 : 0 - (aContainsQuery ? 1 : 0);
+                        // ตรวจสอบว่ามีการค้นหาที่ตรงกับค่าของฟิลด์ใดๆ ในรายการนี้หรือไม่
+                        return petsIdStr.contains(_searchQuery) ||
+                            ownerName.contains(_searchQuery) ||
+                            petName.contains(_searchQuery) ||
+                            petType.contains(_searchQuery) ||
+                            petSex.contains(_searchQuery) ||
+                            petBreed.contains(_searchQuery) ||
+                            petBirthDate.contains(_searchQuery) ||
+                            petWeightStr.contains(_searchQuery);
+                      }).fold<Map<String, List<PetProfileUserModel>>>({}, (map, pet) {
+                        if (!map.containsKey(pet.owner_name)) {
+                          map[pet.owner_name] = [];
+                        }
+                        map[pet.owner_name]!.add(pet);
+                        return map;
                       });
 
                       return ListView(
                         children: [
-                          ...filteredOwnerPetsMap.map((entry) {
+                          ...filteredOwnerPetsMap.entries.map((entry) {
                             final ownerName = entry.key;
                             final pets = entry.value;
 
@@ -167,11 +159,11 @@ class _PetProfileScreenState extends State<PetProfileUserScreen> {
                                                     ],
                                                   ),
                                                   const SizedBox(height: 8),
-                                                  _buildPetInfoRowWithBorder('typepets', pet.type_pets),
-                                                  _buildPetInfoRowWithBorder('sex', pet.sex),
-                                                  _buildPetInfoRowWithBorder('breed', pet.breed),
-                                                  _buildPetInfoRowWithBorder('birthdate', pet.birth_date),
-                                                  _buildPetInfoRowWithBorder('weight', '${pet.weight}kg'),
+                                                  _buildPetInfoRowWithBorder('Type', pet.type_pets),
+                                                  _buildPetInfoRowWithBorder('Sex', pet.sex),
+                                                  _buildPetInfoRowWithBorder('Breed', pet.breed),
+                                                  _buildPetInfoRowWithBorder('Birthdate', pet.birth_date),
+                                                  _buildPetInfoRowWithBorder('Weight', '${pet.weight}kg'),
                                                 ],
                                               ),
                                             ),
@@ -183,7 +175,7 @@ class _PetProfileScreenState extends State<PetProfileUserScreen> {
                                 ),
                               ),
                             );
-                          }),
+                          }).toList(),
                         ],
                       );
                     } else if (state is PetErrorUserState) {

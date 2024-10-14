@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:frontend/admin/bloc/add_feedpost.dart'; // Ensure correct import
+import 'package:frontend/admin/bloc/add_feedpost.dart';
 import 'package:frontend/admin/bloc/add_healthrec.dart';
 import 'package:frontend/admin/bloc/add_historyrec.dart';
 import 'package:frontend/admin/bloc/add_notification.dart';
@@ -8,7 +8,7 @@ import 'package:frontend/admin/bloc/add_vaccination.dart';
 import 'package:frontend/admin/bloc/check_historyrec.dart';
 import 'package:frontend/admin/bloc/user.dart';
 import 'package:frontend/admin/bloc/vaccination.dart';
-import 'package:frontend/admin/repositories/add_feedpost.dart'; // Ensure correct import
+import 'package:frontend/admin/repositories/add_feedpost.dart';
 import 'package:frontend/admin/bloc/check_info_bloc.dart';
 import 'package:frontend/admin/repositories/add_notification.dart';
 import 'package:frontend/admin/repositories/historyrec.dart';
@@ -22,7 +22,7 @@ import 'package:frontend/admin/widget/check_alluser.dart';
 import 'package:frontend/admin/widget/check_healthrec.dart';
 import 'package:frontend/admin/widget/check_historyrec.dart';
 import 'package:frontend/admin/widget/check_info_screen.dart';
-import 'package:frontend/admin/widget/add_feedpost.dart'; // Correct imports
+import 'package:frontend/admin/widget/add_feedpost.dart';
 import 'package:frontend/admin/widget/feed_admin.dart';
 import 'package:frontend/admin/widget/healthrecord_main.dart';
 import 'package:frontend/admin/widget/historyrec_main.dart';
@@ -83,7 +83,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (context) => AddNotificationBloc(
             notificationRepository: AddNotificationUserRepository(apiUrl: 'http://10.0.2.2:8000'),
-            userListRepository: UserListRepository(), // Add this line
+            userListRepository: UserListRepository(), 
           ),
         ),
         BlocProvider(
@@ -105,9 +105,9 @@ class MyApp extends StatelessWidget {
          BlocProvider(
         create: (context) => PetProfileBloc(
           PetProfileRepository(),
-          HealthRecordUserRepository(), // Add HealthRecordRepository here
+          HealthRecordUserRepository(),
         ),
-        child: const PetProfileScreen(), // Change to your initial screen
+        child: const PetProfileScreen(),
       ),
         BlocProvider(
           create: (context) => HealthRecordBloc(HealthRecordRepository()),
@@ -134,9 +134,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => AddHistoryRecBloc(
-            HistoryRepository(apiUrl: 'http://10.0.2.2:8000'), // Pass the repository
+            HistoryRepository(apiUrl: 'http://10.0.2.2:8000'),
           ),
-          child: const AddHistoryRecScreen(), // Wrap with BlocProvider
+          child: const AddHistoryRecScreen(), 
         ),
         BlocProvider<PetVacUserBloc>(
           create: (context) => PetVacUserBloc(PetVacUserRepository()),
