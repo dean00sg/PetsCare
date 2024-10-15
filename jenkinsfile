@@ -1,0 +1,61 @@
+pipeline {
+
+    agent any
+
+    environment {
+        HOST_IP = "172.17.0.3"
+        PROJECT_TOKEN = "sqp_b01dc8c1c92ce088ba34a7b95accf71abc2e1e5f"
+        PROJECT_KEY = "Petscare-Project"
+        WORKSPACE = pwd()
+    }
+
+    stages {
+
+        stage ('Fetch code') {
+            steps{
+                git branch: 'main', url: 'https://github.com/dean00sg/PetsCare.git'
+            }
+        }
+
+        stage ('Test') {
+            agent {
+                docker {
+                    image 'python:3.11.1-alpine3.16'
+                    reuseNode true
+                    args '-u root'
+                }
+            }
+            steps {
+                sh "pip3 install pytest coverage"
+                sh "pip3 install -r requirements.txt"
+                sh "pip install httpx"
+                sh "pytest --junitxml=result.xml"
+            }
+        }
+
+        stage('Scan') {
+
+            steps {
+
+                script {
+                    def scannerHome = tool 'Sonar';
+                    withSonarQubeEnv() {
+                        sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=${PROJECT_KEY} -Dsonar.sources=. -Dsonar.host.url=http://${HOST_IP}:9000/ -Dsonar.login=${PROJECT_TOKEN} -X "
+                    }
+                }
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh "docker build -t pets-care-img ."
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                sh "docker run -d --name pets-care -p 8000:8000 pets-care-img"
+            }
+        }
+    }
+}
