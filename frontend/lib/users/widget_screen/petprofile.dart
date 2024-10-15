@@ -134,7 +134,9 @@ class PetProfileScreen extends StatelessWidget {
                                 final weightCheck = petWeight >= record.weightStartMonths &&
                                     petWeight <= record.weightEndMonths;
 
-                                return startAgeCheck && endAgeCheck && weightCheck;
+                                final petTypeCheck = pet.typePets == record.petType;
+
+                                return startAgeCheck && endAgeCheck && weightCheck && petTypeCheck;
                               }).toList(); // เปลี่ยนเป็น List เพื่อเช็คว่ามีข้อมูลหรือไม่
 
                               // ตรวจสอบว่า healthRecords ว่างหรือไม่

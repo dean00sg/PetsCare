@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: petscare-app
+    env: python
+    plan: free
+    region: oregon
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn backend.main:app --host 0.0.0.0 --port 8000"
+    envVars:
+      - key: DATABASE_URL
+        value: "postgresql://petscare:5SmuudKzz2itnxshOD4wm15YXCgmCmjo@dpg-cs6klet6l47c73fh2nh0-a.oregon-postgres.render.com/petscare"
+      - key: SECRET_KEY
+        value: "254fg4r845FESF5A87wewa5rg51h5s4a51g51e4a8t5g"
